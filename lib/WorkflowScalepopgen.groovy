@@ -10,6 +10,7 @@ class WorkflowScalepopgen {
     //
     // Check and validate parameters
     //
+    /*
     public static void initialise(params, log) {
 
 
@@ -17,6 +18,7 @@ class WorkflowScalepopgen {
             Nextflow.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
         }
     }
+   */
 
     //
     // Get workflow summary for MultiQC

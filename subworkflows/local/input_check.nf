@@ -2,43 +2,57 @@
 // Check input samplesheet and get read channels
 //
 
-include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
 
 workflow INPUT_CHECK {
     take:
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
-    SAMPLESHEET_CHECK ( samplesheet )
-        .csv
+    Channel
+        .fromPath(samplesheet)
         .splitCsv ( header:true, sep:',' )
         .map { create_fastq_channel(it) }
-        .set { reads }
+        .set { variant }
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
-    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
+    variant                                     // channel: [ val(meta), [ reads ] ]
 }
 
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
 def create_fastq_channel(LinkedHashMap row) {
     // create meta map
     def meta = [:]
-    meta.id         = row.sample
-    meta.single_end = row.single_end.toBoolean()
-
-    // add path(s) of the fastq file(s) to the meta map
-    def fastq_meta = []
-    if (!file(row.fastq_1).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Read 1 FastQ file does not exist!\n${row.fastq_1}"
-    }
-    if (meta.single_end) {
-        fastq_meta = [ meta, [ file(row.fastq_1) ] ]
-    } else {
-        if (!file(row.fastq_2).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
+    def vcf_meta = []
+    // if the length is 3, the row contains information about vcf files splitted by chromosome
+    if (row.size() == 3 ){
+        meta.id         = row.chrom
+        if (!file(row.vcf).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> vcf file does not exist!\n${row.vcf}"
         }
-        fastq_meta = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
+        if (!file(row.vcf_idx).exists()) {
+            exit 1, "ERROR: Please check input samplesheet -> vcf index file does not exist!\n${row.vcf_idx}"
+        }
+        vcf_meta = [ meta, file(row.vcf), file(row.vcf_idx)  ]
     }
-    return fastq_meta
+    else{
+        // if the length is 4, the row contains information about plink bim, bed and fam file
+        if (row.size() == 4 ){
+            meta.id         = row.prefix
+            if (!file(row.bed).exists()) {
+                exit 1, "ERROR: Please check input samplesheet -> the bed file does not exist!\n${row.bed}"
+            }
+            if (!file(row.bim).exists()) {
+                exit 1, "ERROR: Please check input samplesheet -> the bim file does not exist!\n${row.bim}"
+            }
+            if (!file(row.fam).exists()) {
+                exit 1, "ERROR: Please check input samplesheet -> the fam file does not exist!\n${row.fam}"
+            }
+            vcf_meta = [ meta, [file(row.bed), file(row.bim), file(row.fam)]  ]
+        }
+        else{
+            println(row.size())
+            exit 1, "ERROR: Please check input csv samplesheet, it does not have 3-column or 4-column format"
+        }
+    }
+    return vcf_meta
 }

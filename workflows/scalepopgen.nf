@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
+include { validateParameters; paramsSummaryLog; paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
 def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
@@ -13,7 +13,7 @@ def summary_params = paramsSummaryMap(workflow)
 // Print parameter summary log to screen
 log.info logo + paramsSummaryLog(workflow) + citation
 
-WorkflowScalepopgen.initialise(params, log)
+//WorkflowScalepopgen.initialise(params, log)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,9 +46,19 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
+include { VCFTOOLS                    } from '../modules/nf-core/vcftools/main'
+include { VCFTOOLS_CONCAT             } from '../modules/local/vcftools/concat/main'
+include { VCFTOOLS_KEEP               } from '../modules/local/vcftools/keep/main'
+include { FILTER_SAMPLES              } from '../modules/local/plink2/filter_samples/main'
+include { PREPARE_NEW_MAP             } from '../modules/local/prepare_new_map/main'
+include { VCFTOOLS_REMOVE             } from '../modules/local/vcftools/remove/main'
+include { VCFTOOLS_FILTER_SITES       } from '../modules/local/vcftools/filter_sites/main'
+include { FILTER_SNPS                 } from '../modules/local/plink2/filter_snps/main'
+include { PLINK_VCF                   } from '../modules/nf-core/plink/vcf/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
+include { ADMIXTURE                   } from '../modules/nf-core/admixture/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { GENERATE_COLORS             } from '../modules/local/generate_colors/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -63,24 +73,168 @@ workflow SCALEPOPGEN {
 
     ch_versions = Channel.empty()
 
+    is_vcf = true
+
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
     INPUT_CHECK (
         file(params.input)
     )
+    
+    // if input csv file ends with "plink.csv" set vcf to false
+    if (params.input.endsWith(".p.csv")){
+        is_vcf = false
+    }
+    if (is_vcf){
+        //read sample map file 
+        sampleinfo = Channel.fromPath( params.sample_map )
+        map_f= sampleinfo.map{ sampleinfo -> if(!file(sampleinfo).exists() ){ exit 1, "ERROR: file does not exit -> ${sampleinfo}" }else{sampleinfo}}
+        //combine vcf and map file
+        meta_vcf_idx_map = INPUT_CHECK.out.variant.combine(map_f)
+    }
+    //
+    // MODULE: GENERATE_COLORS
+    //
+    GENERATE_COLORS(
+        is_vcf ? sampleinfo : INPUT_CHECK.out.variant.map{chrom,bed->bed[2]},
+        params.color_map ? Channel.fromPath(params.color_map):[]
+    )
+
+    if (is_vcf){
+
+        if( params.apply_indi_filters ){
+        
+            o_map = meta_vcf_idx_map.map{meta, vcf, idx, map_f -> map_f}.unique()
+
+            /* --> king_cutoff and missingness filter should be based on the entire genome therefore vcf file should be concatenated first and then 
+                   supply to plink. From plink module, the list of individuals to be kept is piped out and supply to keep indi module. This module will
+                   then extract these sets of individuals from each chromosome file separately. Note that if custom individuals to be removed are also
+                    supplied then this will be considered in extract_unrelated_sample_list module as well. 
+            */      
+    
+            if( params.king_cutoff > 0 || params.mind > 0 ){
+
+
+                vcflist = meta_vcf_idx_map.map{meta, vcf, idx, map_f -> vcf}.collect()
+
+                //
+                // MODULE: CONCAT_VCF
+                //
+
+                VCFTOOLS_CONCAT(
+                    vcflist,
+                    Channel.value("filtering")
+                )
+
+                //
+                // MODULE: FILTER_SAMPLES
+                //
+                FILTER_SAMPLES( 
+                    VCFTOOLS_CONCAT.out.concatenatedvcf,
+                    is_vcf
+                )
+
+                //
+                // MODULE: VCFTOOLS_KEEP
+                //
+                VCFTOOLS_KEEP(
+                    meta_vcf_idx_map.combine(FILTER_SAMPLES.out.keep_indi_list)
+                )
+                
+                //
+                // MODULE: PREPARE_NEW_MAP
+                //
+
+                PREPARE_NEW_MAP(
+                    o_map,
+                    FILTER_SAMPLES.out.keep_indi_list
+                )
+            
+                n0_meta_vcf_idx_map = VCFTOOLS_KEEP.out.f_meta_vcf.combine(PREPARE_NEW_MAP.out.n_map).map{meta, vcf, n_map->tuple(meta, vcf, [], n_map)}
+            }
+
+            /*
+                if only the individuals to be removed are supplied then there is no need to concat the file. 
+            
+            */
+            else{
+    
+                rmindilist = Channel.fromPath( params.rem_indi )
+                ril = rmindilist.map{ rmindilist -> if(!file(rmindilist).exists() ){ exit 1,"ERROR: file does not exit -> ${rmindilist}" }else{rmindilist} }
+                meta_vcf = meta_vcf_idx_map.map{meta, vcf, idx, map -> tuple(meta,vcf)}
+                //
+                // MODULE: VCFTOOLS_REMOVE
+                //
+                VCFTOOLS_REMOVE( 
+                    meta_vcf.combine(ril)
+                )
+                //
+                // MODULE: PREPARE_NEW_MAP
+                //
+                PREPARE_NEW_MAP(
+                    o_map,
+                    ril
+                )
+                n0_meta_vcf_idx_map = VCFTOOLS_REMOVE.out.f_meta_vcf.combine(PREPARE_NEW_MAP.out.n_map).map{meta, vcf, n_map->tuple(meta, vcf, [], n_map)}
+            }
+        }
+        else{
+            n0_meta_vcf_idx_map = meta_vcf_idx_map
+        }
+        if(params.apply_snp_filters){
+                n_map = n0_meta_vcf_idx_map.map{meta, vcf, idx, map_f -> map_f}.unique()
+                meta_vcf = n0_meta_vcf_idx_map.map{meta, vcf, idx, map_f -> tuple(meta, vcf)}    
+                //
+                // MODULE: FILTER_SITES
+                //
+                VCFTOOLS_FILTER_SITES(
+                    meta_vcf
+                )
+                n1_meta_vcf_idx_map = VCFTOOLS_FILTER_SITES.out.s_meta_vcf.combine(n_map).map{meta, vcf, n_map -> tuple(meta, vcf, [], n_map)}
+        }
+        else{
+            n1_meta_vcf_idx_map = n0_meta_vcf_idx_map
+        }
+    }
+
+    else{
+        if( params.apply_indi_filters){
+            //
+            //MODULE: FILTER_SAMPLES
+            //
+            FILTER_SAMPLES(
+                INPUT_CHECK.out.variant,
+                is_vcf
+            )
+            n0_meta_bed = FILTER_SAMPLES.out.n1_meta_bed
+        }
+        else{
+                n0_meta_bed = INPUT_CHECK.out.variant
+        }
+        if ( params.apply_snp_filters ){
+            //
+            //MODULE: FILTER_SNPS
+            //
+            FILTER_SNPS(
+                n0_meta_bed
+            )
+            n1_meta_bed = FILTER_SNPS.out.n1_meta_bed
+            n1_meta_bed.view()
+        }
+        else{
+            n1_meta_bed = n0_meta_bed
+            n1_meta_bed.view()
+        }
+
+    }
+    
+    /*
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
     // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
     // ! There is currently no tooling to help you write a sample sheet schema
 
-    //
-    // MODULE: Run FastQC
-    //
-    FASTQC (
-        INPUT_CHECK.out.reads
-    )
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
@@ -108,6 +262,7 @@ workflow SCALEPOPGEN {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
+    */
 }
 
 /*

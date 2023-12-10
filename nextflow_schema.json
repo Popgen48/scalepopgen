@@ -5,15 +5,83 @@
     "description": "scalepopgen is a fully automated nextflow-based pipeline that takes vcf files or plink generated bed files as input and employ a variety of open-source tools to carry out comprehensive population genomic analyses. ",
     "type": "object",
     "definitions": {
+        "filtering_options": {
+            "title": "filtering options",
+            "type": "object",
+            "description": "Parameters used to filter SNPs and samples from vcf or plink-bed files.",
+            "default": "",
+            "fa_icon": "fas fa-filter",
+            "properties": {
+                "rem_indi": {
+                    "type": "string",
+                    "description": "Path to the file containing the list of custom individuals to be removed from all analyses. This file consists of two columns, first column as corresponding population id and second column as individual id."
+                },
+                "mind": {
+                    "type": "number",
+                    "description": "samples with missing genotypes greater than this will be removed. Setting this to 0 will disable this parameter",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "king_cutoff": {
+                    "type": "number",
+                    "description": "King relationship coefficient value above which the pairs of individuals are considered to be related and based on these pairwise values, plink2 will output the unrelated samples. Setting this to 0 will skip this parameter",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "apply_indi_filters": {
+                    "type": "boolean",
+                    "description": "Whether or not to perform sample filtering. Note that setting this to false overrides all parameters associated with sample filtering. In other words, sample filtering will not be carried out irrespective of arguments set for --king_cutoff, --rem_indi or --mind."
+                },
+                "rem_snps": {
+                    "type": "string",
+                    "description": "path to the file containing SNP ids to be removed in case of plink-bed files. In case of vcf file, this file should contain two columns: first column as chromsome_id and second column as positions to be removed",
+                    "pattern": "^\\S+\\.map$",
+                    "format": "file-path"
+                },
+                "apply_snp_filters": {
+                    "type": "boolean",
+                    "description": "setting this to false overrides all other sites-filtering parameters, i.e. sites-filtering will not be carried out irrespective of any parameters set for --remove_snps,  --maf, --min_meanDP, --max_meanDP, --hwe, --max_missing and --minQ. Note that, depending on the input files, these parameters may or may not be applied. For example, depth-related information and SNP quality information are not available (of course) for plink bed files and therefore, these parameters will be ignored in that case. However, parameters like max_missing, hwe and maf are applied to vcf as well as to plink-bed files."
+                },
+                "maf": {
+                    "type": "number",
+                    "default": -9,
+                    "description": "sites with minor allele frequencies less than this will be filtered, if set to any value < 0, this filter will be ignored"
+                },
+                "min_meanDP": {
+                    "type": "number",
+                    "default": -9,
+                    "description": "sites with average depth (across the samples) less than this will be filtered out, set to any value < 0, this filter will be ignored"
+                },
+                "max_meanDP": {
+                    "type": "number",
+                    "default": -9,
+                    "description": "sites with average depth (across the samples) greater than this will be filtered out, set to any value < 0, this filter will be ignored."
+                },
+                "hwe": {
+                    "type": "number",
+                    "default": -9,
+                    "description": "sites with p-value (hwe) less than this will be filtered out, set to any value < 0, this filter will be ignored."
+                },
+                "max_missing": {
+                    "type": "number",
+                    "default": -9,
+                    "description": "sites with genotypes missing more than this proportion of samples will be filtered out, set to any value < 0, this filter will be ignored"
+                },
+                "minQ": {
+                    "type": "integer",
+                    "default": -9,
+                    "description": "sites with SNP quality less than this will be filtered out, set to any value < 0, this filter will be ignored"
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "input",
-                "outdir"
-            ],
+            "required": ["input", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -42,24 +110,34 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
-                }
-            }
-        },
-        "reference_genome_options": {
-            "title": "Reference genome options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
-            "properties": {
-                "fasta": {
+                },
+                "sample_map": {
                     "type": "string",
+                    "description": "Path to the sample map file (for example, see: ./test_files/sample.map), format: first column as sample id and second column as population id. This is a REQUIRED argument only if the input is \".csv\". Note that this file must end with the suffix \".map\".",
+                    "pattern": "^\\S+\\.map$",
                     "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "color_map": {
+                    "type": "string",
+                    "description": "Path to the file containing population name as first column and color in hex codes as second column (for example, see:./test_files/pop_color.txt\"). If not provided, random colors will be chosen to represent each population, and this pop-color combination will be kept consistent across the plotting of the results of various analyses.",
+                    "pattern": "^\\S+\\.map$",
+                    "format": "file-path",
+                    "fa_icon": "fas fa-file-alt"
+                },
+                "outprefix": {
+                    "type": "string",
+                    "description": "Prefix to be applied to all the outgroups produced by the workflow",
+                    "default": "scalepopgen"
+                },
+                "allow_extra_chrom": {
+                    "type": "boolean",
+                    "description": "set this argument to \"true\" if the chromosome id contains string"
+                },
+                "max_chrom": {
+                    "type": "number",
+                    "description": "maximum chromosomes to be considered for the analyses. Note that the workflow only consider the autosomes.",
+                    "default": 29
                 }
             }
         },
@@ -144,14 +222,7 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": [
-                        "symlink",
-                        "rellink",
-                        "link",
-                        "copy",
-                        "copyNoFollow",
-                        "move"
-                    ],
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -240,10 +311,10 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/filtering_options"
         },
         {
-            "$ref": "#/definitions/reference_genome_options"
+            "$ref": "#/definitions/input_output_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
