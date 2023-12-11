@@ -30,6 +30,11 @@
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
+                    "tabix/bgziptabix": {
+                        "branch": "master",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "installed_by": ["modules"]
+                    },
                     "vcftools": {
                         "branch": "master",
                         "git_sha": "485558b40040fc3ace093d9084210125d8ba4c97",

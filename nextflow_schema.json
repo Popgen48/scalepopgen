@@ -73,6 +73,10 @@
                     "type": "integer",
                     "default": -9,
                     "description": "sites with SNP quality less than this will be filtered out, set to any value < 0, this filter will be ignored"
+                },
+                "indiv_summary": {
+                    "type": "boolean",
+                    "description": "calculate sample-based summary statistics from vcf files; calculated only after applying individual- and site-based filtering."
                 }
             }
         },

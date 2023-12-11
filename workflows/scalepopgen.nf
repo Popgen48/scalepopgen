@@ -35,7 +35,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { INPUT_CHECK          } from '../subworkflows/local/input_check'
+include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_report'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -54,6 +55,7 @@ include { PREPARE_NEW_MAP             } from '../modules/local/prepare_new_map/m
 include { VCFTOOLS_REMOVE             } from '../modules/local/vcftools/remove/main'
 include { VCFTOOLS_FILTER_SITES       } from '../modules/local/vcftools/filter_sites/main'
 include { FILTER_SNPS                 } from '../modules/local/plink2/filter_snps/main'
+include { TABIX_BGZIPTABIX            } from '../modules/nf-core/tabix/bgziptabix/main'
 include { PLINK_VCF                   } from '../modules/nf-core/plink/vcf/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { ADMIXTURE                   } from '../modules/nf-core/admixture/main'
@@ -199,7 +201,7 @@ workflow SCALEPOPGEN {
     }
 
     else{
-        if( params.apply_indi_filters){
+        if(params.apply_indi_filters){
             //
             //MODULE: FILTER_SAMPLES
             //
@@ -212,7 +214,7 @@ workflow SCALEPOPGEN {
         else{
                 n0_meta_bed = INPUT_CHECK.out.variant
         }
-        if ( params.apply_snp_filters ){
+        if (params.apply_snp_filters ){
             //
             //MODULE: FILTER_SNPS
             //
@@ -220,13 +222,17 @@ workflow SCALEPOPGEN {
                 n0_meta_bed
             )
             n1_meta_bed = FILTER_SNPS.out.n1_meta_bed
-            n1_meta_bed.view()
         }
         else{
             n1_meta_bed = n0_meta_bed
-            n1_meta_bed.view()
         }
 
+    }
+    if (params.indiv_summary){
+            PREPARE_INDIV_REPORT(
+                is_vcf ? n1_meta_vcf_idx_map : n1_meta_bed,
+                is_vcf
+            )
     }
     
     /*
