@@ -8,6 +8,7 @@ process INDIV_SUMMARY_PLINK{
 
     input:
         path(summaryfiles)
+        val(is_vcf)
 
     output:
         path("genomewide_indiv_report.tsv"), emit: genomewidesummaryplink
@@ -17,7 +18,7 @@ process INDIV_SUMMARY_PLINK{
 
         """
         
-        python3 ${baseDir}/bin/combine_indiv_reports.py ${summaryfiles}
+        python3 ${baseDir}/bin/combine_indiv_reports.py ${is_vcf} ${summaryfiles}
         
         
         """ 

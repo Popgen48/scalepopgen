@@ -19,7 +19,8 @@ workflow PREPARE_INDIV_REPORT{
         //MODULE: INDIV_SUMMARY_PLINK
         //
         INDIV_SUMMARY_PLINK(
-            PLINK2_SAMPLE_COUNTS.out.samplesummary.collect()
+            PLINK2_SAMPLE_COUNTS.out.samplesummary.collect(),
+            is_vcf
         )
         if (is_vcf){
             //

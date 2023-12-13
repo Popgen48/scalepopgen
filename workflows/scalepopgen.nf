@@ -37,6 +37,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { INPUT_CHECK          } from '../subworkflows/local/input_check'
 include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_report'
+include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_genetic_structure'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,7 +48,6 @@ include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_repor
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { VCFTOOLS                    } from '../modules/nf-core/vcftools/main'
 include { VCFTOOLS_CONCAT             } from '../modules/local/vcftools/concat/main'
 include { VCFTOOLS_KEEP               } from '../modules/local/vcftools/keep/main'
 include { FILTER_SAMPLES              } from '../modules/local/plink2/filter_samples/main'
@@ -55,8 +55,11 @@ include { PREPARE_NEW_MAP             } from '../modules/local/prepare_new_map/m
 include { VCFTOOLS_REMOVE             } from '../modules/local/vcftools/remove/main'
 include { VCFTOOLS_FILTER_SITES       } from '../modules/local/vcftools/filter_sites/main'
 include { FILTER_SNPS                 } from '../modules/local/plink2/filter_snps/main'
+include { PLINK2_VCF                  } from '../modules/local/plink2/vcf/main'
+include { PLINK2_MERGE_BED            } from '../modules/local/plink2/merge_bed/main'
+
+
 include { TABIX_BGZIPTABIX            } from '../modules/nf-core/tabix/bgziptabix/main'
-include { PLINK_VCF                   } from '../modules/nf-core/plink/vcf/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { ADMIXTURE                   } from '../modules/nf-core/admixture/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
@@ -232,6 +235,38 @@ workflow SCALEPOPGEN {
             PREPARE_INDIV_REPORT(
                 is_vcf ? n1_meta_vcf_idx_map : n1_meta_bed,
                 is_vcf
+            )
+    }
+
+    if (params.genetic_structure){
+            if(is_vcf){
+                //
+                //MODULE: PLINK2_VCF
+                //
+                PLINK2_VCF(
+                    n1_meta_vcf_idx_map.map{meta, vcf, idx, map->tuple(meta,vcf)}
+                )
+                //PLINK2_VCF.out.bed.view()
+                
+                //
+                //MODULE: PLINK2_MERGE_BED
+                //
+                PLINK2_MERGE_BED(
+                    PLINK2_VCF.out.bed.collect(),
+                    n1_meta_vcf_idx_map.map{meta, vcf, idx, map->map}.unique()
+                )
+                n2_meta_bed = PLINK2_MERGE_BED.out.bed
+                }
+            else{
+                n2_meta_bed = n1_meta_bed
+            }
+            //
+            // SUBWORKFLOW : EXPLORE_GENETIC_STRUCTURE
+            //
+            EXPLORE_GENETIC_STRUCTURE(
+                n2_meta_bed,
+                GENERATE_COLORS.out.color
+                    
             )
     }
     

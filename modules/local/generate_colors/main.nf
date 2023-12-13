@@ -9,7 +9,7 @@ process GENERATE_COLORS{
         path(f_pop_color)
 
     output:
-        path ("pop_sc_color.map"), emit: m_pop_sc_colr
+        path ("pop_sc_color.map"), emit: color
     
     script:
         

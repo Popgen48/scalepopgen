@@ -2,10 +2,10 @@ process PLINK2_SAMPLE_COUNTS{
 
     tag { "calculating_chromosomewise_summary_${chrom}" }
     label "process_single"
-    conda "bioconda::plink2=2.00a2.3"
+    conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/plink2:2.00a2.3--h712d239_1' :
-        'biocontainers/plink2:2.00a2.3--h712d239_1' }"
+        'https://depot.galaxyproject.org/singularity/plink2:2.00a3.7--h9f5acd7_2' :
+        'biocontainers/plink2:2.00a3.7--h9f5acd7_3' }"
 
     publishDir("${params.outdir}/summary_stats/samples/", mode:"copy")
 

@@ -25,19 +25,9 @@
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     },
-                    "plink/vcf": {
-                        "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
-                    },
                     "tabix/bgziptabix": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
-                    },
-                    "vcftools": {
-                        "branch": "master",
-                        "git_sha": "485558b40040fc3ace093d9084210125d8ba4c97",
                         "installed_by": ["modules"]
                     }
                 }

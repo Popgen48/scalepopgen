@@ -5,6 +5,44 @@
     "description": "scalepopgen is a fully automated nextflow-based pipeline that takes vcf files or plink generated bed files as input and employ a variety of open-source tools to carry out comprehensive population genomic analyses. ",
     "type": "object",
     "definitions": {
+        "genetic_structure_options": {
+            "title": "genetic structure options",
+            "type": "object",
+            "description": "Parameters used to apply genetic structure analysis",
+            "default": "",
+            "properties": {
+                "genetic_structure": {
+                    "type": "boolean"
+                },
+                "rem_indi_structure": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.map$"
+                },
+                "ld_filt": {
+                    "type": "boolean"
+                },
+                "ld_window_size": {
+                    "type": "string",
+                    "default": "50"
+                },
+                "ld_step_size": {
+                    "type": "string",
+                    "default": "10"
+                },
+                "r2_threshold": {
+                    "type": "string",
+                    "default": "0.1"
+                },
+                "smartpca": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "smartpca_param": {
+                    "type": "string"
+                }
+            }
+        },
         "filtering_options": {
             "title": "filtering options",
             "type": "object",
@@ -314,6 +352,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/genetic_structure_options"
+        },
         {
             "$ref": "#/definitions/filtering_options"
         },

@@ -3,7 +3,8 @@ import sys
 # this function combine the text file and generate the reports output by plink --sample-counts
 
 
-def combine_indiv_reports(plink_sample_summary_out):
+def combine_indiv_reports(is_vcf, plink_sample_summary_out):
+    is_vcf = False if is_vcf == "false" else True
     sample_stat_dict = {}
     dest = open("genomewide_indiv_report.tsv", "w")
     dest_header = [
@@ -23,13 +24,14 @@ def combine_indiv_reports(plink_sample_summary_out):
                 if header == 0:
                     header += 1
                 else:
-                    stat_list = list(map(int, line[1:]))
+                    stat_list = list(map(int, line[1:])) if bool(is_vcf) else list(map(int, line[2:]))
                     sample_chrmwise_snp = sum(stat_list[:3])
-                    if line[0] not in sample_stat_dict:
-                        sample_stat_dict[line[0]] = [0, 0, 0, 0, 0, 0]
+                    sample = line[0] if bool(is_vcf) else line[1]
+                    if sample not in sample_stat_dict:
+                        sample_stat_dict[sample] = [0, 0, 0, 0, 0, 0]
                     for i in range(5):
-                        sample_stat_dict[line[0]][i] += stat_list[i]
-                    sample_stat_dict[line[0]][5] += sample_chrmwise_snp
+                        sample_stat_dict[sample][i] += stat_list[i]
+                    sample_stat_dict[sample][5] += sample_chrmwise_snp
     dest.write("\t".join(dest_header) + "\n")
     for sample in sample_stat_dict:
         dest.write(
@@ -39,4 +41,4 @@ def combine_indiv_reports(plink_sample_summary_out):
 
 
 if __name__ == "__main__":
-    combine_indiv_reports(sys.argv[1:])
+    combine_indiv_reports(sys.argv[1],sys.argv[2:])

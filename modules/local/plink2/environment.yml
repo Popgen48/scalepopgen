@@ -1,7 +1,7 @@
-name: plink_vcf
+name: plink2_vcf
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - bioconda::plink=1.90b6.21
+  - plink2==2.00a3.7
