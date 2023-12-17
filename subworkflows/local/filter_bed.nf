@@ -4,19 +4,24 @@ include { FILTER_SNPS    } from '../../modules/local/plink2/filter_snps/main'
 workflow FILTER_BED{
     take:
         bed
+        is_vcf
     main:
         if(params.apply_indi_filters){
             //
             //MODULE: FILTER_SAMPLES
             //
+            if(params.rem_indi){
+                rmi = Channel.fromPath(params.rem_indi, checkIfExists: true)
+            }
             FILTER_SAMPLES(
-                INPUT_CHECK.out.variant,
-                is_vcf
+                bed,
+                is_vcf,
+                params.rem_indi ? rmi : []
             )
-            n0_meta_bed = FILTER_SAMPLES.out.n1_meta_bed
+            n0_meta_bed = FILTER_SAMPLES.out.bed
         }
         else{
-                n0_meta_bed = INPUT_CHECK.out.variant
+                n0_meta_bed = bed
         }
         if (params.apply_snp_filters ){
             //

@@ -10,7 +10,7 @@ process PLINK2_EXPORT_PED{
     tuple val(meta), path(bed)
 
     output:
-    tuple val(meta), path("*.{ped,map}")    , emit: ped
+    tuple val(meta), path("*.{map,ped}")    , emit: ped
     path "versions.yml"                , emit: versions
 
     when:

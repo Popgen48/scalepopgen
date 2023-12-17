@@ -7,7 +7,7 @@ process EIGENSOFT_CONVERTF{
         'biocontainers/eigensoft:8.0.0--h2469040_1' }"
 
     input:
-    tuple val(meta), path(ped)
+    tuple val(meta), path(map), path(ped)
     path(parameter_file)
 
     output:
@@ -23,7 +23,6 @@ process EIGENSOFT_CONVERTF{
     def VERSION = '8.0.0' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
     """
-    awk '\$6=\$1' ${prefix}.ped > ${prefix}.1.ped
 
     convertf -p ${parameter_file}
 

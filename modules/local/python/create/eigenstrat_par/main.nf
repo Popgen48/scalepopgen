@@ -1,4 +1,4 @@
-process CREATE_EIGENSTRAT_PAR{
+process PYTHON_CREATE_EIGENSTRAT_PAR{
 
     tag { "create smartpca par" }
     label "process_single"

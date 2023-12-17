@@ -38,8 +38,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { INPUT_CHECK          } from '../subworkflows/local/input_check'
 include { FILTER_VCF           } from '../subworkflows/local/filter_vcf'
 include { FILTER_BED           } from '../subworkflows/local/filter_bed'
-//include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_report'
-//include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_genetic_structure'
+include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_report'
+include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_genetic_structure'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,7 +52,7 @@ include { FILTER_BED           } from '../subworkflows/local/filter_bed'
 //
 include { PLINK2_VCF                    } from '../modules/local/plink2/vcf/main'
 include { PLINK2_MERGE_BED              } from '../modules/local/plink2/merge_bed/main'
-include { GENERATE_COLORS               } from '../modules/local/generate_colors/main'
+include { GAWK_GENERATE_COLORS          } from '../modules/local/gawk/generate_colors/main'
 include { TABIX_BGZIPTABIX              } from '../modules/nf-core/tabix/bgziptabix/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
 include { ADMIXTURE                     } from '../modules/nf-core/admixture/main'
@@ -110,7 +110,7 @@ workflow SCALEPOPGEN {
     //
     // MODULE: GENERATE_COLORS --> if input is vcf, take sample map file else take fam file of plink bed
     //
-    GENERATE_COLORS(
+    GAWK_GENERATE_COLORS(
         is_vcf ? map_f : INPUT_CHECK.out.variant.map{chrom,bed->bed[2]},
         params.color_map ? Channel.fromPath(params.color_map):[]
     )
@@ -131,7 +131,6 @@ workflow SCALEPOPGEN {
             n1_meta_bed = INPUT_CHECK.out.variant
         }
     }
-    /*
     if (params.indiv_summary){
             PREPARE_INDIV_REPORT(
                 is_vcf ? n1_meta_vcf_idx_map : n1_meta_bed,
@@ -165,11 +164,9 @@ workflow SCALEPOPGEN {
             //
             EXPLORE_GENETIC_STRUCTURE(
                 n2_meta_bed,
-                GENERATE_COLORS.out.color
-                    
+                GAWK_GENERATE_COLORS.out.color
             )
     }
-    */
     /*
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")

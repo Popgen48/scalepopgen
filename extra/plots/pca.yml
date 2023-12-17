@@ -1,0 +1,10 @@
+---
+ title: "results of smartpca"
+ plot_width: 800
+ plot_height: 800
+ pc_x_to_plot: 1
+ pc_y_to_plot: 2
+ fill_alpha: 0.2
+ line_alpha: 1.0
+ marker_size : 8
+ show_sample_label: False

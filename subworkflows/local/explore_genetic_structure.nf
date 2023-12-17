@@ -2,14 +2,18 @@
 *subworkflow to run PCA and ADMIXTURE analysis
 */
 
-include { PLINK2_REMOVE_CUSTOM_INDI } from '../../modules/local/plink2/remove_custom_indi/main'
-include { PLINK2_INDEP_PAIRWISE     } from '../../modules/local/plink2/indep-pairwise/main'
-include { PLINK2_EXPORT_PED         } from '../../modules/local/plink2/export_ped/main'
-include { CREATE_EIGENSTRAT_PAR     } from '../../modules/local/create/eigenstrat_par/main'
-include { EIGENSOFT_CONVERTF        } from '../../modules/local/eigensoft/convertf/main'
-include { CREATE_SMARTPCA_PAR       } from '../../modules/local/create/smartpca_par/main'
-include { EIGENSOFT_SMARTPCA        } from '../../modules/local/eigensoft/smartpca/main'
-include { PLOT_PCA                  } from '../../modules/local/plot/pca/main
+include { PLINK2_REMOVE_CUSTOM_INDI      } from '../../modules/local/plink2/remove_custom_indi/main'
+include { PLINK2_INDEP_PAIRWISE          } from '../../modules/local/plink2/indep-pairwise/main'
+include { PLINK2_EXPORT_PED              } from '../../modules/local/plink2/export_ped/main'
+include { PYTHON_CREATE_EIGENSTRAT_PAR   } from '../../modules/local/python/create/eigenstrat_par/main'
+include { GAWK_MODIFY_PHENO_COL_PED      } from '../../modules/local/gawk/modify_pheno_col_ped/main'
+include { EIGENSOFT_CONVERTF             } from '../../modules/local/eigensoft/convertf/main'
+include { PYTHON_CREATE_SMARTPCA_PAR     } from '../../modules/local/python/create/smartpca_par/main'
+include { EIGENSOFT_SMARTPCA             } from '../../modules/local/eigensoft/smartpca/main'
+include { PYTHON_PLOT_PCA                } from '../../modules/local/python/plot/pca/main'
+include { GAWK_UPDATE_CHROM_IDS          } from '../../modules/local/gawk/update_chrom_ids/main'
+include { PLINK_MAKE_BED                } from '../../modules/local/plink/make_bed/main'
+include { ADMIXTURE                      } from '../../modules/nf-core/admixture/main'
 
 
 /*
@@ -70,20 +74,26 @@ workflow EXPLORE_GENETIC_STRUCTURE{
                 //
                 //MODULE: CREATE_EIGENSTRAAT
                 //
-                CREATE_EIGENSTRAT_PAR(
+                PYTHON_CREATE_EIGENSTRAT_PAR(
                     PLINK2_EXPORT_PED.out.ped.map{meta,ped->meta}
+                )
+                //
+                //MODULE: GAWK_MODIFY_PHENO_COL_PED
+                //
+                GAWK_MODIFY_PHENO_COL_PED(
+                    PLINK2_EXPORT_PED.out.ped
                 )
                 //
                 //MODULE: EIGENSOFT_CONVERTF
                 //
                 EIGENSOFT_CONVERTF(
-                    PLINK2_EXPORT_PED.out.ped,
-                    CREATE_EIGENSTRAT_PAR.out.eigenpar
+                    PLINK2_EXPORT_PED.out.ped.map{meta,pedmap->tuple(meta,pedmap[0])}.combine(GAWK_MODIFY_PHENO_COL_PED.out.ped, by:0),
+                    PYTHON_CREATE_EIGENSTRAT_PAR.out.eigenpar
                 )
                 //
                 //MODULE: CREATE_SMARTPCA_PAR
                 //
-                CREATE_SMARTPCA_PAR(
+                PYTHON_CREATE_SMARTPCA_PAR(
                     PLINK2_EXPORT_PED.out.ped.map{meta,ped->meta}
                 )
                 //
@@ -91,18 +101,55 @@ workflow EXPLORE_GENETIC_STRUCTURE{
                 //
                 EIGENSOFT_SMARTPCA(
                     EIGENSOFT_CONVERTF.out.eigenstratgeno,
-                    CREATE_SMARTPCA_PAR.out.smartpcapar
+                    PYTHON_CREATE_SMARTPCA_PAR.out.smartpcapar
                 )
                 //
                 //MODULE: PLOT_PCA
                 //
-                PLOT_PCA(
+                pca_plot_yml = Channel.fromPath(params.pca_plot_yml, checkIfExists: true)
+                marker_map = params.marker_map ? Channel.fromPath(params.marker_map, checkIfExists: true) : []
+
+                PYTHON_PLOT_PCA(
                     EIGENSOFT_SMARTPCA.out.evec,
                     EIGENSOFT_SMARTPCA.out.eval,
-                    m_pop_sc_color
+                    m_pop_sc_color,
+                    pca_plot_yml,
+                    marker_map
                 )
-                
-
+        }
+        if(params.admixture){
+            if(params.allow_extra_chrom){
+                if(!params.chrom_map){
+                    //
+                    //MODULE: GAWK_UPDATE_CHROM_IDS
+                    //
+                    GAWK_UPDATE_CHROM_IDS(
+                        n1_bed.map{meta,bed->bed[1]}
+                    )
+                    chrom_map = GAWK_UPDATE_CHROM_IDS.out.map
+                }
+                else{
+                    chrom_map = Channel.fromPath(params.chrom_map, checkIfExists: true)
+                }
+                //
+                //MODULE: PLINK2_MAKE_BED --> with updated chromosome ids
+                //
+                PLINK_MAKE_BED(
+                    n1_bed,
+                    chrom_map
+                )
+                n2_bed = PLINK_MAKE_BED.out.bed
+            }
+            else{
+                n2_bed = n1_bed
+            }
+            //
+            //MODULE: ADMIXTURE
+            //
+            k = Channel.from(params.start_k..params.end_k)
+            ADMIXTURE(
+                n2_bed.map{meta,bed->tuple(meta,bed[0],bed[1],bed[2])}.combine(k)
+            )
         }
         /*
        if( params.allow_extra_chrom){

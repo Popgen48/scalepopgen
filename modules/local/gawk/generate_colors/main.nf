@@ -1,9 +1,11 @@
-process GENERATE_COLORS{
+process GAWK_GENERATE_COLORS{
 
     tag { "generating colors for plotting" }
     label "process_single"
-    conda "${moduleDir}/environment.yml"
-    container "popgen48/alpine3190-gawk:5.3.0"
+    conda "${moduleDir}/../environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
+        'biocontainers/gawk:5.1.0' }"    
     publishDir("${params.outdir}/", mode:"copy")
 
     input:

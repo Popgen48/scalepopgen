@@ -9,13 +9,13 @@ process ADMIXTURE {
         'biocontainers/admixture:1.3.0--0' }"
 
     input:
-    tuple val(meta), path (bed_ped_geno), path(bim_map), path(fam)
-    val K
+    tuple val(meta), path (bed_ped_geno), path(bim_map), path(fam), val (K)
 
 
     output:
     tuple val(meta), path("*.Q")    , emit: ancestry_fractions
     tuple val(meta), path("*.P")    , emit: allele_frequencies
+    path ("${K}.log")               , emit: log
     path "versions.yml"             , emit: versions
 
     when:
@@ -32,6 +32,8 @@ process ADMIXTURE {
         $K \\
         -j$task.cpus \\
         $args
+
+    cp .command.log ${K}.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

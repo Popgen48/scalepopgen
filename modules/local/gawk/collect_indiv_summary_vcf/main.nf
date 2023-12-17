@@ -1,4 +1,4 @@
-process GAWK_INDIV_SUMMARY_VCF{
+process GAWK_COLLECT_INDIV_SUMMARY_VCF{
 
     tag { "combining_indiv_summary" }
     label "process_single"

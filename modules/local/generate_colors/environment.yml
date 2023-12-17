@@ -1,5 +1,0 @@
-name: scalepopgen_gawk
-channels:
-  - conda-forge
-dependencies:
-  - gawk==5.3.0

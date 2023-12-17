@@ -1,4 +1,4 @@
-process CREATE_SMARTPCA_PAR{
+process PYTHON_CREATE_SMARTPCA_PAR{
 
     tag { "create smartpca par" }
     label "process_single"

@@ -1,4 +1,4 @@
-process INDIV_SUMMARY_PLINK{
+process PYTHON_COLLECT_INDIV_SUMMARY_PLINK{
 
     tag { "combining_indiv_summary" }
     label "process_single"

@@ -1,0 +1,3 @@
+chrom,vcf,vcf_idx
+28,/home/maulik/data/Shared/Maulik/projects/scalePopgen/data/open_source/cattle_reheader/chr28_cattle_impute_reheader.vcf.gz,/home/maulik/data/Shared/Maulik/projects/scalePopgen/data/open_source/cattle_reheader/chr28_cattle_impute_reheader.vcf.gz.tbi
+29,/home/maulik/data/Shared/Maulik/projects/scalePopgen/data/open_source/cattle_reheader/chr29_cattle_impute_reheader.vcf.gz,/home/maulik/data/Shared/Maulik/projects/scalePopgen/data/open_source/cattle_reheader/chr29_cattle_impute_reheader.vcf.gz.tbi

@@ -1,8 +1,7 @@
-/*
-include { PLINK2_SAMPLE_COUNTS } from '../../modules/local/plink2/sample_counts/main'
-include { VCFTOOLS_DEPTH       } from '../../modules/local/vcftools/depth/main'
-include { INDIV_SUMMARY_PLINK  } from '../../modules/local/indiv_summary/plink/main'
-include { INDIV_SUMMARY_VCF    } from '../../modules/local/indiv_summary/vcf/main'
+include { PLINK2_SAMPLE_COUNTS                } from '../../modules/local/plink2/sample_counts/main'
+include { VCFTOOLS_DEPTH                      } from '../../modules/local/vcftools/depth/main'
+include { PYTHON_COLLECT_INDIV_SUMMARY_PLINK  } from '../../modules/local/python/collect_indiv_summary_plink/main'
+include { GAWK_COLLECT_INDIV_SUMMARY_VCF      } from '../../modules/local/gawk/collect_indiv_summary_vcf/main'
 
 workflow PREPARE_INDIV_REPORT{
     take:
@@ -19,7 +18,7 @@ workflow PREPARE_INDIV_REPORT{
         //
         //MODULE: INDIV_SUMMARY_PLINK
         //
-        INDIV_SUMMARY_PLINK(
+        PYTHON_COLLECT_INDIV_SUMMARY_PLINK(
             PLINK2_SAMPLE_COUNTS.out.samplesummary.collect(),
             is_vcf
         )
@@ -33,10 +32,9 @@ workflow PREPARE_INDIV_REPORT{
             //
             //MODULE: INDIV_SUMMARY_VCF
             //
-            INDIV_SUMMARY_VCF(
+            GAWK_COLLECT_INDIV_SUMMARY_VCF(
                 VCFTOOLS_DEPTH.out.sampledepthinfo.collect(),
-                INDIV_SUMMARY_PLINK.out.genomewidesummaryplink
+                PYTHON_COLLECT_INDIV_SUMMARY_PLINK.out.genomewidesummaryplink
             )
         }
 }
-*/
