@@ -11,7 +11,8 @@ process EIGENSOFT_SMARTPCA {
     path(parameter_file)
 
     output:
-    tuple val(meta), path("*.{eval,evec}"), emit: evecal
+    tuple val(meta), path("*.evec"), emit: evec
+    tuple val(meta), path("*.eval"), emit: eval
     path "versions.yml"           , emit: versions
 
     when:

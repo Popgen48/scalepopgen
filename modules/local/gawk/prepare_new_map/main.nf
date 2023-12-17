@@ -1,7 +1,11 @@
-process PREPARE_NEW_MAP{
+process GAWK_PREPARE_NEW_MAP{
 
     tag { "preparing_new_map" }
     label "process_single"
+    conda "${moduleDir}/../environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
+        'biocontainers/gawk:5.1.0' }"    
     publishDir("${params.outdir}/", mode:"copy")
 
     input:
@@ -9,7 +13,7 @@ process PREPARE_NEW_MAP{
         path(unrel_id)
 
     output:
-        path("*new_sample_pop.map"), emit: n_map
+        path("*new_sample_pop.map"), emit: txt
         
     
     script:
@@ -30,7 +34,7 @@ process PREPARE_NEW_MAP{
                 
         """
 
-        awk 'NR==FNR{sample_id[\$2];next}!(\$1 in sample_id){print}' ${unrel_id} ${map_f} > ${outprefix}_new_sample_pop.map
+        awk 'NR==FNR{sample_id[\$1];next}!(\$1 in sample_id){print}' ${unrel_id} ${map_f} > ${outprefix}_new_sample_pop.map
 
 
         """        

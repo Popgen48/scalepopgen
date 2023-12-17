@@ -9,6 +9,7 @@ include { CREATE_EIGENSTRAT_PAR     } from '../../modules/local/create/eigenstra
 include { EIGENSOFT_CONVERTF        } from '../../modules/local/eigensoft/convertf/main'
 include { CREATE_SMARTPCA_PAR       } from '../../modules/local/create/smartpca_par/main'
 include { EIGENSOFT_SMARTPCA        } from '../../modules/local/eigensoft/smartpca/main'
+include { PLOT_PCA                  } from '../../modules/local/plot/pca/main
 
 
 /*
@@ -91,6 +92,14 @@ workflow EXPLORE_GENETIC_STRUCTURE{
                 EIGENSOFT_SMARTPCA(
                     EIGENSOFT_CONVERTF.out.eigenstratgeno,
                     CREATE_SMARTPCA_PAR.out.smartpcapar
+                )
+                //
+                //MODULE: PLOT_PCA
+                //
+                PLOT_PCA(
+                    EIGENSOFT_SMARTPCA.out.evec,
+                    EIGENSOFT_SMARTPCA.out.eval,
+                    m_pop_sc_color
                 )
                 
 

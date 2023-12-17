@@ -1,3 +1,4 @@
+/*
 include { PLINK2_SAMPLE_COUNTS } from '../../modules/local/plink2/sample_counts/main'
 include { VCFTOOLS_DEPTH       } from '../../modules/local/vcftools/depth/main'
 include { INDIV_SUMMARY_PLINK  } from '../../modules/local/indiv_summary/plink/main'
@@ -38,3 +39,4 @@ workflow PREPARE_INDIV_REPORT{
             )
         }
 }
+*/

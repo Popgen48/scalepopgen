@@ -12,7 +12,7 @@ process VCFTOOLS_KEEP{
         tuple val(meta), file(f_vcf), file(idx), file(f_map), file(unrel_id)
 
     output:
-        tuple val(meta), file("${chrom}_filt_samples.vcf.gz"), emit:f_meta_vcf
+        tuple val(meta), file("${chrom}_filt_samples.vcf.gz"), emit:vcf
         path("*final_kept_indi_list.txt"), emit:final_keep_list
         path("*.log")
     

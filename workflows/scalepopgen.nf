@@ -36,8 +36,10 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK          } from '../subworkflows/local/input_check'
-include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_report'
-include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_genetic_structure'
+include { FILTER_VCF           } from '../subworkflows/local/filter_vcf'
+include { FILTER_BED           } from '../subworkflows/local/filter_bed'
+//include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_report'
+//include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_genetic_structure'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -48,23 +50,15 @@ include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_geneti
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { VCFTOOLS_CONCAT             } from '../modules/local/vcftools/concat/main'
-include { VCFTOOLS_KEEP               } from '../modules/local/vcftools/keep/main'
-include { FILTER_SAMPLES              } from '../modules/local/plink2/filter_samples/main'
-include { PREPARE_NEW_MAP             } from '../modules/local/prepare_new_map/main'
-include { VCFTOOLS_REMOVE             } from '../modules/local/vcftools/remove/main'
-include { VCFTOOLS_FILTER_SITES       } from '../modules/local/vcftools/filter_sites/main'
-include { FILTER_SNPS                 } from '../modules/local/plink2/filter_snps/main'
-include { PLINK2_VCF                  } from '../modules/local/plink2/vcf/main'
-include { PLINK2_MERGE_BED            } from '../modules/local/plink2/merge_bed/main'
+include { PLINK2_VCF                    } from '../modules/local/plink2/vcf/main'
+include { PLINK2_MERGE_BED              } from '../modules/local/plink2/merge_bed/main'
+include { GENERATE_COLORS               } from '../modules/local/generate_colors/main'
+include { TABIX_BGZIPTABIX              } from '../modules/nf-core/tabix/bgziptabix/main'
+include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
+include { ADMIXTURE                     } from '../modules/nf-core/admixture/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
-
-include { TABIX_BGZIPTABIX            } from '../modules/nf-core/tabix/bgziptabix/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { ADMIXTURE                   } from '../modules/nf-core/admixture/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { GENERATE_COLORS             } from '../modules/local/generate_colors/main'
-
+include { GAWK_EXTRACT_SAMPLEID; GAWK_EXTRACT_SAMPLEID as REMOVE_SAMPLE_LIST } from '../modules/local/gawk/extract_sampleid/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -93,151 +87,57 @@ workflow SCALEPOPGEN {
     }
     if (is_vcf){
         //read sample map file 
-        sampleinfo = Channel.fromPath( params.sample_map )
-        map_f= sampleinfo.map{ sampleinfo -> if(!file(sampleinfo).exists() ){ exit 1, "ERROR: file does not exit -> ${sampleinfo}" }else{sampleinfo}}
+        map_f = Channel.fromPath( params.sample_map, checkIfExists: true )
+
         //combine vcf and map file
         meta_vcf_idx_map = INPUT_CHECK.out.variant.combine(map_f)
+
+        if(params.apply_snp_filters || params.apply_indi_filters){
+
+            //
+            //SUBWORKFLOW: FILTER_VCF
+            //
+            FILTER_VCF(
+                meta_vcf_idx_map,
+                is_vcf
+            )
+            n1_meta_vcf_idx_map = FILTER_VCF.out.n1_meta_vcf_idx_map
+        }
+        else{
+            n1_meta_vcf_idx_map = meta_vcf_idx_map
+        }
     }
     //
-    // MODULE: GENERATE_COLORS
+    // MODULE: GENERATE_COLORS --> if input is vcf, take sample map file else take fam file of plink bed
     //
     GENERATE_COLORS(
-        is_vcf ? sampleinfo : INPUT_CHECK.out.variant.map{chrom,bed->bed[2]},
+        is_vcf ? map_f : INPUT_CHECK.out.variant.map{chrom,bed->bed[2]},
         params.color_map ? Channel.fromPath(params.color_map):[]
     )
 
-    if (is_vcf){
 
-        if( params.apply_indi_filters ){
-        
-            o_map = meta_vcf_idx_map.map{meta, vcf, idx, map_f -> map_f}.unique()
-
-            /* --> king_cutoff and missingness filter should be based on the entire genome therefore vcf file should be concatenated first and then 
-                   supply to plink. From plink module, the list of individuals to be kept is piped out and supply to keep indi module. This module will
-                   then extract these sets of individuals from each chromosome file separately. Note that if custom individuals to be removed are also
-                    supplied then this will be considered in extract_unrelated_sample_list module as well. 
-            */      
-    
-            if( params.king_cutoff > 0 || params.mind > 0 ){
-
-
-                vcflist = meta_vcf_idx_map.map{meta, vcf, idx, map_f -> vcf}.collect()
-
-                //
-                // MODULE: CONCAT_VCF
-                //
-
-                VCFTOOLS_CONCAT(
-                    vcflist,
-                    Channel.value("filtering")
-                )
-
-                //
-                // MODULE: FILTER_SAMPLES
-                //
-                FILTER_SAMPLES( 
-                    VCFTOOLS_CONCAT.out.concatenatedvcf,
-                    is_vcf
-                )
-
-                //
-                // MODULE: VCFTOOLS_KEEP
-                //
-                VCFTOOLS_KEEP(
-                    meta_vcf_idx_map.combine(FILTER_SAMPLES.out.keep_indi_list)
-                )
-                
-                //
-                // MODULE: PREPARE_NEW_MAP
-                //
-
-                PREPARE_NEW_MAP(
-                    o_map,
-                    FILTER_SAMPLES.out.keep_indi_list
-                )
-            
-                n0_meta_vcf_idx_map = VCFTOOLS_KEEP.out.f_meta_vcf.combine(PREPARE_NEW_MAP.out.n_map).map{meta, vcf, n_map->tuple(meta, vcf, [], n_map)}
-            }
-
-            /*
-                if only the individuals to be removed are supplied then there is no need to concat the file. 
-            
-            */
-            else{
-    
-                rmindilist = Channel.fromPath( params.rem_indi )
-                ril = rmindilist.map{ rmindilist -> if(!file(rmindilist).exists() ){ exit 1,"ERROR: file does not exit -> ${rmindilist}" }else{rmindilist} }
-                meta_vcf = meta_vcf_idx_map.map{meta, vcf, idx, map -> tuple(meta,vcf)}
-                //
-                // MODULE: VCFTOOLS_REMOVE
-                //
-                VCFTOOLS_REMOVE( 
-                    meta_vcf.combine(ril)
-                )
-                //
-                // MODULE: PREPARE_NEW_MAP
-                //
-                PREPARE_NEW_MAP(
-                    o_map,
-                    ril
-                )
-                n0_meta_vcf_idx_map = VCFTOOLS_REMOVE.out.f_meta_vcf.combine(PREPARE_NEW_MAP.out.n_map).map{meta, vcf, n_map->tuple(meta, vcf, [], n_map)}
-            }
-        }
-        else{
-            n0_meta_vcf_idx_map = meta_vcf_idx_map
-        }
-        if(params.apply_snp_filters){
-                n_map = n0_meta_vcf_idx_map.map{meta, vcf, idx, map_f -> map_f}.unique()
-                meta_vcf = n0_meta_vcf_idx_map.map{meta, vcf, idx, map_f -> tuple(meta, vcf)}    
-                //
-                // MODULE: FILTER_SITES
-                //
-                VCFTOOLS_FILTER_SITES(
-                    meta_vcf
-                )
-                n1_meta_vcf_idx_map = VCFTOOLS_FILTER_SITES.out.s_meta_vcf.combine(n_map).map{meta, vcf, n_map -> tuple(meta, vcf, [], n_map)}
-        }
-        else{
-            n1_meta_vcf_idx_map = n0_meta_vcf_idx_map
-        }
-    }
-
-    else{
-        if(params.apply_indi_filters){
-            //
-            //MODULE: FILTER_SAMPLES
-            //
-            FILTER_SAMPLES(
+    if(!is_vcf){
+        if(params.apply_snp_filters || params.apply_indi_filters){
+        //
+        // SUBWORKFLOW: FILTER_BED
+        //
+            FILTER_BED(
                 INPUT_CHECK.out.variant,
                 is_vcf
             )
-            n0_meta_bed = FILTER_SAMPLES.out.n1_meta_bed
+            n1_meta_bed = FILTER_BED.out.n1_meta_bed
         }
         else{
-                n0_meta_bed = INPUT_CHECK.out.variant
+            n1_meta_bed = INPUT_CHECK.out.variant
         }
-        if (params.apply_snp_filters ){
-            //
-            //MODULE: FILTER_SNPS
-            //
-            FILTER_SNPS(
-                n0_meta_bed
-            )
-            n1_meta_bed = FILTER_SNPS.out.n1_meta_bed
-        }
-        else{
-            n1_meta_bed = n0_meta_bed
-        }
-
     }
+    /*
     if (params.indiv_summary){
             PREPARE_INDIV_REPORT(
                 is_vcf ? n1_meta_vcf_idx_map : n1_meta_bed,
                 is_vcf
             )
     }
-
     if (params.genetic_structure){
             if(is_vcf){
                 //
@@ -269,7 +169,7 @@ workflow SCALEPOPGEN {
                     
             )
     }
-    
+    */
     /*
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")

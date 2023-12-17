@@ -9,10 +9,10 @@ process VCFTOOLS_FILTER_SITES{
     publishDir("${params.outdir}/vcftools/sites_filtering/", mode:"copy")
 
     input:
-        tuple val(meta), file(f_vcf)
+        tuple val(meta), path(f_vcf)
 
     output:
-        tuple val(meta), path ("*filt_sites.vcf.gz"), emit: s_meta_vcf
+        tuple val(meta), path("*filt_sites.vcf.gz"), emit: vcf
         path("*.log"), emit: log
     
     script:

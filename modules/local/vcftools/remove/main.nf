@@ -9,7 +9,7 @@ process VCFTOOLS_REMOVE{
     publishDir("${params.outdir}/vcftools/indi_filtered/", mode:"copy")
 
     input:
-        tuple val(meta), path(f_vcf), path(rem_indi)
+        tuple val(meta), path(f_vcf), path(idx), path(rem_indi)
 
     output:
         tuple val(meta), path("${chrom}_filt_samples.vcf.gz"), emit:f_meta_vcf
@@ -19,9 +19,8 @@ process VCFTOOLS_REMOVE{
             chrom = meta.id
                 
             """
-            awk '{print \$2}' ${rem_indi} > remove_indi_list.txt
             
-            vcftools --gzvcf ${f_vcf} --remove remove_indi_list.txt --recode --stdout |sed "s/\\s\\.:/\t.\\/.:/g"|gzip -c > ${chrom}_filt_samples.vcf.gz
+            vcftools --gzvcf ${f_vcf} --remove ${rem_indi} --recode --stdout |sed "s/\\s\\.:/\t.\\/.:/g"|gzip -c > ${chrom}_filt_samples.vcf.gz
 
             cp .command.log ${chrom}_filt_samples.log
 

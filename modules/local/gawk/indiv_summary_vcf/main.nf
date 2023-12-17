@@ -1,7 +1,11 @@
-process INDIV_SUMMARY_VCF{
+process GAWK_INDIV_SUMMARY_VCF{
 
     tag { "combining_indiv_summary" }
     label "process_single"
+    conda "${moduleDir}/../environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
+        'biocontainers/gawk:5.1.0' }"    
     publishDir("${params.outdir}/summary_stats/indiv_stats/", mode:"copy")
 
     input:

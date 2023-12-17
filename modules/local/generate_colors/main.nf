@@ -2,6 +2,8 @@ process GENERATE_COLORS{
 
     tag { "generating colors for plotting" }
     label "process_single"
+    conda "${moduleDir}/environment.yml"
+    container "popgen48/alpine3190-gawk:5.3.0"
     publishDir("${params.outdir}/", mode:"copy")
 
     input:
