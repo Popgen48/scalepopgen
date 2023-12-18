@@ -31,9 +31,7 @@ process ADMIXTURE {
         $bed_ped_geno \\
         $K \\
         -j$task.cpus \\
-        $args
-
-    cp .command.log ${K}.log
+        $args >& ${K}.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,0 +1,10 @@
+width: 1200
+height: 800
+bar_width: 0.1
+sample_label_orientation: 90
+pop_label_orientation: 90
+space_pop_group: 0.1
+legend_font_size: 12px
+num_legend_per_col: 30
+label_font_size: 12px
+fil_alpha: 0.7
