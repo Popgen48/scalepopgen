@@ -1,7 +1,7 @@
 process PYTHON_PLOT_PCA{
 
     tag { "plot_interactive_pca" }
-    label "oneCpu"
+    label "process_single"
     conda "${moduleDir}/environment.yml"
     container "popgen48/plot_pca:1.0.0"
     publishDir("${params.outdir}/genetic_structure/interactive_plots/pca/", mode:"copy")

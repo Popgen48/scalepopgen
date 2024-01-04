@@ -1,6 +1,6 @@
 process PLINK2_INDEP_PAIRWISE{
 
-    tag { "ld_filtering_${new_prefix}" }
+    tag { "ld_filtering_${prefix}" }
     label "oneCpu"
     conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

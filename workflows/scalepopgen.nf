@@ -39,7 +39,10 @@ include { INPUT_CHECK          } from '../subworkflows/local/input_check'
 include { FILTER_VCF           } from '../subworkflows/local/filter_vcf'
 include { FILTER_BED           } from '../subworkflows/local/filter_bed'
 include { PREPARE_INDIV_REPORT } from '../subworkflows/local/prepare_indiv_report'
-include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_genetic_structure'
+include { RUN_PCA              } from '../subworkflows/local/run_pca'
+include { RUN_ADMIXTURE        } from '../subworkflows/local/run_admixture'
+include { CALC_FST             } from '../subworkflows/local/calc_fst'
+include { CALC_1_MIN_IBS_DIST  } from '../subworkflows/local/calc_1_min_ibs_dist'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -52,6 +55,8 @@ include { EXPLORE_GENETIC_STRUCTURE } from '../subworkflows/local/explore_geneti
 //
 include { PLINK2_VCF                    } from '../modules/local/plink2/vcf/main'
 include { PLINK2_MERGE_BED              } from '../modules/local/plink2/merge_bed/main'
+include { PLINK2_REMOVE_CUSTOM_INDI     } from '../modules/local/plink2/remove_custom_indi/main'
+include { PLINK2_INDEP_PAIRWISE         } from '../modules/local/plink2/indep-pairwise/main'
 include { GAWK_GENERATE_COLORS          } from '../modules/local/gawk/generate_colors/main'
 include { TABIX_BGZIPTABIX              } from '../modules/nf-core/tabix/bgziptabix/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
@@ -159,13 +164,64 @@ workflow SCALEPOPGEN {
             else{
                 n2_meta_bed = n1_meta_bed
             }
-            //
-            // SUBWORKFLOW : EXPLORE_GENETIC_STRUCTURE
-            //
-            EXPLORE_GENETIC_STRUCTURE(
-                n2_meta_bed,
-                GAWK_GENERATE_COLORS.out.color
-            )
+            if ( params.rem_indi_structure ){
+                    indi_list = Channel.fromPath( params.rem_indi_structure, checkIfExists: true)
+                    //
+                    //MODULE: PLINK2_REMOVE_CUSTOM_INDI
+                    //
+                    PLINK2_REMOVE_CUSTOM_INDI(
+                        n2_meta_bed, 
+                        indi_list 
+                    )
+                    n3_bed = PLINK2_REMOVE_CUSTOM_INDI.out.bed
+            }
+            
+            else{
+                    n3_bed = n2_meta_bed
+            }
+            if ( params.ld_filt ){
+                    //
+                    //MODULE: PLINK2_LD_FILTERS
+                    //
+                    PLINK2_INDEP_PAIRWISE(
+                        n3_bed
+                    )
+                    n4_bed = PLINK2_INDEP_PAIRWISE.out.bed
+            }
+            else{
+                    n4_bed = n3_bed
+            }
+
+            if(params.smartpca){
+                //
+                // SUBWORKFLOW : RUN_PCA
+                //
+                RUN_PCA(
+                    n4_bed,
+                    GAWK_GENERATE_COLORS.out.color
+                )
+            }
+            if(params.admixture){
+                //
+                // SUBWORKFLOW : RUN_ADMIXTURE
+                //
+                RUN_ADMIXTURE(
+                    n4_bed,
+                    GAWK_GENERATE_COLORS.out.color
+                )
+            }
+            if(params.pairwise_global_fst){
+                CALC_FST(
+                    n4_bed,
+                    GAWK_GENERATE_COLORS.out.color
+                )
+            }
+            if(params.ibs_dist){
+                CALC_1_MIN_IBS_DIST(
+                    n4_bed,
+                    GAWK_GENERATE_COLORS.out.color
+                )
+            }
     }
     /*
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
