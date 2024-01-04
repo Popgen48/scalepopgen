@@ -11,6 +11,7 @@ process FILTER_SNPS{
 
     input:
         tuple val(meta), file(bed)
+        path(rem_snps)
 
     output:
         tuple val(n_meta), path("${new_prefix}_filt_site*.{bed,bim,fam}"), emit: n1_meta_bed
@@ -31,9 +32,9 @@ process FILTER_SNPS{
 
             }
 
-        if ( params.rem_snps ){
+        if ( rem_snps != [] ){
         
-            opt_args = opt_args + " --exclude " + params.rem_snps
+            opt_args = opt_args + " --exclude " + rem_snps
         }
         
         if ( params.max_missing > 0 ){

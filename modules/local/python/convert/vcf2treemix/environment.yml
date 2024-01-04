@@ -1,0 +1,8 @@
+name: python_convert_vcf2treemix
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - pysam==0.22.0
+  - python==3.10

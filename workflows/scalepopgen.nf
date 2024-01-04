@@ -43,6 +43,7 @@ include { RUN_PCA              } from '../subworkflows/local/run_pca'
 include { RUN_ADMIXTURE        } from '../subworkflows/local/run_admixture'
 include { CALC_FST             } from '../subworkflows/local/calc_fst'
 include { CALC_1_MIN_IBS_DIST  } from '../subworkflows/local/calc_1_min_ibs_dist'
+include { RUN_TREEMIX          } from '../subworkflows/local/run_treemix'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,6 +59,9 @@ include { PLINK2_MERGE_BED              } from '../modules/local/plink2/merge_be
 include { PLINK2_REMOVE_CUSTOM_INDI     } from '../modules/local/plink2/remove_custom_indi/main'
 include { PLINK2_INDEP_PAIRWISE         } from '../modules/local/plink2/indep-pairwise/main'
 include { GAWK_GENERATE_COLORS          } from '../modules/local/gawk/generate_colors/main'
+include { PLINK2_CONVERT_BED_TO_VCF     } from '../modules/local/plink2/convert_bed_to_vcf/main'
+include { GAWK_MAKE_SAMPLE_MAP          } from '../modules/local/gawk/make_sample_map/main'
+include { GAWK_ADD_CONTIG_LENGTH        } from '../modules/local/gawk/add_contig_length/main'
 include { TABIX_BGZIPTABIX              } from '../modules/nf-core/tabix/bgziptabix/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
 include { ADMIXTURE                     } from '../modules/nf-core/admixture/main'
@@ -134,6 +138,39 @@ workflow SCALEPOPGEN {
         }
         else{
             n1_meta_bed = INPUT_CHECK.out.variant
+        }
+        if(params.treemix){
+            //
+            // MODULE: PLINK2_CONVERT_BED_TO_VCF
+            //
+            PLINK2_CONVERT_BED_TO_VCF(
+                n1_meta_bed
+            )
+            if(params.chrom_length_map){
+                clm = Channel.fromPath( params.chrom_length_map, checkIfExists: true )
+                //
+                // MODULE: GAWK_ADD_CONTIG_LENGTH
+                //
+                GAWK_ADD_CONTIG_LENGTH(
+                    PLINK2_CONVERT_BED_TO_VCF.out.vcf,
+                    clm
+                )
+            }
+            //
+            // MODULE: TABIX_BGZIPTABIX
+            //
+            TABIX_BGZIPTABIX(
+                params.chrom_length_map ? GAWK_ADD_CONTIG_LENGTH.out.vcf : PLINK2_CONVERT_BED_TO_VCF.out.vcf
+            )
+            //
+            // MODULE: GAWK_MAKE_SAMPLE_MAP
+            //
+            GAWK_MAKE_SAMPLE_MAP(
+                n1_meta_bed.map{meta,bed->bed[2]}
+            )
+
+            n1_meta_vcf_idx_map = TABIX_BGZIPTABIX.out.gz_tbi.combine(GAWK_MAKE_SAMPLE_MAP.out.map)
+
         }
     }
     if (params.indiv_summary){
@@ -222,6 +259,12 @@ workflow SCALEPOPGEN {
                     GAWK_GENERATE_COLORS.out.color
                 )
             }
+    }
+    if(params.treemix){
+        RUN_TREEMIX(
+            n1_meta_vcf_idx_map,
+            is_vcf
+        )
     }
     /*
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)

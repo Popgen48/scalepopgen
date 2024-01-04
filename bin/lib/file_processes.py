@@ -1,4 +1,3 @@
-import numpy as np
 
 """
 following method create the dictionary for the sample map file and list of the pop name, it should have the following format:
@@ -48,28 +47,6 @@ def write_sample_dict(sample_local_window_dict):
         value_list = list(map(str, value_list))
         str_out_sample += "\t".join(value_list)
     return str_out_sample
-
-
-"""
-
-following method will return the string with the output for the pop dict (self.sample_local_window_dict)
-
-"""
-
-
-def write_pop_dict(pop_local_window_dict):
-    str_out_pop = ""
-    for pop in pop_local_window_dict:
-        str_out_pop += "\t"
-        value_list = list(pop_local_window_dict[pop].values())
-        total_snps = value_list[4]
-        value_list.remove(value_list[4])
-        value_list = np.array(list(map(float, value_list))) / int(total_snps)
-        value_list = list(map(str, value_list))
-        value_list.insert(4, str(total_snps))
-        str_out_pop += "\t".join(list(value_list))
-    return str_out_pop
-
 
 """
 

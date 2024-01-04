@@ -6,7 +6,6 @@ process VCFTOOLS_CONCAT{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/vcftools:0.1.16--he513fc3_4' :
         'biocontainers/vcftools:0.1.16--he513fc3_4' }"
-    //publishDir("${params.outdir}/${process}/input/", mode:"copy")
 
     input:
         path(vcf)

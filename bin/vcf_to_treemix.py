@@ -8,13 +8,11 @@ import re
 import gzip
 from pysam import VariantFile
 from collections import OrderedDict
-from lib.vcf_to_chrom_windows import VcfToChromCords
 from lib.file_processes import prepare_sample_pop_dict
 
 
 class VcfToTreemix:
     def __init__(self, vcf_file, sample_map, out_prefix, out_mode, region, bed):
-        self.vcf_file_name = vcf_file
         self.vcf_file = VariantFile(vcf_file)
         self.sample_map = sample_map
         self.out_prefix = out_prefix
@@ -29,20 +27,21 @@ class VcfToTreemix:
             self.sample_map, 1
         )  ##check that the output order of the elements inside this list remains the same, very important!!!!
 
-    def prepare_chrom_cords(self):
-        vcf_to_chrom_cords = VcfToChromCords(
-            self.vcf_file_name,
-            self.bed_in,
-            None,
-            self.region,
-            0,
-            0,
-        )
-        self.chrom_cord_dict = vcf_to_chrom_cords.populate_chrom_window_dict()
+    # read header of the vcf and store chrom and its size in chrom_cord_dict
+    # structure, {chrm1:[[1,158368000]]}
+
+    def populate_whole_chrom_cord_dict(self):
+        for rec in self.vcf_file.header.records:
+            if (str(rec)).startswith("##contig"):
+                pattern = re.compile(r"ID\=([^,]*),length=([0-9]+)")
+                match = re.findall(pattern, str(rec))
+                chrom = match[0][0]
+                if chrom != "":
+                    self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
 
     def readVcfRecords(self):
         self.process_sample_map()
-        self.prepare_chrom_cords()
+        self.populate_whole_chrom_cord_dict()
         if self.out_mode == "z":
             dest = gzip.open(self.out_prefix + "_treemixIn.gz", "wb")
             dest.write(" ".join(self.pop_list).encode())
@@ -55,6 +54,7 @@ class VcfToTreemix:
                 start = int(region[0])
                 end = int(region[1])
                 for rec in self.vcf_file.fetch(chrom, start, end):
+                    print(rec.id)
                     dest.write("\n".encode()) if self.out_mode == "z" else dest.write(
                         "\n"
                     )

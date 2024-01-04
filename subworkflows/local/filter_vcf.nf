@@ -4,6 +4,7 @@ include { FILTER_SAMPLES                } from '../../modules/local/plink2/filte
 include { GAWK_PREPARE_NEW_MAP          } from '../../modules/local/gawk/prepare_new_map/main'
 include { VCFTOOLS_REMOVE               } from '../../modules/local/vcftools/remove/main'
 include { VCFTOOLS_FILTER_SITES         } from '../../modules/local/vcftools/filter_sites/main'
+include { LOCAL_TABIX_BGZIPTABIX        } from '../../modules/local/bgziptabix/main'
 include { GAWK_EXTRACT_SAMPLEID; GAWK_EXTRACT_SAMPLEID as REMOVE_SAMPLE_LIST } from '../../modules/local/gawk/extract_sampleid/main'
 
 workflow FILTER_VCF{
@@ -121,6 +122,16 @@ workflow FILTER_VCF{
         n1_meta_vcf_idx_map = n0_meta_vcf_idx_map
     }
     
+    n1_map = n1_meta_vcf_idx_map.map{meta,vcf,idx,map->map}.unique()
+    //
+    //MODULE: LOCAL_TABIX_BGZIPTABIX
+    //
+    LOCAL_TABIX_BGZIPTABIX(
+        n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}
+    )
+    
+    n2_meta_vcf_idx_map = LOCAL_TABIX_BGZIPTABIX.out.gz_tbi
+
     emit:
-        n1_meta_vcf_idx_map = n1_meta_vcf_idx_map
+        n1_meta_vcf_idx_map = n2_meta_vcf_idx_map
 }
