@@ -130,7 +130,7 @@ workflow FILTER_VCF{
         n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}
     )
     
-    n2_meta_vcf_idx_map = LOCAL_TABIX_BGZIPTABIX.out.gz_tbi
+    n2_meta_vcf_idx_map = LOCAL_TABIX_BGZIPTABIX.out.gz_tbi.combine(n1_map)
 
     emit:
         n1_meta_vcf_idx_map = n2_meta_vcf_idx_map

@@ -44,6 +44,7 @@ include { RUN_ADMIXTURE        } from '../subworkflows/local/run_admixture'
 include { CALC_FST             } from '../subworkflows/local/calc_fst'
 include { CALC_1_MIN_IBS_DIST  } from '../subworkflows/local/calc_1_min_ibs_dist'
 include { RUN_TREEMIX          } from '../subworkflows/local/run_treemix'
+include { RUN_VCFTOOLS         } from '../subworkflows/local/run_vcftools'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -264,6 +265,11 @@ workflow SCALEPOPGEN {
         RUN_TREEMIX(
             n1_meta_vcf_idx_map,
             is_vcf
+        )
+    }
+    if(params.pairwise_local_fst || params.tajimas_d || params.pi_val || params.fst_one_vs_all){
+        RUN_VCFTOOLS(
+            n1_meta_vcf_idx_map
         )
     }
     /*

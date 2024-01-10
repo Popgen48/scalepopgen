@@ -1,0 +1,7 @@
+name: treemix
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - treemix==1.13

@@ -23,8 +23,8 @@ process LOCAL_TABIX_BGZIPTABIX {
     def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    zcat ${input}|bgzip  --threads ${task.cpus} -c $args > ${prefix}.${input.getExtension()}.gz
-    tabix $args2 ${prefix}.${input.getExtension()}.gz
+    zcat ${input}|bgzip  --threads ${task.cpus} -c $args > ${prefix}.gz
+    tabix $args2 ${prefix}.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -35,9 +35,9 @@ process LOCAL_TABIX_BGZIPTABIX {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.${input.getExtension()}.gz
-    touch ${prefix}.${input.getExtension()}.gz.tbi
-    touch ${prefix}.${input.getExtension()}.gz.csi
+    touch ${prefix}.gz
+    touch ${prefix}.gz.tbi
+    touch ${prefix}.gz.csi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

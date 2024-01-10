@@ -1,0 +1,9 @@
+name: rscript_optm
+channels:
+        - conda-forge
+        - bioconda
+        - defaults
+dependencies:
+        - r-base==4.3.2
+        - r-optm==0.1.6
+        - r-optparse==1.7.3

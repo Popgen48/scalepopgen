@@ -1,6 +1,6 @@
 import sys
 
-if sys.version_info < (3, 7):
+if sys.version_info < (3, 8):
     raise RuntimeError("This package requres Python 3.7+")
 
 import argparse
@@ -8,17 +8,16 @@ import re
 import gzip
 from pysam import VariantFile
 from collections import OrderedDict
-from lib.file_processes import prepare_sample_pop_dict
+from util import prepare_sample_pop_dict
 
 
 class VcfToTreemix:
-    def __init__(self, vcf_file, sample_map, out_prefix, out_mode, region, bed):
+    def __init__(self, vcf_file, sample_map, out_prefix, out_mode, contig):
         self.vcf_file = VariantFile(vcf_file)
         self.sample_map = sample_map
         self.out_prefix = out_prefix
         self.out_mode = out_mode
-        self.region = region
-        self.bed_in = bed
+        self.contig = contig
         self.chrom_cord_dict = {}
 
     def process_sample_map(self):
@@ -36,8 +35,13 @@ class VcfToTreemix:
                 pattern = re.compile(r"ID\=([^,]*),length=([0-9]+)")
                 match = re.findall(pattern, str(rec))
                 chrom = match[0][0]
-                if chrom != "":
-                    self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
+                if not self.contig:
+                    if chrom != "":
+                        self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
+                elif chrom == self.contig:
+                        self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
+                else:pass
+
 
     def readVcfRecords(self):
         self.process_sample_map()
@@ -116,18 +120,10 @@ if __name__ == "__main__":
         required=True,
     )
     parser.add_argument(
-        "-r",
-        "--region",
+        "-c",
+        "--chrom",
         metavar="Str",
-        help="chrm:start-end (OPTIONAL)",
-        default=None,
-        required=False,
-    )
-    parser.add_argument(
-        "-b",
-        "--bed",
-        metavar="Str",
-        help="bed file of regions (OPTIONAL)",
+        help="chromosom id for which treemix input file is to be prepared",
         default=None,
         required=False,
     )
@@ -141,7 +137,6 @@ if __name__ == "__main__":
             args.sample_map,
             args.out_prefix,
             args.out_mode,
-            args.region,
-            args.bed,
+            args.chrom,
         )
         VcfTreemix.readVcfRecords()
