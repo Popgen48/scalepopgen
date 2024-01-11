@@ -9,6 +9,12 @@ include { VCFTOOLS_SELECTION as VCFTOOLS_PI         } from '../../modules/local/
 include { VCFTOOLS_SELECTION as VCFTOOLS_PAIR_FST   } from '../../modules/local/vcftools/selection/main'
 include { VCFTOOLS_SELECTION as VCFTOOLS_ALL_FST    } from '../../modules/local/vcftools/selection/main'
 include { GAWK_PREPARE_FST_ALL_INPUT                } from '../../modules/local/gawk/prepare_fst_all_input/main'
+include { PYTHON_COLLECT_VCFTOOLS_SELECTION_RESULTS as COLLECT_TAJIMAS_D } from '../../modules/local/python/collect/vcftools_selection_results/main'
+include { PYTHON_COLLECT_VCFTOOLS_SELECTION_RESULTS as COLLECT_ALL_FST   } from '../../modules/local/python/collect/vcftools_selection_results/main'
+include { PYTHON_COLLECT_VCFTOOLS_SELECTION_RESULTS as COLLECT_PI        } from '../../modules/local/python/collect/vcftools_selection_results/main'
+include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_TAJIMAS_D                } from '../../modules/local/python/plot/selection_results/main'
+include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_ALL_FST                  } from '../../modules/local/python/plot/selection_results/main'
+include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_PI                       } from '../../modules/local/python/plot/selection_results/main'
 /*
 include { GENERATE_INTERACTIVE_MANHATTAN_PLOT as MANHATTAN_TAJIMAS_D } from '../modules/selection/generate_interactive_manhattan_plot'
 include { GENERATE_INTERACTIVE_MANHATTAN_PLOT as MANHATTAN_PI } from '../modules/selection/generate_interactive_manhattan_plot'
@@ -40,6 +46,8 @@ workflow RUN_VCFTOOLS{
         chrom_vcf_idx_map
 
     main:
+        
+        selection_plot_yml = Channel.fromPath(params.selection_plot_yml, checkIfExists: true)
 
         // sample map file should be processed separately to split id pop-wise
 
@@ -87,6 +95,21 @@ workflow RUN_VCFTOOLS{
                 n0_chrom_vcf_popid.map{chrom,vcf,popid->tuple(chrom,vcf,popid,[])},
                 Channel.value("tajimas_d")
             )
+            //
+            //MODULE: COLLECT_TAJIMAS_D
+            //
+            COLLECT_TAJIMAS_D(
+                VCFTOOLS_TAJIMAS_D.out.txt.groupTuple(),
+                Channel.value("tajimas_d")
+            )
+        
+            //
+            //MODULE: PLOT_TAJIMAS_D
+            //
+            COLLECT_TAJIMAS_D.out.cutoff.map{meta,c_file->c_file}.splitCsv(header:true).map{row->tuple([id:row.id],row.cutoff)}.combine(COLLECT_TAJIMAS_D.out.txt,by:0).view()
+            
+        
+            
         }
         if( params.pi_val ){
             //
@@ -95,6 +118,13 @@ workflow RUN_VCFTOOLS{
             VCFTOOLS_PI(
                 n0_chrom_vcf_popid.map{chrom,vcf,popid->tuple(chrom,vcf,popid,[])},
                 Channel.value("pi_val")
+            )
+            //
+            //MODULE: COLLECT_PI
+            //
+            COLLECT_PI(
+                VCFTOOLS_PI.out.txt.groupTuple(),
+                Channel.value("pi")
             )
         }
         if( params.pairwise_local_fst){
@@ -129,6 +159,13 @@ workflow RUN_VCFTOOLS{
             VCFTOOLS_ALL_FST(
                 n0_chrom_vcf.combine(n1_pop1_pop2),
                 Channel.value("fst_all")
+            )
+            //
+            //MODULE: COLLECT_ALL_FST
+            //
+            COLLECT_ALL_FST(
+                VCFTOOLS_ALL_FST.out.txt.groupTuple(),
+                Channel.value("fst")
             )
         }
         

@@ -1,6 +1,6 @@
 include { PLINK2_SAMPLE_COUNTS                } from '../../modules/local/plink2/sample_counts/main'
 include { VCFTOOLS_DEPTH                      } from '../../modules/local/vcftools/depth/main'
-include { PYTHON_COLLECT_INDIV_SUMMARY_PLINK  } from '../../modules/local/python/collect_indiv_summary_plink/main'
+include { PYTHON_COLLECT_INDIV_SUMMARY_PLINK  } from '../../modules/local/python/collect/indiv_summary_plink/main'
 include { GAWK_COLLECT_INDIV_SUMMARY_VCF      } from '../../modules/local/gawk/collect_indiv_summary_vcf/main'
 
 workflow PREPARE_INDIV_REPORT{

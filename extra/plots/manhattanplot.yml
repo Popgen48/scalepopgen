@@ -1,0 +1,8 @@
+width: 1200
+height: 800
+chrom_label_orientation: 90
+legend_font_size: 12px
+label_font_size: 12px
+fil_alpha: 0.7
+color_list: ["red", "blue"]
+ensembl_link: http://www.ensembl.org/Bos_taurus/Location/View?r=

@@ -5,14 +5,14 @@ process VCFTOOLS_SELECTION{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/vcftools:0.1.16--he513fc3_4' :
         'biocontainers/vcftools:0.1.16--he513fc3_4' }"
-    publishDir("${params.outdir}/vcftools/selection/${method}/${outprefix}", mode:"copy")
+    publishDir("${params.outdir}/vcftools/selection/${method}/${pop1}", mode:"copy")
 
     input:
         tuple val(meta), path(vcf), path(file1), path(file2)
         val(method)
 
     output:
-        tuple val(pop1), path ("*${outprefix}*"), emit: tajimasd_out
+        tuple val(pop1), path ("*${outprefix}*"), emit: txt
 
     script:
         chrom=meta.id

@@ -3,9 +3,10 @@ import pandas as pd
 import numpy as np
 
 window_size = sys.argv[1]
-method = sys.argv[2]
-output_file = sys.argv[3]
-files = sys.argv[4:]
+sel_threshold    = sys.argv[2]
+method = sys.argv[3]
+outprefix = sys.argv[4]
+files = sys.argv[5:]
 
 df = pd.DataFrame()
 
@@ -31,4 +32,10 @@ f_df = df[["CHROM","BIN_START","BIN_END",col_name]]
 
 f_df.replace(np.nan, 0, inplace=True)
 
-merge_df = f_df.to_csv(output_file,sep=" ",header=True,index=False)
+merge_df = f_df.to_csv(outprefix+".out",sep=" ",header=True,index=False)
+
+
+with open(outprefix+".cutoff","w") as dest:
+    cutoff = 1-float(sel_threshold) if method == "fst" else float(sel_threshold)
+    dest.write("id"+","+"cutoff"+"\n")
+    dest.write(outprefix+","+str(f_df[col_name].quantile(cutoff))+"\n")

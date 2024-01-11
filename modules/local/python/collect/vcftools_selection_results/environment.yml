@@ -1,0 +1,8 @@
+name: prepare_manhattan_input
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python==3.10.13
+  - pandas==2.1.4
+  - numpy==1.26.3
