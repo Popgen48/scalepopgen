@@ -32,6 +32,9 @@ f_df = df[["CHROM","BIN_START","BIN_END",col_name]]
 
 f_df.replace(np.nan, 0, inplace=True)
 
+if method == "fst":
+    f_df[col_name] = f_df[col_name].apply(lambda x : x if x > 0 else 0)
+
 merge_df = f_df.to_csv(outprefix+".out",sep=" ",header=True,index=False)
 
 

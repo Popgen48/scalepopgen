@@ -15,11 +15,6 @@ include { PYTHON_COLLECT_VCFTOOLS_SELECTION_RESULTS as COLLECT_PI        } from 
 include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_TAJIMAS_D                } from '../../modules/local/python/plot/selection_results/main'
 include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_ALL_FST                  } from '../../modules/local/python/plot/selection_results/main'
 include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_PI                       } from '../../modules/local/python/plot/selection_results/main'
-/*
-include { GENERATE_INTERACTIVE_MANHATTAN_PLOT as MANHATTAN_TAJIMAS_D } from '../modules/selection/generate_interactive_manhattan_plot'
-include { GENERATE_INTERACTIVE_MANHATTAN_PLOT as MANHATTAN_PI } from '../modules/selection/generate_interactive_manhattan_plot'
-include { GENERATE_INTERACTIVE_MANHATTAN_PLOT as MANHATTAN_FST } from '../modules/selection/generate_interactive_manhattan_plot'
-*/
 
 
 def PREPARE_DIFFPOP_T( file_list_pop ){
@@ -106,7 +101,12 @@ workflow RUN_VCFTOOLS{
             //
             //MODULE: PLOT_TAJIMAS_D
             //
-            COLLECT_TAJIMAS_D.out.cutoff.map{meta,c_file->c_file}.splitCsv(header:true).map{row->tuple([id:row.id],row.cutoff)}.combine(COLLECT_TAJIMAS_D.out.txt,by:0).view()
+            trct = COLLECT_TAJIMAS_D.out.cutoff.map{meta,c_file->c_file}.splitCsv(header:true).map{row->tuple([id:row.id],row.cutoff)}.combine(COLLECT_TAJIMAS_D.out.txt,by:0)
+
+            PLOT_TAJIMAS_D(
+                trct.combine(selection_plot_yml),
+                Channel.value("tajimas_d")
+            )
             
         
             
@@ -125,6 +125,15 @@ workflow RUN_VCFTOOLS{
             COLLECT_PI(
                 VCFTOOLS_PI.out.txt.groupTuple(),
                 Channel.value("pi")
+            )
+            //
+            //MODULE: PLOT_PI
+            //
+            trcp = COLLECT_PI.out.cutoff.map{meta,c_file->c_file}.splitCsv(header:true).map{row->tuple([id:row.id],row.cutoff)}.combine(COLLECT_PI.out.txt,by:0)
+
+            PLOT_PI(
+                trcp.combine(selection_plot_yml),
+                Channel.value("pi_value")
             )
         }
         if( params.pairwise_local_fst){
@@ -167,86 +176,15 @@ workflow RUN_VCFTOOLS{
                 VCFTOOLS_ALL_FST.out.txt.groupTuple(),
                 Channel.value("fst")
             )
-        }
-        
-        /*
+            //
+            //MODULE: PLOT_ALL_FST
+            // 
+            trcf = COLLECT_ALL_FST.out.cutoff.map{meta,c_file->c_file}.splitCsv(header:true).map{row->tuple([id:row.id],row.cutoff)}.combine(COLLECT_ALL_FST.out.txt,by:0)
 
-        
-        //each sample id file should be combine with each vcf file
-
-        n4_chrom_vcf_popid = n4_chrom_vcf.combine(pop_idfile)
-
-        //following module calculates tajima's d for each chromosome for each pop
-        
-
-        if( params.tajimas_d ){
-
-            CALC_TAJIMA_D( n4_chrom_vcf_popid )
-
-            v1_manhatin = Channel.value('tajimas_d')
-
-            v1_windowsize = Channel.value(params.tajimasd_window_size)
-
-            MANHATTAN_TAJIMAS_D(
-                 CALC_TAJIMA_D.out.tajimasd_out.groupTuple(),
-                 v1_manhatin,
-                 v1_windowsize
-                )
-        
-        }
-
-        // following module calculates pi for each chromosome for each pop
-
-        if ( params.pi ){
-
-            CALC_PI( n4_chrom_vcf_popid )
-
-            v2_manhatin = Channel.value('nucl_diversity_pi')
-
-            v2_windowsize = params.pi_window_size > 0 ? Channel.value(params.pi_window_size) : Channel.value(1)
-
-            MANHATTAN_PI(
-                CALC_PI.out.pi_out.groupTuple(),
-                v2_manhatin,
-                v2_windowsize
+            PLOT_ALL_FST(
+                trcf.combine(selection_plot_yml),
+                Channel.value("fst_values")
             )
         }
-
         
-        if ( params.pairwise_fst ){
-               
-                // prepare channel for the pairwise fst                
-
-
-            pop_idfile_collect = pop_idfile.collect()
-            
-
-            pop1_pop2 = PREPARE_DIFFPOP_T(pop_idfile_collect).unique()
-
-
-             n4_chrom_vcf_pop1_pop2 = n4_chrom_vcf.combine(pop1_pop2)
-            
-            CALC_WFST( n4_chrom_vcf_pop1_pop2 )
-            
-        }
-        if( params.single_vs_all_fst ){
-                
-                pop1_allsample = pop_idfile.combine(SPLIT_MAP_FOR_VCFTOOLS.out.iss)
-
-                n4_chrom_vcf_pop1_allsample = n4_chrom_vcf.combine(pop1_allsample)
-
-                CALC_WFST_ONE_VS_REMAINING(n4_chrom_vcf_pop1_allsample)
-            
-                v3_manhatin = Channel.value('fst_values')
-
-                v3_windowsize = params.fst_window_size > 0 ? Channel.value(params.fst_window_size) : Channel.value(1)
-
-                MANHATTAN_FST(
-                    CALC_WFST_ONE_VS_REMAINING.out.pairwise_fst_out.groupTuple(),
-                    v3_manhatin,
-                    v3_windowsize
-                )
-
-            }
-    */
 }

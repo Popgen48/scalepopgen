@@ -7,7 +7,7 @@ process PYTHON_PLOT_SELECTION_RESULTS{
     publishDir("${params.outdir}/vcftools/selection/${method}/", mode:"copy")
 
     input:
-        tuple val(meta), path(merged_result), val(cutoff), path(yml)
+        tuple val(meta), val(cutoff), path(merged_result), path(yml)
         val(method)
         
 

@@ -138,71 +138,75 @@ class PlotSigSelResults:
         df_list = []
         df_list_t = []
         chrom_list = []
+        header = 0
         with open(self.sel_result_out) as source:
             for line in source:
                 line = line.rstrip().split()
-                if line[-1] != "-nan":
-                    self.min_score = (
-                        self.min_score
-                        if float(line[-1]) > self.min_score
-                        else float(line[-1])
-                    )
-                    self.max_score = (
-                        self.max_score
-                        if float(line[-1]) < self.max_score
-                        else float(line[-1])
-                    )
-                    tmp_list = []
-                    if line[0] not in chrom_list:
-                        if len(chrom_list) != 0:
-                            self.axis_chrom_dict[cum_cord_1] = chrom_list[-1]
-                        chrom_list.append(line[0])
-                        color = (
-                            self.color_list[0]
-                            if len(chrom_list) % 2 == 0
-                            else self.color_list[1]
+                if header == 0:
+                    header += 1
+                else:
+                    if line[-1] != "-nan":
+                        self.min_score = (
+                            self.min_score
+                            if float(line[-1]) > self.min_score
+                            else float(line[-1])
                         )
-                    cum_cord_1 = (
-                        int(list(self.axis_chrom_dict.keys())[-1]) + int(line[1])
-                        if len(chrom_list) > 1
-                        else int(line[1])
-                    )
-                    chrom = line[0]
-                    cord = line[1]
-                    p_val = float(line[-1])
-                    tmp_list = [chrom, cord, cum_cord_1, p_val, color]
-                    if self.y_label not in self.upper_hover:
-                        if (
-                            p_val < float(self.tajimasd_cutoff)
-                            and self.ensembl_link != "none"
-                        ):
-                            tmp_list.append(
-                                self.ensembl_link
-                                + chrom
-                                + ":"
-                                + cord
-                                + "-"
-                                + str(int(cord) + self.window_size)
+                        self.max_score = (
+                            self.max_score
+                            if float(line[-1]) < self.max_score
+                            else float(line[-1])
+                        )
+                        tmp_list = []
+                        if line[0] not in chrom_list:
+                            if len(chrom_list) != 0:
+                                self.axis_chrom_dict[cum_cord_1] = chrom_list[-1]
+                            chrom_list.append(line[0])
+                            color = (
+                                self.color_list[0]
+                                if len(chrom_list) % 2 == 0
+                                else self.color_list[1]
                             )
-                        df_list.append(tmp_list[:]) if p_val > float(
-                            self.tajimasd_cutoff
-                        ) else df_list_t.append(tmp_list[:])
-                    else:
-                        if (
-                            p_val > float(self.tajimasd_cutoff)
-                            and self.ensembl_link != "none"
-                        ):
-                            tmp_list.append(
-                                self.ensembl_link
-                                + chrom
-                                + ":"
-                                + cord
-                                + "-"
-                                + str(int(cord) + self.window_size)
-                            )
-                        df_list_t.append(tmp_list[:]) if p_val > float(
-                            self.tajimasd_cutoff
-                        ) else df_list.append(tmp_list[:])
+                        cum_cord_1 = (
+                            int(list(self.axis_chrom_dict.keys())[-1]) + int(line[1])
+                            if len(chrom_list) > 1
+                            else int(line[1])
+                        )
+                        chrom = line[0]
+                        cord = line[1]
+                        p_val = float(line[-1])
+                        tmp_list = [chrom, cord, cum_cord_1, p_val, color]
+                        if self.y_label not in self.upper_hover:
+                            if (
+                                p_val < float(self.tajimasd_cutoff)
+                                and self.ensembl_link != "none"
+                            ):
+                                tmp_list.append(
+                                    self.ensembl_link
+                                    + chrom
+                                    + ":"
+                                    + cord
+                                    + "-"
+                                    + str(int(cord) + self.window_size)
+                                )
+                            df_list.append(tmp_list[:]) if p_val > float(
+                                self.tajimasd_cutoff
+                            ) else df_list_t.append(tmp_list[:])
+                        else:
+                            if (
+                                p_val > float(self.tajimasd_cutoff)
+                                and self.ensembl_link != "none"
+                            ):
+                                tmp_list.append(
+                                    self.ensembl_link
+                                    + chrom
+                                    + ":"
+                                    + cord
+                                    + "-"
+                                    + str(int(cord) + self.window_size)
+                                )
+                            df_list_t.append(tmp_list[:]) if p_val > float(
+                                self.tajimasd_cutoff
+                            ) else df_list.append(tmp_list[:])
             self.axis_chrom_dict[cum_cord_1] = chrom_list[-1]
         pd1 = pd.DataFrame(
             df_list, columns=["chrom", "cord", "cum_cord", "p_val", "col"]

@@ -17,14 +17,14 @@ process PYTHON_COLLECT_VCFTOOLS_SELECTION_RESULTS{
     
     script:
         window_size = params.window_size
-        per_threshold = params.perc_threshold
+        perc_threshold = params.perc_threshold
         outfile = pop+"_"+method
         meta = [:]
         meta.id = pop+"_"+method
 
         """
         
-        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${per_threshold} ${method} ${outfile} ${result_files}
+        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${perc_threshold} ${method} ${outfile} ${result_files}
         
         
         """ 
