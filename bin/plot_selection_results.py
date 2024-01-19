@@ -29,7 +29,7 @@ class PlotSigSelResults:
         self.min_score = 0  # important to set the min cordi of y axis
         self.max_score = 0  # important to set the maxi cordi of y axis
         self.y_label = y_label  # label will determine the hovering points
-        self.upper_hover = ["fst_values"]
+        self.upper_hover = ["fst_values", "LR"]
         self.axis_chrom_dict = (
             {}
         )  # dictionary with greatest coordinates of a respective chromosome as key and chromosome its value --> use to replace major X-axis with chromosome name

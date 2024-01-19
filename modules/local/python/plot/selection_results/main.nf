@@ -4,7 +4,7 @@ process PYTHON_PLOT_SELECTION_RESULTS{
     label "oneCpu"
     container "popgen48/plot_selection_results:1.0.0"
     conda "${moduleDir}/environment.yml"
-    publishDir("${params.outdir}/vcftools/selection/${method}/", mode:"copy")
+    publishDir("${params.outdir}/selection/${method}/", mode:"copy")
 
     input:
         tuple val(meta), val(cutoff), path(merged_result), path(yml)
@@ -15,12 +15,12 @@ process PYTHON_PLOT_SELECTION_RESULTS{
         tuple val(meta), path("*.html")
 
     script:
-        window_size = params.window_size
+        window_size = method == "LR" ? 1:params.window_size
         outprefix = meta.id
 
         """
         
-        python ${baseDir}/bin/plot_selection_results.py ${merged_result} ${yml} ${cutoff} ${window_size} ${method} ${outprefix}.html
+        python ${baseDir}/bin/plot_selection_results.py ${merged_result} ${yml} ${cutoff} ${window_size} ${method} ${outprefix}
         
 
         """ 

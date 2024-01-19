@@ -1,4 +1,4 @@
-process PYTHON_COLLECT_VCFTOOLS_SELECTION_RESULTS{
+process PYTHON_COLLECT_SELECTION_RESULTS{
 
     tag { "${pop}" }
     label "process_single"
@@ -11,16 +11,17 @@ process PYTHON_COLLECT_VCFTOOLS_SELECTION_RESULTS{
         val(method)
 
     output:
-        tuple val(meta), path("${pop}_${method}.out"), emit: txt
-        tuple val(meta), path("${pop}_${method}.cutoff"), emit: cutoff
+        tuple val(meta), path("${pop_n}_${method}.out"), emit: txt
+        tuple val(meta), path("${pop_n}_${method}.cutoff"), emit: cutoff
         
     
     script:
+        pop_n = method == "sweepfinder2" ? pop.id: pop
         window_size = params.window_size
         perc_threshold = params.perc_threshold
-        outfile = pop+"_"+method
+        outfile = pop_n+"_"+method
         meta = [:]
-        meta.id = pop+"_"+method
+        meta.id = pop_n+"_"+method
 
         """
         

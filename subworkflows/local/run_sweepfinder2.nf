@@ -6,6 +6,8 @@ include { PYTHON_SPLIT_MAP as SPLIT_MAP_SWEEPFINDER2 } from '../../modules/local
 include { GAWK_MERGE_FREQ_FILES                      } from '../../modules/local/gawk/merge_freq_files/main'
 include { PYTHON_CREATE_SWEEPFINDER_INPUT            } from '../../modules/local/python/create/sweepfinder_input/main'
 include { SWEEPFINDER2; SWEEPFINDER2 as SWEEPFINDER2_COMPUTE_EMPIRICAL_AFS         } from '../../modules/local/sweepfinder2/main'
+include { PYTHON_COLLECT_SELECTION_RESULTS as COLLECT_SWEEPFINDER2                 } from '../../modules/local/python/collect/selection_results/main'
+include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_SWEEPFINDER2                       } from '../../modules/local/python/plot/selection_results/main'
 
 
 workflow RUN_SWEEPFINDER2{
@@ -13,6 +15,9 @@ workflow RUN_SWEEPFINDER2{
         chrom_vcf_idx_map_anc
 
     main:
+        
+        selection_plot_yml = Channel.fromPath(params.selection_plot_yml, checkIfExists: true)
+
         
         // sample map file should be processed separately to split id pop-wise
 
@@ -94,9 +99,25 @@ workflow RUN_SWEEPFINDER2{
         //
         // MODULE: SWEEPFINDER2
         //
-        pop_freq_afs_recomb.view()
         SWEEPFINDER2(
             pop_freq_afs_recomb.map{pop, freq, afs, recomb->tuple(pop, freq, afs?:[], recomb?:[])},
             Channel.value(params.sweepfinder2_model)
+        )
+
+        //
+        // MODULE: COLLECT_SWEEPFINDER2
+        //
+        COLLECT_SWEEPFINDER2(
+            SWEEPFINDER2.out.pop_txt.groupTuple(),
+            Channel.value("sweepfinder2")
+        )
+        //
+        //MODULE: PLOT_SWEEPFINDER2
+        // 
+        trcs = COLLECT_SWEEPFINDER2.out.cutoff.map{meta,c_file->c_file}.splitCsv(header:true).map{row->tuple([id:row.id],row.cutoff)}.combine(COLLECT_SWEEPFINDER2.out.txt,by:0)
+
+        PLOT_SWEEPFINDER2(
+            trcs.combine(selection_plot_yml),
+            Channel.value("LR")
         )
 }
