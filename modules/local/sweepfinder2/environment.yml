@@ -1,0 +1,7 @@
+name: sweepfinder2
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - sweepfinder2==1.0

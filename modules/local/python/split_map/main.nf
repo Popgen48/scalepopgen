@@ -20,7 +20,7 @@ process PYTHON_SPLIT_MAP{
 
         """
 
-        python ${baseDir}/bin/split_sample_map.py -m ${sample_map} ${args}
+        python ${baseDir}/bin/split_sample_map.py -m ${sample_map} ${args} -t ${tool}
 
         """ 
 }

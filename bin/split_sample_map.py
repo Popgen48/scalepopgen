@@ -19,7 +19,7 @@ def read_map(map_f):
             pop_sample_dict[line[1]].append(line[0])
     return pop_sample_dict
 
-def split_sample_map(map_f, min_s, skip_p, skip_o, outgroup, outprefix):
+def split_sample_map(map_f, min_s, skip_p, skip_o, outgroup, tool, outprefix):
     skip_pop_l = []
     if skip_p:
         skip_pop_l = skip_pop_list(skip_p)
@@ -30,8 +30,12 @@ def split_sample_map(map_f, min_s, skip_p, skip_o, outgroup, outprefix):
         for pop in pop_sample_dict:
             if len(pop_sample_dict[pop])>=int(min_s):
                 with open(pop+".txt","w") as dest:
-                    dest.write("\n".join(pop_sample_dict[pop])+"\n")
                     dest_g.write("\n".join(pop_sample_dict[pop])+"\n")
+                    if tool != "sweepfinder2":
+                        dest.write("\n".join(pop_sample_dict[pop])+"\n")
+                    else:
+                        for sample in pop_sample_dict[pop]:
+                            dest.write(f"{sample} {pop}\n")
 
         
 
@@ -79,6 +83,14 @@ if __name__ == "__main__":
         required=False,
     )
     parser.add_argument(
+        "-t",
+        "--tool",
+        metavar="Str",
+        help="tool for which the map file is splitted",
+        default="vcftools",
+        required=False,
+    )
+    parser.add_argument(
         "-o",
         "--outprefix",
         metavar="Str",
@@ -89,4 +101,4 @@ if __name__ == "__main__":
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
     else:
-        split_sample_map(args.sample_map, args.min_sample_size, args.skip_pop, args.skip_outgroup, args.outgroup, args.outprefix)
+        split_sample_map(args.sample_map, args.min_sample_size, args.skip_pop, args.skip_outgroup, args.outgroup, args.tool, args.outprefix)

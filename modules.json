@@ -20,6 +20,11 @@
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     },
+                    "estsfs": {
+                        "branch": "master",
+                        "git_sha": "9678944d908e5aedab318c94a79d6ecbfa854fbc",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",

@@ -45,6 +45,8 @@ include { CALC_FST             } from '../subworkflows/local/calc_fst'
 include { CALC_1_MIN_IBS_DIST  } from '../subworkflows/local/calc_1_min_ibs_dist'
 include { RUN_TREEMIX          } from '../subworkflows/local/run_treemix'
 include { RUN_VCFTOOLS         } from '../subworkflows/local/run_vcftools'
+include { PREPARE_ANC_FILES    } from '../subworkflows/local/prepare_anc_files'
+include { RUN_SWEEPFINDER2     } from '../subworkflows/local/run_sweepfinder2'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -249,12 +251,18 @@ workflow SCALEPOPGEN {
                 )
             }
             if(params.pairwise_global_fst){
+                //
+                // SUBWORKFLOW : CALC_FST
+                //
                 CALC_FST(
                     n4_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
             }
             if(params.ibs_dist){
+                //
+                // SUBWORKFLOW : CALC_1_MIN_IBS_DIST
+                //
                 CALC_1_MIN_IBS_DIST(
                     n4_bed,
                     GAWK_GENERATE_COLORS.out.color
@@ -262,14 +270,37 @@ workflow SCALEPOPGEN {
             }
     }
     if(params.treemix){
+        //
+        // SUBWORKFLOW : RUN_TREEMIX
+        //
         RUN_TREEMIX(
             n1_meta_vcf_idx_map,
             is_vcf
         )
     }
     if(params.pairwise_local_fst || params.tajimas_d || params.pi_val || params.fst_one_vs_all){
+        //
+        // SUBWORKFLOW : RUN_VCFTOOLS
+        // 
         RUN_VCFTOOLS(
             n1_meta_vcf_idx_map
+        )
+    }
+    if( params.run_sweepfinder2 ){
+        if( params.est_anc_alleles ){
+            //
+            // SUBWORKFLOW : PREPARE_ANC_FILES
+            //
+            PREPARE_ANC_FILES(
+                n1_meta_vcf_idx_map
+            )
+            //n1_meta_vcf_idx_map_anc = PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc
+        }
+        //
+        // SUBWORKFLOW : RUN_SWEEPFINDER2
+        //
+        RUN_SWEEPFINDER2(
+            params.est_anc_alleles ? PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc : n1_meta_vcf_idx_map.combine([null])
         )
     }
     /*
