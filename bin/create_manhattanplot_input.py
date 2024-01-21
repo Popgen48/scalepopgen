@@ -23,6 +23,7 @@ for file in files:
 
     df = pd.concat([df, df1], ignore_index=True)
 
+#df["CHROM"] = pd.to_numeric(df["CHROM"], errors='coerce')
 
 df.sort_values(['CHROM', 'BIN_START'], ascending=[True, True], inplace=True)
 

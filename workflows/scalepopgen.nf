@@ -32,6 +32,15 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { PLINK2_VCF                    } from '../modules/local/plink2/vcf/main'
+include { PLINK2_MERGE_BED              } from '../modules/local/plink2/merge_bed/main'
+include { PLINK2_REMOVE_CUSTOM_INDI     } from '../modules/local/plink2/remove_custom_indi/main'
+include { PLINK2_INDEP_PAIRWISE         } from '../modules/local/plink2/indep-pairwise/main'
+include { GAWK_GENERATE_COLORS          } from '../modules/local/gawk/generate_colors/main'
+include { PLINK2_CONVERT_BED_TO_VCF     } from '../modules/local/plink2/convert_bed_to_vcf/main'
+include { GAWK_MAKE_SAMPLE_MAP          } from '../modules/local/gawk/make_sample_map/main'
+include { GAWK_ADD_CONTIG_LENGTH        } from '../modules/local/gawk/add_contig_length/main'
+include { GAWK_EXTRACT_SAMPLEID; GAWK_EXTRACT_SAMPLEID as REMOVE_SAMPLE_LIST } from '../modules/local/gawk/extract_sampleid/main'
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
@@ -47,6 +56,7 @@ include { RUN_TREEMIX          } from '../subworkflows/local/run_treemix'
 include { RUN_VCFTOOLS         } from '../subworkflows/local/run_vcftools'
 include { PREPARE_ANC_FILES    } from '../subworkflows/local/prepare_anc_files'
 include { RUN_SWEEPFINDER2     } from '../subworkflows/local/run_sweepfinder2'
+include { PHASE_GENOTYPES      } from '../subworkflows/local/phase_genotypes'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -57,20 +67,13 @@ include { RUN_SWEEPFINDER2     } from '../subworkflows/local/run_sweepfinder2'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { PLINK2_VCF                    } from '../modules/local/plink2/vcf/main'
-include { PLINK2_MERGE_BED              } from '../modules/local/plink2/merge_bed/main'
-include { PLINK2_REMOVE_CUSTOM_INDI     } from '../modules/local/plink2/remove_custom_indi/main'
-include { PLINK2_INDEP_PAIRWISE         } from '../modules/local/plink2/indep-pairwise/main'
-include { GAWK_GENERATE_COLORS          } from '../modules/local/gawk/generate_colors/main'
-include { PLINK2_CONVERT_BED_TO_VCF     } from '../modules/local/plink2/convert_bed_to_vcf/main'
-include { GAWK_MAKE_SAMPLE_MAP          } from '../modules/local/gawk/make_sample_map/main'
-include { GAWK_ADD_CONTIG_LENGTH        } from '../modules/local/gawk/add_contig_length/main'
 include { TABIX_BGZIPTABIX              } from '../modules/nf-core/tabix/bgziptabix/main'
+include { TABIX_TABIX                   } from '../modules/nf-core/tabix/tabix/main'
 include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
 include { ADMIXTURE                     } from '../modules/nf-core/admixture/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { BCFTOOLS_SPLIT                } from '../modules/nf-core/bcftools/split/main'
 
-include { GAWK_EXTRACT_SAMPLEID; GAWK_EXTRACT_SAMPLEID as REMOVE_SAMPLE_LIST } from '../modules/local/gawk/extract_sampleid/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -142,7 +145,7 @@ workflow SCALEPOPGEN {
         else{
             n1_meta_bed = INPUT_CHECK.out.variant
         }
-        if(params.treemix){
+        if(params.treemix || params.ihs || params.xp_ehh || params.sweepfinder2 || params.tajimas_d || params.fst_one_vs_all || params.pi_val || params.pairwise_local_fst){
             //
             // MODULE: PLINK2_CONVERT_BED_TO_VCF
             //
@@ -286,13 +289,37 @@ workflow SCALEPOPGEN {
             n1_meta_vcf_idx_map
         )
     }
-    if( params.run_sweepfinder2 ){
+
+    if( is_vcf ){
+        n2_meta_vcf_idx_map = n1_meta_vcf_idx_map
+    }
+    else{
+        map_f = n1_meta_vcf_idx_map.map{meta,vcf,idx,map->map}
+        //
+        //MODULE: BCFTOOLS_SPLIT
+        //
+        BCFTOOLS_SPLIT(
+            n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf,idx)}
+        )
+
+        meta_vcf = BCFTOOLS_SPLIT.out.split_vcf.map{meta,vcf->vcf}.flatten().map{vcf->tuple([id:vcf.getName().minus(".vcf.gz").split("\\.")[-1]], vcf)}
+        //
+        //MODULE: TABIX_TABIX
+        //
+        TABIX_TABIX(
+            meta_vcf
+        )
+
+        n2_meta_vcf_idx_map = meta_vcf.join(TABIX_TABIX.out.tbi).combine(map_f)
+    }
+            
+    if ( params.sweepfinder2 ){
         if( params.est_anc_alleles ){
             //
             // SUBWORKFLOW : PREPARE_ANC_FILES
             //
             PREPARE_ANC_FILES(
-                n1_meta_vcf_idx_map
+                n2_meta_vcf_idx_map
             )
             //n1_meta_vcf_idx_map_anc = PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc
         }
@@ -300,9 +327,18 @@ workflow SCALEPOPGEN {
         // SUBWORKFLOW : RUN_SWEEPFINDER2
         //
         RUN_SWEEPFINDER2(
-            params.est_anc_alleles ? PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc : n1_meta_vcf_idx_map.combine([null])
+            params.est_anc_alleles ? PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc : n2_meta_vcf_idx_map.combine([null])
         )
-    }
+        }
+    if( params.ihs || params.xp_ehh ){
+            //
+            //SUBWORKFLOW : PHASE_GENOTYPES
+            //
+            PHASE_GENOTYPES(
+                n2_meta_vcf_idx_map
+            )
+
+        }
     /*
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
