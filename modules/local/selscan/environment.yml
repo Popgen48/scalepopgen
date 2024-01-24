@@ -1,0 +1,7 @@
+name: selscan
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - selscan==1.2.0a

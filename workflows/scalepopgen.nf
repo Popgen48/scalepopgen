@@ -57,6 +57,7 @@ include { RUN_VCFTOOLS         } from '../subworkflows/local/run_vcftools'
 include { PREPARE_ANC_FILES    } from '../subworkflows/local/prepare_anc_files'
 include { RUN_SWEEPFINDER2     } from '../subworkflows/local/run_sweepfinder2'
 include { PHASE_GENOTYPES      } from '../subworkflows/local/phase_genotypes'
+include { RUN_SELSCAN          } from '../subworkflows/local/run_selscan'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -336,6 +337,13 @@ workflow SCALEPOPGEN {
             //
             PHASE_GENOTYPES(
                 n2_meta_vcf_idx_map
+            )
+
+            //
+            //SUBWORKFLOW : RUN_SELSCAN
+            //
+            RUN_SELSCAN(
+                PHASE_GENOTYPES.out.n3_meta_vcf_idx_map
             )
 
         }

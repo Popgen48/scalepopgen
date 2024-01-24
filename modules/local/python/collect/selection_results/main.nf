@@ -7,7 +7,7 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
     publishDir("${params.outdir}/summary_stats/samples/", mode:"copy")
 
     input:
-        tuple val(pop), path(result_files)
+        tuple val(pop), path(results)
         val(method)
 
     output:
@@ -16,7 +16,7 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
         
     
     script:
-        pop_n = method == "sweepfinder2" ? pop.id: pop
+        pop_n = (method == "sweepfinder2" || method == "ihs") ? pop.id: pop
         window_size = params.window_size
         perc_threshold = params.perc_threshold
         outfile = pop_n+"_"+method
@@ -25,7 +25,7 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
 
         """
         
-        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${perc_threshold} ${method} ${outfile} ${result_files}
+        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${perc_threshold} ${method} ${outfile} ${results}
         
         
         """ 

@@ -5,6 +5,178 @@
     "description": "scalepopgen is a fully automated nextflow-based pipeline that takes vcf files or plink generated bed files as input and employ a variety of open-source tools to carry out comprehensive population genomic analyses. ",
     "type": "object",
     "definitions": {
+        "signature_of_selection_options": {
+            "title": "signature of selection options",
+            "type": "object",
+            "description": "Parameters used to carry out signature of selection analysis",
+            "default": "",
+            "properties": {
+                "min_sample_size": {
+                    "type": "integer",
+                    "default": 8
+                },
+                "skip_pop": {
+                    "type": "string",
+                    "description": "The path to the text file containing population IDs that will be skipped from all the analyses of this section."
+                },
+                "skip_outgroup": {
+                    "type": "boolean",
+                    "description": "Setting this to \"false\" will not apply the methods to identify signatures of selection on outgroup samples. Default: True",
+                    "default": true
+                },
+                "selection_plot_yml": {
+                    "type": "string",
+                    "default": "popgen48-scalepopgen/extra/plots/manhattanplot.yml",
+                    "description": "Path to the yml file for interactive manattan plot. Default: ./parameters/plots/manhattplot.yml."
+                },
+                "pairwise_local_fst": {
+                    "type": "boolean",
+                    "description": "Whether or not to calculate pairwise fst in windows or for each SNPs for every possible pair of population.Default: false"
+                },
+                "fst_one_vs_all": {
+                    "type": "string"
+                },
+                "tajimas_d": {
+                    "type": "boolean",
+                    "description": "Whether to calculate Tajimas'D for each population using vcftools. Default: False"
+                },
+                "pi_val": {
+                    "type": "boolean",
+                    "description": "Whether to calculate per-SNP pi values or per-window pi values for each population using vcftools. Default: False"
+                },
+                "skip_chromwise": {
+                    "type": "string"
+                },
+                "window_size": {
+                    "type": "integer",
+                    "default": 50000,
+                    "description": "Window size for the calculation of all signature of selection analysis. Default: 50000"
+                },
+                "step_size": {
+                    "type": "integer",
+                    "default": 50000,
+                    "description": "The desired step size between windows for Fst calculation. Default: 50000"
+                },
+                "perc_threshold": {
+                    "type": "number",
+                    "default": 0.01
+                },
+                "est_anc_alleles": {
+                    "type": "string"
+                },
+                "anc_alleles_map": {
+                    "type": "string"
+                },
+                "sweepfinder2": {
+                    "type": "string"
+                },
+                "sweepfinder2_model": {
+                    "type": "string",
+                    "default": "l"
+                },
+                "grid_space": {
+                    "type": "integer",
+                    "default": 50000,
+                    "description": "The spacing in number of nucleotides between grid points, option \"g\" in SweepFinder2. Default: 50000."
+                },
+                "grid_points": {
+                    "type": "integer",
+                    "description": "The number of points equally spaced across the genome, option \"G\" in SweepFinder2.",
+                    "default": -9
+                },
+                "recomb_map": {
+                    "type": "string"
+                },
+                "ihs": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether or not to calculate iHS using selscan. Default: True"
+                }
+            }
+        },
+        "phasing_options": {
+            "title": "phasing options",
+            "type": "object",
+            "description": "Parameters used to carry out genotype phasing",
+            "default": "",
+            "properties": {
+                "skip_phasing": {
+                    "type": "boolean",
+                    "description": "Setting this to false will skip phasing the data for the analyses with selscan."
+                },
+                "phasing_panel": {
+                    "type": "string"
+                },
+                "phasing_map": {
+                    "type": "string"
+                },
+                "beagle5": {
+                    "type": "string"
+                },
+                "burnin": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "The maximum number of burnin iterations, option \"burnin\" in Beagle. Default: 6"
+                },
+                "iterations": {
+                    "type": "integer",
+                    "default": 12,
+                    "description": "The number of iterations, option \"iterations\" in Beagle. Default: 12"
+                },
+                "ne": {
+                    "type": "integer",
+                    "default": 1000000,
+                    "description": "The effective population size, option \"ne\" in Beagle. Default: 1000000"
+                },
+                "impute": {
+                    "type": "boolean",
+                    "description": "An option to impute the missing genotypes . Default: False"
+                }
+            }
+        },
+        "treemix_options": {
+            "title": "treemix options",
+            "type": "object",
+            "description": "Parameters used to carry out treemix analysis",
+            "default": "",
+            "properties": {
+                "treemix": {
+                    "type": "boolean",
+                    "description": "Whether or not to run treemix analyis. Default = False"
+                },
+                "k_snps": {
+                    "type": "integer",
+                    "default": 500,
+                    "description": "Number of block of snps in treemix analysis. Default = 500"
+                },
+                "treemix_args": {
+                    "type": "string"
+                },
+                "n_bootstrap": {
+                    "type": "integer",
+                    "default": 5,
+                    "description": "Number of bootstrapping to run for treemix analyis (without migration edge). Default = 5"
+                },
+                "set_random_seed": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "n_mig": {
+                    "type": "integer",
+                    "default": 4,
+                    "description": "Total number of migration edges. Default = 4"
+                },
+                "n_iter": {
+                    "type": "integer",
+                    "default": 3,
+                    "description": "Number of iterations to be carried out with each value of \"m\". Default = 3"
+                },
+                "rand_k_snps": {
+                    "type": "boolean",
+                    "default": true
+                }
+            }
+        },
         "genetic_structure_options": {
             "title": "genetic structure options",
             "type": "object",
@@ -12,33 +184,99 @@
             "default": "",
             "properties": {
                 "genetic_structure": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Setting this to \"false\" will skip processing this entire module, meaning all the following options will be disabled. Default: False."
                 },
                 "rem_indi_structure": {
                     "type": "string",
                     "format": "file-path",
-                    "pattern": "^\\S+\\.map$"
+                    "pattern": "^\\S+\\.map$",
+                    "description": "Path to the file containing list of individuals to be removed before running PCA and/or admixture. Note that this file should contain two columns: first column as population_id and second column as sample id to be removed."
                 },
                 "ld_filt": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Whether or not to apply ld-based pruning of the dataset before running PCA or/and admixture analysis. Default: False."
                 },
                 "ld_window_size": {
                     "type": "string",
-                    "default": "50"
+                    "default": "50",
+                    "description": "Window size for LD calculation (as implemented in plink). Default: 50"
                 },
                 "ld_step_size": {
                     "type": "string",
-                    "default": "10"
+                    "default": "10",
+                    "description": "Step size for LD calculation (as implemented in plink). Default: 10"
                 },
                 "r2_threshold": {
                     "type": "string",
-                    "default": "0.1"
+                    "default": "0.1",
+                    "description": "r2 value of a SNP pair above which one of the SNPs will be discarded. Default: 0.1"
                 },
                 "smartpca": {
                     "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "description": "Run PCA using the method implemented in smartpca tool of eigensoft. Default: True"
                 },
                 "smartpca_param": {
+                    "type": "string",
+                    "description": "Path to the file containing additional/optional parameters to apply smartpca. To see the list of these parameters:https://github.com/chrchang/eigensoft/blob/master/POPGEN/README."
+                },
+                "pca_plot_yml": {
+                    "type": "string",
+                    "default": "popgen48-scalepopgen/extra/plots/pca.yml",
+                    "description": "Path to the yaml file containing the paramterers to plot interactive PCA results. Default:\"./parameters/plots/pca_params.yml\"."
+                },
+                "marker_map": {
+                    "type": "string",
+                    "description": "Path to the file containing first column as population id and second column as marker shape. Available markers shape are listed in \"./extra/markershapes.txt\" . If no such file is provided, random marker shapes will be selected."
+                },
+                "chrom_map": {
+                    "type": "string"
+                },
+                "admixture": {
+                    "type": "boolean",
+                    "description": "Run admixture analysis. Default: False"
+                },
+                "start_k": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Starting range of \"k\" value to run admixture analysis. Default: 2"
+                },
+                "end_k": {
+                    "type": "integer",
+                    "default": 21,
+                    "description": "Ending range of \"k\" value to run admixture analysis. Default: 40"
+                },
+                "admixture_args": {
+                    "type": "string",
+                    "default": "--cv=5"
+                },
+                "admixture_colors": {
+                    "type": "string",
+                    "default": "popgen48-scalepopgen/extra/hexcolorcodes.txt"
+                },
+                "admixture_plot_yml": {
+                    "type": "string",
+                    "default": "popgen48-scalepopgen/extra/plots/admixture.yml",
+                    "description": "Path to the yaml file containing the parameters of plotting interactive Q matrix of optimal value of \"K\". Default: \"./parameters/plots/admixture.yml"
+                },
+                "pairwise_global_fst": {
+                    "type": "string"
+                },
+                "fst_plot_yml": {
+                    "type": "string",
+                    "default": "popgen48-scalepopgen/extra/plots/fst_nj.yml",
+                    "description": "Path to the yaml file containing the paramterers to plot interactive fst-based NJ tree. Default:\"./parameters/plots/fst_nj.yml\""
+                },
+                "ibs_dist": {
+                    "type": "string"
+                },
+                "ibs_plot_yml": {
+                    "type": "string",
+                    "default": "popgen48-scalepopgen/extra/plots/ibs_nj.yml",
+                    "description": "Path to the yaml file containing the paramterers to plot interactive ibs distance-based NJ tree. Default:\"./parameters/plots/ibs_nj.yml\""
+                },
+                "admixture_plot_pop_order": {
                     "type": "string"
                 }
             }
@@ -56,14 +294,14 @@
                 },
                 "mind": {
                     "type": "number",
-                    "description": "samples with missing genotypes greater than this will be removed. Setting this to 0 will disable this parameter",
+                    "description": "Samples with missing genotypes greater than this will be removed. Setting this to 0 will disable this parameter.",
                     "default": 0,
                     "minimum": 0,
                     "maximum": 1
                 },
                 "king_cutoff": {
                     "type": "number",
-                    "description": "King relationship coefficient value above which the pairs of individuals are considered to be related and based on these pairwise values, plink2 will output the unrelated samples. Setting this to 0 will skip this parameter",
+                    "description": "King relationship coefficient value above which the pairs of individuals are considered to be related and based on these pairwise values, plink2 will output the unrelated samples. Setting this to 0 will skip this parameter.",
                     "default": 0,
                     "minimum": 0,
                     "maximum": 1
@@ -74,52 +312,52 @@
                 },
                 "rem_snps": {
                     "type": "string",
-                    "description": "path to the file containing SNP ids to be removed in case of plink-bed files. In case of vcf file, this file should contain two columns: first column as chromsome_id and second column as positions to be removed",
+                    "description": "Path to the file containing SNP ids to be removed in case of plink-bed files. In case of vcf file, this file should contain two columns: first column as chromsome_id and second column as positions to be removed.",
                     "pattern": "^\\S+\\.map$",
                     "format": "file-path"
                 },
                 "apply_snp_filters": {
                     "type": "boolean",
-                    "description": "setting this to false overrides all other sites-filtering parameters, i.e. sites-filtering will not be carried out irrespective of any parameters set for --remove_snps,  --maf, --min_meanDP, --max_meanDP, --hwe, --max_missing and --minQ. Note that, depending on the input files, these parameters may or may not be applied. For example, depth-related information and SNP quality information are not available (of course) for plink bed files and therefore, these parameters will be ignored in that case. However, parameters like max_missing, hwe and maf are applied to vcf as well as to plink-bed files."
+                    "description": "Setting this to false overrides all other sites-filtering parameters, i.e. sites-filtering will not be carried out irrespective of any parameters set for --remove_snps,  --maf, --min_meanDP, --max_meanDP, --hwe, --max_missing and --minQ. Note that, depending on the input files, these parameters may or may not be applied. For example, depth-related information and SNP quality information are not available (of course) for plink bed files and therefore, these parameters will be ignored in that case. However, parameters like max_missing, hwe and maf are applied to vcf as well as to plink-bed files."
                 },
                 "maf": {
                     "type": "number",
                     "default": -9,
-                    "description": "sites with minor allele frequencies less than this will be filtered, if set to any value < 0, this filter will be ignored"
+                    "description": "Sites with minor allele frequencies less than this will be filtered, if set to any value < 0, this filter will be ignored."
                 },
                 "min_meanDP": {
                     "type": "number",
                     "default": -9,
-                    "description": "sites with average depth (across the samples) less than this will be filtered out, set to any value < 0, this filter will be ignored"
+                    "description": "Sites with average depth (across the samples) less than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "max_meanDP": {
                     "type": "number",
                     "default": -9,
-                    "description": "sites with average depth (across the samples) greater than this will be filtered out, set to any value < 0, this filter will be ignored."
+                    "description": "Sites with average depth (across the samples) greater than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "hwe": {
                     "type": "number",
                     "default": -9,
-                    "description": "sites with p-value (hwe) less than this will be filtered out, set to any value < 0, this filter will be ignored."
+                    "description": "Sites with p-value (hwe) less than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "max_missing": {
                     "type": "number",
                     "default": -9,
-                    "description": "sites with genotypes missing more than this proportion of samples will be filtered out, set to any value < 0, this filter will be ignored"
+                    "description": "Sites with genotypes missing more than this proportion of samples will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "minQ": {
                     "type": "integer",
                     "default": -9,
-                    "description": "sites with SNP quality less than this will be filtered out, set to any value < 0, this filter will be ignored"
+                    "description": "Sites with SNP quality less than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "indiv_summary": {
                     "type": "boolean",
-                    "description": "calculate sample-based summary statistics from vcf files; calculated only after applying individual- and site-based filtering."
+                    "description": "Calculate sample-based summary statistics from vcf files; calculated only after applying individual- and site-based filtering."
                 }
             }
         },
-        "input_output_options": {
-            "title": "Input/output options",
+        "general_options": {
+            "title": "General options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
@@ -169,17 +407,29 @@
                 },
                 "outprefix": {
                     "type": "string",
-                    "description": "Prefix to be applied to all the outgroups produced by the workflow",
+                    "description": "Prefix to be applied to all the outgroups produced by the workflow.",
                     "default": "scalepopgen"
                 },
                 "allow_extra_chrom": {
                     "type": "boolean",
-                    "description": "set this argument to \"true\" if the chromosome id contains string"
+                    "description": "Set this argument to \"true\" if the chromosome id contains string."
                 },
                 "max_chrom": {
                     "type": "number",
-                    "description": "maximum chromosomes to be considered for the analyses. Note that the workflow only consider the autosomes.",
+                    "description": "Maximum chromosomes to be considered for the analyses. Note that the workflow only consider the autosomes.",
                     "default": 29
+                },
+                "chrom_length_map": {
+                    "type": "string",
+                    "description": "If the inputs are plink binary files, map file is needed to set the chromosome id and its respective size in the vcf header."
+                },
+                "fasta": {
+                    "type": "string",
+                    "description": "If the inputs are plink binary files, fasta file is needed to set the reference allele in the converted vcf files. If not provided, the major allele will be set as the reference allele for all positions for all analyses."
+                },
+                "outgroup": {
+                    "type": "string",
+                    "description": "The population id to be used as an outgroup, this will be used in the following analyses:                              1). treemix --> as a root in ML phylogenetic tree                              2). Fst-based NJ clustering --> as a root                               3). selection analysis --> to determine the ancestral and derived alleles                              For more details, read the online documentation."
                 }
             }
         },
@@ -297,7 +547,7 @@
                 },
                 "hook_url": {
                     "type": "string",
-                    "description": "Incoming hook URL for messaging service",
+                    "description": "Incoming hook URL for messaging service.",
                     "fa_icon": "fas fa-people-group",
                     "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
@@ -311,7 +561,7 @@
                 },
                 "multiqc_logo": {
                     "type": "string",
-                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file.",
                     "fa_icon": "fas fa-image",
                     "hidden": true
                 },
@@ -322,7 +572,7 @@
                 },
                 "validate_params": {
                     "type": "boolean",
-                    "description": "Boolean whether to validate parameters against the schema at runtime",
+                    "description": "Boolean whether to validate parameters against the schema at runtime.",
                     "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
@@ -330,7 +580,7 @@
                 "validationShowHiddenParams": {
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
-                    "description": "Show all params when using `--help`",
+                    "description": "Show all params when using `--help`.",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
@@ -353,13 +603,22 @@
     },
     "allOf": [
         {
+            "$ref": "#/definitions/signature_of_selection_options"
+        },
+        {
+            "$ref": "#/definitions/phasing_options"
+        },
+        {
+            "$ref": "#/definitions/treemix_options"
+        },
+        {
             "$ref": "#/definitions/genetic_structure_options"
         },
         {
             "$ref": "#/definitions/filtering_options"
         },
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/general_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
@@ -370,5 +629,10 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "xpehh": {
+            "type": "string"
+        }
+    }
 }

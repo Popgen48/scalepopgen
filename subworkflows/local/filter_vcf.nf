@@ -74,6 +74,7 @@ workflow FILTER_VCF{
                 // 
                 VCFTOOLS_KEEP(
                     meta_vcf_idx_map.combine(GAWK_EXTRACT_SAMPLEID.out.txt)
+                    Channel.value("keep")
                 )
 
                 //
