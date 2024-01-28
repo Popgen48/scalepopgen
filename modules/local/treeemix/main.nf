@@ -3,7 +3,9 @@ process TREEMIX{
     tag { "${n_iter}_${n_mig}_${n_seed}" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
-    container "popgen48/treemix:1.13"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/treemix:1.13' :
+        'popgen48/treemix:1.13' }"
     publishDir("${params.outdir}/treemix/${local_dir}/", mode:"copy")
 
     input:

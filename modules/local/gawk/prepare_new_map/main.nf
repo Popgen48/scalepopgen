@@ -14,7 +14,8 @@ process GAWK_PREPARE_NEW_MAP{
 
     output:
         path("*new_sample_pop.map"), emit: txt
-        
+        path "versions.yml", emit: versions
+       
     
     script:
         outprefix = params.outprefix
@@ -22,7 +23,12 @@ process GAWK_PREPARE_NEW_MAP{
         if (params.mind > 0 || params.king_cutoff > 0 ){
 
         """
-        awk 'NR==FNR{sample_id[\$1];next}\$1 in sample_id{print}' ${unrel_id} ${map_f} > ${outprefix}_new_sample_pop.map
+    awk 'NR==FNR{sample_id[\$1];next}\$1 in sample_id{print}' ${unrel_id} ${map_f} > ${outprefix}_new_sample_pop.map
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
 
         """ 
@@ -34,8 +40,12 @@ process GAWK_PREPARE_NEW_MAP{
                 
         """
 
-        awk 'NR==FNR{sample_id[\$1];next}!(\$1 in sample_id){print}' ${unrel_id} ${map_f} > ${outprefix}_new_sample_pop.map
+    awk 'NR==FNR{sample_id[\$1];next}!(\$1 in sample_id){print}' ${unrel_id} ${map_f} > ${outprefix}_new_sample_pop.map
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
         """        
         }

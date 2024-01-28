@@ -3,7 +3,9 @@ process RSCRIPT_PLOT_TREE{
     tag { "treemix_tree" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
-    container "popgen48/rscript_treemix:1.0.0"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/rscript_treemix:1.0.0' :
+        'popgen48/rscript_treemix:1.0.0' }"
     publishDir("${params.outdir}/treemix/${method}/", mode:"copy")
 
     input:

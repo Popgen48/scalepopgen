@@ -15,6 +15,7 @@ process PLINK2_INDEP_PAIRWISE{
         tuple val(meta_n), path("*ld_filtered.{bed,bim,fam}"), emit: bed
         path("*.log")
         path("*prune*")
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -46,6 +47,10 @@ process PLINK2_INDEP_PAIRWISE{
         --extract plink2.prune.in \\
         --out ${prefix}_ld_filtered
         
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
+    END_VERSIONS
 
         """ 
 

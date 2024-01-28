@@ -13,6 +13,7 @@ process VCFTOOLS_SELECTION{
 
     output:
         tuple val(pop1), path ("*${outprefix}*"), emit: txt
+        path "versions.yml", emit: versions
 
     script:
         chrom=meta.id
@@ -30,7 +31,12 @@ process VCFTOOLS_SELECTION{
 
         """
 
-        vcftools --gzvcf ${vcf} ${window} ${step_size} ${args}
+    vcftools --gzvcf ${vcf} ${window} ${step_size} ${args}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        vcftools: \$(echo \$(vcftools --version 2>&1) | sed 's/^.*VCFtools (//;s/).*//')
+    END_VERSIONS
 
 
         """ 

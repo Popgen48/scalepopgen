@@ -12,7 +12,8 @@ process GAWK_MODIFY_PHENO_COL_PED{
         tuple val(meta), path(pedmap)
     output:
         tuple val(meta), path("*.1.ped"), emit: ped
-        
+         path "versions.yml", emit: versions
+       
     
     script:
         outprefix = params.outprefix
@@ -20,7 +21,12 @@ process GAWK_MODIFY_PHENO_COL_PED{
 
 
         """
-        awk '\$6=\$1' ${prefix}.ped > ${prefix}.1.ped
+    awk '\$6=\$1' ${prefix}.ped > ${prefix}.1.ped
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
         """ 
 

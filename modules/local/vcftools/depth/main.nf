@@ -14,6 +14,7 @@ process VCFTOOLS_DEPTH{
     output:
         path("${chrom}*.idepth"), emit: sampledepthinfo
         path("*.log")
+        path "versions.yml", emit: versions
     
     script:
         
@@ -21,12 +22,16 @@ process VCFTOOLS_DEPTH{
                 
             """
 
-            vcftools --gzvcf ${f_vcf} --depth --out ${chrom}_depth_info
+    vcftools --gzvcf ${f_vcf} --depth --out ${chrom}_depth_info
            
 
-            cp .command.log ${chrom}_depth_info.log
+    cp .command.log ${chrom}_depth_info.log
 
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        vcftools: \$(echo \$(vcftools --version 2>&1) | sed 's/^.*VCFtools (//;s/).*//')
+    END_VERSIONS
 
             """        
             

@@ -13,6 +13,7 @@ process GAWK_CREATE_ANC_FILES{
 
     output:
         tuple val(meta), path ("*.anc"), emit: anc
+         path "versions.yml", emit: versions
     
     script:
         chrom = meta.id
@@ -21,6 +22,10 @@ process GAWK_CREATE_ANC_FILES{
 
         awk 'NR==FNR{chrom[NR]=\$1;pos[NR]=\$2;major_allele[NR]=\$3;next}FNR>7{if(\$3<0.5){major_allele[\$1]==0 ? anc_allele=1 : anc_allele=0}else{anc_allele=major_allele[\$1]}anc_allele==1 ? der_allele=0:der_allele=1;print chrom[\$1],pos[\$1],anc_allele,der_allele}' ${map} ${pvalue} > ${chrom}.anc
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
         """ 
 }

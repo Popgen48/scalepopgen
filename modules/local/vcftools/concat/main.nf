@@ -13,6 +13,7 @@ process VCFTOOLS_CONCAT{
 
     output:
         tuple val(meta), path ("${file_prefix}.vcf.gz"), emit: concatenatedvcf
+        path "versions.yml", emit: versions
 
     script:
         meta= [:]
@@ -20,7 +21,14 @@ process VCFTOOLS_CONCAT{
         file_prefix = params.outprefix
 
         """
-        vcf-concat $vcf|gzip -c > ${file_prefix}.vcf.gz
+
+    vcf-concat $vcf|gzip -c > ${file_prefix}.vcf.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        vcftools: \$(echo \$(vcftools --version 2>&1) | sed 's/^.*VCFtools (//;s/).*//')
+    END_VERSIONS
+
 
         """ 
 }

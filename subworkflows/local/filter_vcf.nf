@@ -13,6 +13,8 @@ workflow FILTER_VCF{
         is_vcf
 
     main:
+        versions = Channel.empty()
+
         if( params.apply_indi_filters ){
         
             o_map = meta_vcf_idx_map.map{meta, vcf, idx, map_f -> map_f}.unique()
@@ -28,7 +30,8 @@ workflow FILTER_VCF{
                     rif,
                     Channel.value("remove")
                 )
-                    
+             versions = versions.mix(REMOVE_SAMPLE_LIST.out.versions)
+                   
             }
 
             /* --> king_cutoff and missingness filter should be based on the entire genome therefore vcf file should be concatenated first and then 
@@ -52,6 +55,8 @@ workflow FILTER_VCF{
                     Channel.value("filtering")
                 )
 
+                versions = versions.mix(VCFTOOLS_CONCAT.out.versions)
+
                 //
                 // MODULE: FILTER_SAMPLES
                 //
@@ -61,6 +66,8 @@ workflow FILTER_VCF{
                     params.rem_indi ? REMOVE_SAMPLE_LIST.out.txt : []
                 )
 
+                versions = versions.mix(FILTER_SAMPLES.out.versions)
+
                 //
                 // MODULE : GAWK_EXTRACT_SAMPLEID
                 //
@@ -68,6 +75,8 @@ workflow FILTER_VCF{
                     FILTER_SAMPLES.out.bed.map{meta,bed->bed[2]},
                     Channel.value("keep")
                 )
+        
+                versions = versions.mix(GAWK_EXTRACT_SAMPLEID.out.versions)
 
                 //
                 // MODULE: VCFTOOLS_KEEP
@@ -76,6 +85,8 @@ workflow FILTER_VCF{
                     meta_vcf_idx_map.combine(GAWK_EXTRACT_SAMPLEID.out.txt)
                     Channel.value("keep")
                 )
+                
+                versions = versions.mix(VCFTOOLS_KEEP.out.versions)
 
                 //
                 // MODULE: GAWK_PREPARE_NEW_MAP
@@ -86,6 +97,8 @@ workflow FILTER_VCF{
                 )
                 n0_meta_vcf_idx_map = VCFTOOLS_KEEP.out.vcf.combine(GAWK_PREPARE_NEW_MAP.out.txt).map{meta,vcf,map->tuple(meta,vcf,[],map)}           
 
+                versions = versions.mix(GAWK_PREPARE_NEW_MAP.out.versions)
+
             }
             else{
                 //
@@ -95,6 +108,7 @@ workflow FILTER_VCF{
                     meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf,idx)}.combine(rif)
                 )
 
+                versions = versions.mix(VCFTOOLS_REMOVE.out.versions)
                 //
                 //MODULE: GAWK_PREPARE_NEW_MAP
                 //
@@ -103,6 +117,8 @@ workflow FILTER_VCF{
                     rif
                 )
                 n0_meta_vcf_idx_map = VCFTOOLS_REMOVE.out.vcf.combine(GAWK_PREPARE_NEW_MAP.out.txt).map{meta,vcf,map->tuple(meta,vcf,[],map)}
+
+                versions = versions.mix(GAWK_PREPARE_NEW_MAP.out.versions)
             }
     }
     else{
@@ -118,6 +134,8 @@ workflow FILTER_VCF{
                 n0_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}
             )
             n1_meta_vcf_idx_map = VCFTOOLS_FILTER_SITES.out.vcf.combine(n_map).map{meta,vcf,map->tuple(meta,vcf,[],map)}
+
+            versions = versions.mix(VCFTOOLS_FILTER_SITES.out.versions)
     }
     else{
         n1_meta_vcf_idx_map = n0_meta_vcf_idx_map
@@ -131,8 +149,11 @@ workflow FILTER_VCF{
         n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}
     )
     
+    versions = versions.mix(LOCAL_TABIX_BGZIPTABIX.out.versions)
+
     n2_meta_vcf_idx_map = LOCAL_TABIX_BGZIPTABIX.out.gz_tbi.combine(n1_map)
 
     emit:
         n1_meta_vcf_idx_map = n2_meta_vcf_idx_map
+        versions
 }

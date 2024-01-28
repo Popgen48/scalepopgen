@@ -13,13 +13,19 @@ process GAWK_MERGE_FREQ_FILES{
 
     output:
         tuple val(meta), path ( "*_combined.freq"), emit: pop_cfreq
+        path "versions.yml", emit: versions
 
     script:
         pop = meta.id    
 
         """
                         
-        awk '{print}' ${freqs} > ${pop}_combined.freq
+    awk '{print}' ${freqs} > ${pop}_combined.freq
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
             
 
         """ 

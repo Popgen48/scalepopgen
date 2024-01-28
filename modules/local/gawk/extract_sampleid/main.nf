@@ -14,7 +14,8 @@ process GAWK_EXTRACT_SAMPLEID{
 
     output:
         path("*indi.txt"), emit: txt
-        
+        path "versions.yml", emit: versions
+       
     
     script:
         outprefix = params.outprefix
@@ -22,7 +23,12 @@ process GAWK_EXTRACT_SAMPLEID{
         //stepdir = operation == "remove" ? "indi_filtered" : 
 
         """
-        awk '{print \$2}' ${remindi} > ${outprefix}_${suffix}
+    awk '{print \$2}' ${remindi} > ${outprefix}_${suffix}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
         """ 
 
 }

@@ -14,6 +14,7 @@ process VCFTOOLS_FILTER_SITES{
     output:
         tuple val(meta), path("*filt_sites.vcf.gz"), emit: vcf
         path("*.log"), emit: log
+        path "versions.yml", emit: versions
     
     script:
         def opt_arg = ""
@@ -43,11 +44,15 @@ process VCFTOOLS_FILTER_SITES{
 
         """
         
-        vcftools --gzvcf ${f_vcf} ${opt_arg} --recode --stdout |sed "s/\\s\\.:/\t.\\/.:/g"|gzip -c > ${prefix}_filt_sites.vcf.gz
+    vcftools --gzvcf ${f_vcf} ${opt_arg} --recode --stdout |sed "s/\\s\\.:/\t.\\/.:/g"|gzip -c > ${prefix}_filt_sites.vcf.gz
 
 
-        cp .command.log ${prefix}_filter_sites.log
+    cp .command.log ${prefix}_filter_sites.log
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        vcftools: \$(echo \$(vcftools --version 2>&1) | sed 's/^.*VCFtools (//;s/).*//')
+    END_VERSIONS
 
         """ 
 }

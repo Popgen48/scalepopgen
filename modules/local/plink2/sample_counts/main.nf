@@ -15,6 +15,7 @@ process PLINK2_SAMPLE_COUNTS{
 
     output:
         path("${chrom}_sample_summary.scount"), emit: samplesummary
+        path "versions.yml", emit: versions
         
     
     script:
@@ -36,7 +37,12 @@ process PLINK2_SAMPLE_COUNTS{
 
         """
         
-        plink2 ${opt_args}
+    plink2 ${opt_args}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
+    END_VERSIONS
 
 
         """ 

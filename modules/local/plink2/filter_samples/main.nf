@@ -20,6 +20,7 @@ process FILTER_SAMPLES{
         path("*.log" ), emit: log_file
         path("*king*"), emit: king_out optional true
         tuple val(n_meta), path("${new_prefix}_rem_indi.{bed,bim,fam}"), emit: bed
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -52,7 +53,12 @@ process FILTER_SAMPLES{
         }
     
         """
-        plink2 ${opt_args}
+    plink2 ${opt_args}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
+    END_VERSIONS
 
         """ 
 

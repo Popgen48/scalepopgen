@@ -13,6 +13,7 @@ process GAWK_PREPARE_RECOMB_MAP_SELSCAN{
 
     output:
         tuple val( meta ), path ( "${prefix}.map" ), emit: meta_selscanmap
+        path "versions.yml", emit: versions
 
     script:
 
@@ -22,7 +23,12 @@ process GAWK_PREPARE_RECOMB_MAP_SELSCAN{
         """
                         
 
-         zcat ${vcf}|awk '\$0!~/#/{sum++;print \$1,"locus"sum,\$2/${cm_to_bp},\$2}' > ${prefix}.map
+    zcat ${vcf}|awk '\$0!~/#/{sum++;print \$1,"locus"sum,\$2/${cm_to_bp},\$2}' > ${prefix}.map
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
 
         """ 

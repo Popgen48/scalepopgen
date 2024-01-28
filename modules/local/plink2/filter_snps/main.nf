@@ -16,6 +16,7 @@ process FILTER_SNPS{
     output:
         tuple val(n_meta), path("${new_prefix}_filt_site*.{bed,bim,fam}"), emit: n1_meta_bed
         path("*.log" ), emit: log_file
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -56,7 +57,12 @@ process FILTER_SNPS{
         
         """
 	
-        plink2 --bfile ${new_prefix} ${opt_args}
+    plink2 --bfile ${new_prefix} ${opt_args}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        plink2: \$(plink2 --version 2>&1 | sed 's/^PLINK v//; s/ 64.*\$//' )
+    END_VERSIONS
             
 
         """ 

@@ -14,6 +14,7 @@ process GAWK_MAKE_SAMPLE_MAP{
 
     output:
         path("${outprefix}.map"), emit:map
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -24,7 +25,12 @@ process GAWK_MAKE_SAMPLE_MAP{
 	
         """
 
-        awk '{print \$2,\$1}' ${fam} > ${outprefix}.map
+    awk '{print \$2,\$1}' ${fam} > ${outprefix}.map
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
         """ 
 

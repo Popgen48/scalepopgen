@@ -13,6 +13,7 @@ process GAWK_MERGE_TREEMIX_INPUTS{
 
     output:
         path("*treemix_input.gz"), emit: gz
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -23,7 +24,12 @@ process GAWK_MERGE_TREEMIX_INPUTS{
 
         """
 
-        cat ${treemix_inputs} | awk '{if(NR==1){print;next}else;if(\$0~/,/){print}}'|gzip -c > ${outprefix}_treemix_input.gz
+    cat ${treemix_inputs} | awk '{if(NR==1){print;next}else;if(\$0~/,/){print}}'|gzip -c > ${outprefix}_treemix_input.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
         """ 
 }

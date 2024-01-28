@@ -12,6 +12,7 @@ process GAWK_UPDATE_CHROM_IDS{
 
     output:
         path("${outprefix}_chrom.map"), emit: map
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -21,7 +22,12 @@ process GAWK_UPDATE_CHROM_IDS{
 
 	"""
 	    
-        awk -v cnt=0 '{if(!(\$1 not in a)){a[\$1];cnt++;print \$1,cnt}}' ${bim} > ${outprefix}_chrom.map
+    awk -v cnt=0 '{if(!(\$1 not in a)){a[\$1];cnt++;print \$1,cnt}}' ${bim} > ${outprefix}_chrom.map
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
 	    
 	"""

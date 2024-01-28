@@ -6,6 +6,8 @@ workflow FILTER_BED{
         bed
         is_vcf
     main:
+        versions = Channel.empty()
+
         if(params.apply_indi_filters){
             //
             //MODULE: FILTER_SAMPLES
@@ -19,6 +21,8 @@ workflow FILTER_BED{
                 params.rem_indi ? rmi : []
             )
             n0_meta_bed = FILTER_SAMPLES.out.bed
+
+            versions = versions.mix(FILTER_SAMPLES.out.versions)
         }
         else{
                 n0_meta_bed = bed
@@ -36,6 +40,8 @@ workflow FILTER_BED{
                 params.rem_snps ? rms : []
             )
             n1_meta_bed = FILTER_SNPS.out.n1_meta_bed
+
+            versions = versions.mix(FILTER_SNPS.out.versions)
         }
         else{
             n1_meta_bed = n0_meta_bed
@@ -43,4 +49,5 @@ workflow FILTER_BED{
 
     emit:
         n1_meta_bed = n1_meta_bed
+        versions
 }

@@ -3,7 +3,9 @@ process RSCRIPT_OPTM{
     tag { "estimate_optimal_mig_edge" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
-    container 'popgen48/rscript_optm:0.1.6'
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/rscript_optm:0.1.6' :
+        'popgen48/rscript_optm:0.1.6' }"
     publishDir("${params.outdir}/treemix", mode:"copy")
 
     input:

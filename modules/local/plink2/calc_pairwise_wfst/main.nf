@@ -16,6 +16,7 @@ process PLINK2_CALC_PAIRWISE_FST{
     output:
         path("*.log"), emit:log
         path("*.fst.summary"), emit: fst_mat
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -24,6 +25,7 @@ process PLINK2_CALC_PAIRWISE_FST{
         def args = task.ext.args ?: ''
         def mem_mb = task.memory.toMega()
         def prefix = meta.id
+
 
 	
         """

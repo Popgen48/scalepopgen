@@ -13,6 +13,7 @@ process GAWK_PREPARE_FST_ALL_INPUT{
 
     output:
         tuple val(pop1), path("excl_${pop1}.txt"), emit:txt
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -23,7 +24,12 @@ process GAWK_PREPARE_FST_ALL_INPUT{
 	
         """
 
-        awk 'NR==FNR{sample[\$1];next}!(\$1 in sample){print \$1}' ${pop_file} ${map} > excl_${pop1}.txt
+    awk 'NR==FNR{sample[\$1];next}!(\$1 in sample){print \$1}' ${pop_file} ${map} > excl_${pop1}.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
         """ 
 

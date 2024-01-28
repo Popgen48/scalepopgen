@@ -118,6 +118,8 @@ workflow SCALEPOPGEN {
                 is_vcf
             )
             n1_meta_vcf_idx_map = FILTER_VCF.out.n1_meta_vcf_idx_map
+
+            ch_versions = ch_versions.mix(FILTER_VCF.out.versions)
         }
         else{
             n1_meta_vcf_idx_map = meta_vcf_idx_map
@@ -131,6 +133,7 @@ workflow SCALEPOPGEN {
         params.color_map ? Channel.fromPath(params.color_map):[]
     )
 
+    ch_versions = ch_versions.mix(GAWK_GENERATE_COLORS.out.versions)
 
     if(!is_vcf){
         if(params.apply_snp_filters || params.apply_indi_filters){
@@ -291,62 +294,64 @@ workflow SCALEPOPGEN {
         )
     }
 
-    if( is_vcf ){
-        n2_meta_vcf_idx_map = n1_meta_vcf_idx_map
+    if( params.sweepfinder2 || params.ihs || params.xp_ehh ){
+        if( is_vcf ){
+            n2_meta_vcf_idx_map = n1_meta_vcf_idx_map
+        }
+        else{
+            map_f = n1_meta_vcf_idx_map.map{meta,vcf,idx,map->map}
+            //
+            //MODULE: BCFTOOLS_SPLIT
+            //
+            BCFTOOLS_SPLIT(
+                n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf,idx)}
+            )
+
+            meta_vcf = BCFTOOLS_SPLIT.out.split_vcf.map{meta,vcf->vcf}.flatten().map{vcf->tuple([id:vcf.getName().minus(".vcf.gz").split("\\.")[-1]], vcf)}
+            //
+            //MODULE: TABIX_TABIX
+            //
+            TABIX_TABIX(
+                meta_vcf
+            )
+
+            n2_meta_vcf_idx_map = meta_vcf.join(TABIX_TABIX.out.tbi).combine(map_f)
+        }
+                
+        if ( params.sweepfinder2 ){
+            if( params.est_anc_alleles ){
+                //
+                // SUBWORKFLOW : PREPARE_ANC_FILES
+                //
+                PREPARE_ANC_FILES(
+                    n2_meta_vcf_idx_map
+                )
+                //n1_meta_vcf_idx_map_anc = PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc
+            }
+            //
+            // SUBWORKFLOW : RUN_SWEEPFINDER2
+            //
+            RUN_SWEEPFINDER2(
+                params.est_anc_alleles ? PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc : n2_meta_vcf_idx_map.combine([null])
+            )
+            }
+        if( params.ihs || params.xp_ehh ){
+                //
+                //SUBWORKFLOW : PHASE_GENOTYPES
+                //
+                PHASE_GENOTYPES(
+                    n2_meta_vcf_idx_map
+                )
+
+                //
+                //SUBWORKFLOW : RUN_SELSCAN
+                //
+                RUN_SELSCAN(
+                    PHASE_GENOTYPES.out.n3_meta_vcf_idx_map
+                )
+
+            }
     }
-    else{
-        map_f = n1_meta_vcf_idx_map.map{meta,vcf,idx,map->map}
-        //
-        //MODULE: BCFTOOLS_SPLIT
-        //
-        BCFTOOLS_SPLIT(
-            n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf,idx)}
-        )
-
-        meta_vcf = BCFTOOLS_SPLIT.out.split_vcf.map{meta,vcf->vcf}.flatten().map{vcf->tuple([id:vcf.getName().minus(".vcf.gz").split("\\.")[-1]], vcf)}
-        //
-        //MODULE: TABIX_TABIX
-        //
-        TABIX_TABIX(
-            meta_vcf
-        )
-
-        n2_meta_vcf_idx_map = meta_vcf.join(TABIX_TABIX.out.tbi).combine(map_f)
-    }
-            
-    if ( params.sweepfinder2 ){
-        if( params.est_anc_alleles ){
-            //
-            // SUBWORKFLOW : PREPARE_ANC_FILES
-            //
-            PREPARE_ANC_FILES(
-                n2_meta_vcf_idx_map
-            )
-            //n1_meta_vcf_idx_map_anc = PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc
-        }
-        //
-        // SUBWORKFLOW : RUN_SWEEPFINDER2
-        //
-        RUN_SWEEPFINDER2(
-            params.est_anc_alleles ? PREPARE_ANC_FILES.out.n0_meta_vcf_idx_map_anc : n2_meta_vcf_idx_map.combine([null])
-        )
-        }
-    if( params.ihs || params.xp_ehh ){
-            //
-            //SUBWORKFLOW : PHASE_GENOTYPES
-            //
-            PHASE_GENOTYPES(
-                n2_meta_vcf_idx_map
-            )
-
-            //
-            //SUBWORKFLOW : RUN_SELSCAN
-            //
-            RUN_SELSCAN(
-                PHASE_GENOTYPES.out.n3_meta_vcf_idx_map
-            )
-
-        }
     /*
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
     // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")

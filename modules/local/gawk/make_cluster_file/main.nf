@@ -14,6 +14,7 @@ process GAWK_MAKE_CLUSTER_FILE{
 
     output:
         path("*.cluster"), emit:txt
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when
@@ -24,7 +25,12 @@ process GAWK_MAKE_CLUSTER_FILE{
 	
         """
 
-        awk '{print \$1,\$2,\$1}' ${fam} > ${outprefix}.cluster
+    awk '{print \$1,\$2,\$1}' ${fam} > ${outprefix}.cluster
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
 
         """ 
 

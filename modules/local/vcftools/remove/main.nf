@@ -14,16 +14,21 @@ process VCFTOOLS_REMOVE{
     output:
         tuple val(meta), path("${chrom}_filt_samples.vcf.gz"), emit:f_meta_vcf
         path("*.log")
+        path "versions.yml", emit: versions
     
     script:
             chrom = meta.id
                 
             """
             
-            vcftools --gzvcf ${f_vcf} --remove ${rem_indi} --recode --stdout |sed "s/\\s\\.:/\t.\\/.:/g"|gzip -c > ${chrom}_filt_samples.vcf.gz
+    vcftools --gzvcf ${f_vcf} --remove ${rem_indi} --recode --stdout |sed "s/\\s\\.:/\t.\\/.:/g"|gzip -c > ${chrom}_filt_samples.vcf.gz
 
-            cp .command.log ${chrom}_filt_samples.log
+    cp .command.log ${chrom}_filt_samples.log
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        vcftools: \$(echo \$(vcftools --version 2>&1) | sed 's/^.*VCFtools (//;s/).*//')
+    END_VERSIONS
 
 
             """        

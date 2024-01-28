@@ -13,6 +13,7 @@ process PLINK2_CONVERT_BED_TO_VCF{
 
     output:
         tuple val(meta), path("${prefix}.vcf"), emit:vcf
+        path "versions.yml", emit: versions
 
     when:
         task.ext.when == null || task.ext.when

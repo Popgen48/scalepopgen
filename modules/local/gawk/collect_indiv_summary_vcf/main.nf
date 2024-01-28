@@ -14,7 +14,8 @@ process GAWK_COLLECT_INDIV_SUMMARY_VCF{
 
     output:
         path("genomewide_sample_stats.tsv")
-        
+         path "versions.yml", emit: versions
+       
     
     script:
         outprefix = params.outprefix
@@ -27,6 +28,10 @@ process GAWK_COLLECT_INDIV_SUMMARY_VCF{
 
         awk 'BEGIN{OFS="\t"}NR==FNR{sample_depth[\$1]=\$3;next}{if(FNR==1){print \$1,\$2,\$3,\$4,\$5,\$6,\$7,"AVE_DEPTH";next}else;print \$1,\$2,\$3,\$4,\$5,\$6,\$7,sample_depth[\$1]}' sample_depth.tsv ${indivreports} > genomewide_sample_stats.tsv
         
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+    END_VERSIONS
         """ 
 
 }
