@@ -1,0 +1,6 @@
+<!--
+id: 'Minor allele frequency'
+section_name: 'Population-wise distribution of minor allele frequency'
+description: 'Distribution of mean minor allele frequency in a user-defined window'
+-->
+

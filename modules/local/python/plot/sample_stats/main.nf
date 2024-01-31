@@ -10,11 +10,9 @@ process PYTHON_PLOT_SAMPLE_STATS{
 
     input:
 	path(sample_summary)
-        path(fam)
-        val(is_vcf)
 
     output:
-    	path("*.html")
+    	path("*_snp_counts.html"), emit: sample_stats_html
 
     when:
      	task.ext.when == null || task.ext.when
@@ -22,13 +20,14 @@ process PYTHON_PLOT_SAMPLE_STATS{
     script:
 
         outprefix = params.outprefix
-        b_is_vcf = is_vcf ? "vcf":"plink"
         
         
         
         """
 
-	python3 ${baseDir}/bin/plot_sample_snp_statistics.py ${sample_summary} ${baseDir}/extra/plots/sample_summary_stats.yml ${fam} ${b_is_vcf} ${outprefix}_samplewise_snp_counts
+	python3 ${baseDir}/bin/plot_sample_snp_statistics.py ${sample_summary} ${baseDir}/extra/plots/sample_summary_stats.yml ${outprefix}
+
+        cat ${baseDir}/assets/summary_statistics_comments.txt ${outprefix}.html > ${outprefix}_samplewise_snp_counts_mqc.html
 
 	""" 
         

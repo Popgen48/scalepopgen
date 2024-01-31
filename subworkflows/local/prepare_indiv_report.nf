@@ -1,52 +1,98 @@
-include { PLINK2_SAMPLE_COUNTS                } from '../../modules/local/plink2/sample_counts/main'
-include { VCFTOOLS_DEPTH                      } from '../../modules/local/vcftools/depth/main'
-include { PYTHON_COLLECT_INDIV_SUMMARY_PLINK  } from '../../modules/local/python/collect/indiv_summary_plink/main'
-include { PYTHON_PLOT_SAMPLE_STATS            } from '../../modules/local/python/plot/sample_stats/main'
-include { GAWK_COLLECT_INDIV_SUMMARY_VCF      } from '../../modules/local/gawk/collect_indiv_summary_vcf/main'
+include { PLINK2_SAMPLE_COUNTS                              } from '../../modules/local/plink2/sample_counts/main'
+include { PLINK_CALC_MAF; PLINK_CALC_MAF as PLINK_CALC_HARDY  } from '../../modules/local/plink/calc_maf/main'
+include { PYTHON_PLOT_SAMPLE_STATS                          } from '../../modules/local/python/plot/sample_stats/main'
+include { GAWK_MAKE_CLUSTER_FILE as GAWK_MAF_CALC_INPUT     } from '../../modules/local/gawk/make_cluster_file/main'
+include { PYTHON_PLOT_AVERAGE_MAF                           } from '../../modules/local/python/plot/average_maf/main'
+include { GAWK_SPLIT_FAM_FILE                               } from '../../modules/local/gawk/split_fam_file/main'
+include { PYTHON_PLOT_AVERAGE_HET                           } from '../../modules/local/python/plot/average_het/main'
+include { MULTIQC as MULTIQC_INDIV_REPORT                   } from '../../modules/nf-core/multiqc/main'
 
 workflow PREPARE_INDIV_REPORT{
     take:
-        meta_vcf_idx_map
-        is_vcf
+        meta_bed
+        color_file
     main:
         //
-        //MODULE: CALC_INDIV_SUMMARY
+        //MODULE: PLINK_SAMPLE_COUNTS
         //
         PLINK2_SAMPLE_COUNTS(
-            is_vcf ? meta_vcf_idx_map.map{meta, vcf, idx, map->tuple(meta,vcf)} : meta_vcf_idx_map,
-            is_vcf
-        )
-        //
-        //MODULE: INDIV_SUMMARY_PLINK
-        //
-        PYTHON_COLLECT_INDIV_SUMMARY_PLINK(
-            PLINK2_SAMPLE_COUNTS.out.samplesummary.collect(),
-            is_vcf
+            meta_bed
         )
 
         //
         //MODULE: PYTHON_PLOT_SAMPLE_STATS
         // 
         PYTHON_PLOT_SAMPLE_STATS(
-            PYTHON_COLLECT_INDIV_SUMMARY_PLINK.out.genomewidesummaryplink,
-            is_vcf ? meta_vcf_idx_map.map{meta,vcf,idx,map_f->map_f}.unique():meta_vcf_idx_map.map{meta,bif->bif[2]}.unqiue(),
-            is_vcf
+            PLINK2_SAMPLE_COUNTS.out.samplesummary,
         )
-        /*
-        if (is_vcf){
-            //
-            //MODULE: VCFTOOLS_DEPTH
-            //
-            VCFTOOLS_DEPTH(
-            is_vcf ? meta_vcf_idx_map.map{meta, vcf, idx, map->tuple(meta,vcf)} : meta_vcf_idx_map
-            )
-            //
-            //MODULE: INDIV_SUMMARY_VCF
-            //
-            GAWK_COLLECT_INDIV_SUMMARY_VCF(
-                VCFTOOLS_DEPTH.out.sampledepthinfo.collect(),
-                PYTHON_COLLECT_INDIV_SUMMARY_PLINK.out.genomewidesummaryplink
-            )
-        }
-        */
+
+        //
+        //MODULE: GAWK_MAF_CALC_INPUT
+        //
+        GAWK_MAF_CALC_INPUT(
+            meta_bed.map{meta,bed->bed[2]}
+        )
+
+        //
+        //MODULE: PLINK2_MAF_CALC
+        //
+        PLINK_CALC_MAF(
+            meta_bed,
+            GAWK_MAF_CALC_INPUT.out.txt,
+            Channel.value("freq")
+        )
+        
+        //
+        //MODULE: PYTHON_PLOT_AVERAGE_MAF
+        //
+        PYTHON_PLOT_AVERAGE_MAF(
+            meta_bed.map{meta,bed->bed[1]},
+            color_file,
+            PLINK_CALC_MAF.out.mafsummary
+        )
+        
+        //
+        //MODULE: GAWK_SPLIT_FAM_FILE
+        //
+        GAWK_SPLIT_FAM_FILE(
+            meta_bed.map{meta,bed->bed[2]}
+        )
+        
+        popid_file = GAWK_SPLIT_FAM_FILE.out.txt.flatten()
+
+        input_c = meta_bed.combine(popid_file).multiMap{meta, bed, popid ->
+                                                    meta_bed: tuple(meta,bed)
+                                                    popid: popid
+                                                   }
+        //
+        //MODULE PLINK_CALC_HARDY
+        //
+        PLINK_CALC_HARDY(
+            input_c.meta_bed,
+            input_c.popid,
+            Channel.value("hwe")
+        )
+
+        //
+        //MODULE: PYTHON_PLOT_AVERAGE_HET
+        //
+        PYTHON_PLOT_AVERAGE_HET(
+            meta_bed.map{meta,bed->bed[1]},
+            color_file,
+            PLINK_CALC_HARDY.out.hwesummary.collect(),
+        )
+        
+        ch_multiqc_files = PYTHON_PLOT_SAMPLE_STATS.out.sample_stats_html.combine(PYTHON_PLOT_AVERAGE_MAF.out.maf_stats_html).combine(PYTHON_PLOT_AVERAGE_HET.out.obs_het_html).combine(PYTHON_PLOT_AVERAGE_HET.out.exp_het_html)
+
+        multiqc_config = Channel.fromPath(params.multiqc_summary_stats_yml)
+        
+        //
+        //MODULE: MULTIQC_INDIV_REPORT
+        //
+        MULTIQC_INDIV_REPORT(
+            ch_multiqc_files,
+            multiqc_config,
+            [],
+            []
+        )
 }

@@ -1,19 +1,19 @@
-process GAWK_MAKE_CLUSTER_FILE{
+process GAWK_SPLIT_FAM_FILE{
 
-    tag { "making_cluster_file" }
+    tag { "split_fam" }
     label "process_single"
     conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
         'biocontainers/gawk:5.1.0' }"    
-    publishDir("${params.outdir}/cluster_files/", mode:"copy")
+    publishDir("${params.outdir}/gawk/split_fam_file/", mode:"copy")
 
     input:
         path(fam)
         
 
     output:
-        path("*.cluster"), emit:txt
+        path("*_id.txt"), emit:txt
         path "versions.yml", emit: versions
 
     when:
@@ -21,11 +21,10 @@ process GAWK_MAKE_CLUSTER_FILE{
 
     script:
         
-        outprefix = params.outprefix
 	
         """
 
-    awk '{print \$1,\$2,\$1}' ${fam} > ${outprefix}.cluster
+    awk '{print \$1,\$2 >> \$1"_id.txt"}' ${fam} 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,0 +1,8 @@
+name: plot_maf
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python==3.10.13
+  - numpy==1.26.3
+  - plotly==5.18.0

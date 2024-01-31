@@ -1,0 +1,6 @@
+<!--
+id: 'Expected Heterozygosity'
+section_name: 'Population-wise distribution of Expected heterozygosity'
+description: 'Distribution of expected heterozygosity in a user-defined window'
+-->
+

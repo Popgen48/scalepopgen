@@ -184,13 +184,7 @@ workflow SCALEPOPGEN {
 
         }
     }
-    if (params.indiv_summary){
-            PREPARE_INDIV_REPORT(
-                is_vcf ? n1_meta_vcf_idx_map : n1_meta_bed,
-                is_vcf
-            )
-    }
-    if (params.genetic_structure){
+    if (params.genetic_structure || params.indiv_summary){
             if(is_vcf){
                 //
                 //MODULE: PLINK2_VCF
@@ -211,6 +205,15 @@ workflow SCALEPOPGEN {
                 }
             else{
                 n2_meta_bed = n1_meta_bed
+            }
+            if (params.indiv_summary){
+                    //
+                    //SUBWORKFLOW: PREPARE_INDIV_REPORT
+                    //
+                    PREPARE_INDIV_REPORT(
+                        n2_meta_bed,
+                        GAWK_GENERATE_COLORS.out.color
+                    )
             }
             if ( params.rem_indi_structure ){
                     indi_list = Channel.fromPath( params.rem_indi_structure, checkIfExists: true)
