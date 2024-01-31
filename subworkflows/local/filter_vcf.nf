@@ -1,10 +1,10 @@
 include { VCFTOOLS_CONCAT               } from '../../modules/local/vcftools/concat/main'
 include { VCFTOOLS_KEEP                 } from '../../modules/local/vcftools/keep/main'
-include { FILTER_SAMPLES                } from '../../modules/local/plink2/filter_samples/main'
+include { PLINK2_FILTER_SAMPLES         } from '../../modules/local/plink2/filter_samples/main'
 include { GAWK_PREPARE_NEW_MAP          } from '../../modules/local/gawk/prepare_new_map/main'
 include { VCFTOOLS_REMOVE               } from '../../modules/local/vcftools/remove/main'
 include { VCFTOOLS_FILTER_SITES         } from '../../modules/local/vcftools/filter_sites/main'
-include { LOCAL_TABIX_BGZIPTABIX        } from '../../modules/local/bgziptabix/main'
+include { LOCAL_TABIX_BGZIPTABIX as TABIX       } from '../../modules/local/bgziptabix/main'
 include { GAWK_EXTRACT_SAMPLEID; GAWK_EXTRACT_SAMPLEID as REMOVE_SAMPLE_LIST } from '../../modules/local/gawk/extract_sampleid/main'
 
 workflow FILTER_VCF{
@@ -13,6 +13,7 @@ workflow FILTER_VCF{
         is_vcf
 
     main:
+        //meta_vcf_idx_map.view()
         versions = Channel.empty()
 
         if( params.apply_indi_filters ){
@@ -58,21 +59,21 @@ workflow FILTER_VCF{
                 versions = versions.mix(VCFTOOLS_CONCAT.out.versions)
 
                 //
-                // MODULE: FILTER_SAMPLES
+                // MODULE: PLINK2_FILTER_SAMPLES
                 //
-                FILTER_SAMPLES( 
+                PLINK2_FILTER_SAMPLES( 
                     VCFTOOLS_CONCAT.out.concatenatedvcf,
                     is_vcf,
                     params.rem_indi ? REMOVE_SAMPLE_LIST.out.txt : []
                 )
 
-                versions = versions.mix(FILTER_SAMPLES.out.versions)
+                versions = versions.mix(PLINK2_FILTER_SAMPLES.out.versions)
 
                 //
                 // MODULE : GAWK_EXTRACT_SAMPLEID
                 //
                 GAWK_EXTRACT_SAMPLEID(
-                    FILTER_SAMPLES.out.bed.map{meta,bed->bed[2]},
+                    PLINK2_FILTER_SAMPLES.out.bed.map{meta,bed->bed[2]},
                     Channel.value("keep")
                 )
         
@@ -82,7 +83,7 @@ workflow FILTER_VCF{
                 // MODULE: VCFTOOLS_KEEP
                 // 
                 VCFTOOLS_KEEP(
-                    meta_vcf_idx_map.combine(GAWK_EXTRACT_SAMPLEID.out.txt)
+                    meta_vcf_idx_map.combine(GAWK_EXTRACT_SAMPLEID.out.txt),
                     Channel.value("keep")
                 )
                 
@@ -145,13 +146,13 @@ workflow FILTER_VCF{
     //
     //MODULE: LOCAL_TABIX_BGZIPTABIX
     //
-    LOCAL_TABIX_BGZIPTABIX(
+    TABIX(
         n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}
     )
     
-    versions = versions.mix(LOCAL_TABIX_BGZIPTABIX.out.versions)
+    versions = versions.mix(TABIX.out.versions)
 
-    n2_meta_vcf_idx_map = LOCAL_TABIX_BGZIPTABIX.out.gz_tbi.combine(n1_map)
+    n2_meta_vcf_idx_map = n1_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}.join(TABIX.out.tbi).combine(n1_map)
 
     emit:
         n1_meta_vcf_idx_map = n2_meta_vcf_idx_map

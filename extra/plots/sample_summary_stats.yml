@@ -1,0 +1,5 @@
+width: 1000
+height: 200
+bar_width: 0.4
+x_axis_font_size: 6px
+sample_label_orientation: 90

@@ -6,7 +6,7 @@ process GAWK_EXTRACT_SAMPLEID{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
         'biocontainers/gawk:5.1.0' }"    
-    publishDir("${params.outdir}/vcftools/indi_filtered/", mode:"copy")
+    publishDir("${params.outdir}/gawk/filtering/", mode:"copy")
 
     input:
         path(remindi)

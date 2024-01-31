@@ -108,6 +108,7 @@ workflow SCALEPOPGEN {
         //combine vcf and map file
         meta_vcf_idx_map = INPUT_CHECK.out.variant.combine(map_f)
 
+
         if(params.apply_snp_filters || params.apply_indi_filters){
 
             //

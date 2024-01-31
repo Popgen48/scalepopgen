@@ -1,7 +1,6 @@
 process LOCAL_TABIX_BGZIPTABIX {
     tag "$meta.id"
     label 'process_single'
-
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/tabix:1.11--hdfd78af_0' :
@@ -11,8 +10,8 @@ process LOCAL_TABIX_BGZIPTABIX {
     tuple val(meta), path(input)
 
     output:
-    tuple val(meta), path("*.gz"), path("*.tbi"), optional: true, emit: gz_tbi
-    tuple val(meta), path("*.gz"), path("*.csi"), optional: true, emit: gz_csi
+    tuple val(meta), path("*.tbi"), optional: true, emit: tbi
+    tuple val(meta), path("*.csi"), optional: true, emit: csi
     path  "versions.yml" ,                        emit: versions
 
     when:
@@ -23,8 +22,7 @@ process LOCAL_TABIX_BGZIPTABIX {
     def args2 = task.ext.args2 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    zcat ${input}|bgzip  --threads ${task.cpus} -c $args > ${prefix}.gz
-    tabix $args2 ${prefix}.gz
+    tabix $args2 ${input}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

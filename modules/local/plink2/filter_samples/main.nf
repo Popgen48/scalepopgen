@@ -1,4 +1,4 @@
-process FILTER_SAMPLES{
+process PLINK2_FILTER_SAMPLES{
 
     tag { "filter_indi_${new_prefix}" }
     label "process_single"

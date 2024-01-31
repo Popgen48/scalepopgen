@@ -2,10 +2,10 @@ process VCFTOOLS_DEPTH{
 
     tag { "keep_indi_${chrom}" }
     label "process_medium"
-    conda "bioconda::vcftools=0.1.16"
+    conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/vcftools:0.1.16--he513fc3_4' :
-        'biocontainers/vcftools:0.1.16--he513fc3_4' }"
+        'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
+        'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"
     publishDir("${params.outdir}/summary_stats/samples/", mode:"copy")
 
     input:

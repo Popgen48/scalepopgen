@@ -2,10 +2,11 @@ process VCFTOOLS_CONCAT{
 
     tag { "concate_vcf" }
     label "process_medium"
-    conda "bioconda::vcftools=0.1.16"
+    conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/vcftools:0.1.16--he513fc3_4' :
-        'biocontainers/vcftools:0.1.16--he513fc3_4' }"
+        'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
+        'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"
+    publishDir("${params.outdir}/vcftools/concat/", mode:"copy")
 
     input:
         path(vcf)
@@ -22,7 +23,7 @@ process VCFTOOLS_CONCAT{
 
         """
 
-    vcf-concat $vcf|gzip -c > ${file_prefix}.vcf.gz
+    vcf-concat $vcf|bgzip -c > ${file_prefix}.vcf.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

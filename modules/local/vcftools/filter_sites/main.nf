@@ -2,10 +2,10 @@ process VCFTOOLS_FILTER_SITES{
 
     tag { "filter_sites_${chrom}" }
     label "process_medium"
-    conda "bioconda::vcftools=0.1.16"
+    conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/vcftools:0.1.16--he513fc3_4' :
-        'biocontainers/vcftools:0.1.16--he513fc3_4' }"
+        'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
+        'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"
     publishDir("${params.outdir}/vcftools/sites_filtering/", mode:"copy")
 
     input:
@@ -44,7 +44,7 @@ process VCFTOOLS_FILTER_SITES{
 
         """
         
-    vcftools --gzvcf ${f_vcf} ${opt_arg} --recode --stdout |sed "s/\\s\\.:/\t.\\/.:/g"|gzip -c > ${prefix}_filt_sites.vcf.gz
+    vcftools --gzvcf ${f_vcf} ${opt_arg} --recode --stdout |bgzip -c > ${prefix}_filt_sites.vcf.gz
 
 
     cp .command.log ${prefix}_filter_sites.log

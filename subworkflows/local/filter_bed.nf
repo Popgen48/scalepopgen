@@ -1,4 +1,4 @@
-include { FILTER_SAMPLES } from '../../modules/local/plink2/filter_samples/main'
+include { PLINK2_FILTER_SAMPLES } from '../../modules/local/plink2/filter_samples/main'
 include { FILTER_SNPS    } from '../../modules/local/plink2/filter_snps/main'
 
 workflow FILTER_BED{
@@ -10,19 +10,19 @@ workflow FILTER_BED{
 
         if(params.apply_indi_filters){
             //
-            //MODULE: FILTER_SAMPLES
+            //MODULE: PLINK2_FILTER_SAMPLES
             //
             if(params.rem_indi){
                 rmi = Channel.fromPath(params.rem_indi, checkIfExists: true)
             }
-            FILTER_SAMPLES(
+            PLINK2_FILTER_SAMPLES(
                 bed,
                 is_vcf,
                 params.rem_indi ? rmi : []
             )
-            n0_meta_bed = FILTER_SAMPLES.out.bed
+            n0_meta_bed = PLINK2_FILTER_SAMPLES.out.bed
 
-            versions = versions.mix(FILTER_SAMPLES.out.versions)
+            versions = versions.mix(PLINK2_FILTER_SAMPLES.out.versions)
         }
         else{
                 n0_meta_bed = bed
