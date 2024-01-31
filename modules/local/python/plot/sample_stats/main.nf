@@ -12,7 +12,7 @@ process PYTHON_PLOT_SAMPLE_STATS{
 	path(sample_summary)
 
     output:
-    	path("*_snp_counts.html"), emit: sample_stats_html
+    	path("*_snp_counts_mqc.html"), emit: sample_stats_html
 
     when:
      	task.ext.when == null || task.ext.when

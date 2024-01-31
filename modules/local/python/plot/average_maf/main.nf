@@ -14,7 +14,7 @@ process PYTHON_PLOT_AVERAGE_MAF{
 	path(mafsummary)
 
     output:
-    	path("${outprefix}_maf_summary.html"), emit: maf_stats_html
+    	path("${outprefix}_maf_summary_mqc.html"), emit: maf_stats_html
 
     when:
      	task.ext.when == null || task.ext.when
@@ -30,7 +30,7 @@ process PYTHON_PLOT_AVERAGE_MAF{
 
 	python3 ${baseDir}/bin/plot_average_maf.py ${bim} ${window_size} ${color_file} ${mafsummary}
 
-        cat ${baseDir}/assets/maf_comments.txt maf_summary.html > ${outprefix}_maf_summary.html
+        cat ${baseDir}/assets/maf_comments.txt maf_summary.html > ${outprefix}_maf_summary_mqc.html
 
 	""" 
         

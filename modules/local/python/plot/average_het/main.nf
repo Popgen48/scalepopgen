@@ -14,8 +14,8 @@ process PYTHON_PLOT_AVERAGE_HET{
 	path(hwe_files)
 
     output:
-    	path("${outprefix}_obs_het.html"), emit: obs_het_html
-    	path("${outprefix}_exp_het.html"), emit: exp_het_html
+    	path("${outprefix}_obs_het_mqc.html"), emit: obs_het_html
+    	path("${outprefix}_exp_het_mqc.html"), emit: exp_het_html
 
     when:
      	task.ext.when == null || task.ext.when
