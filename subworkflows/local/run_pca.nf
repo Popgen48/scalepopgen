@@ -69,4 +69,7 @@ workflow RUN_PCA{
                     pca_plot_yml,
                     marker_map
                 )
+        html=PYTHON_PLOT_PCA.out.html
+    emit:
+        html
 }

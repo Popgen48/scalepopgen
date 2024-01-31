@@ -70,10 +70,10 @@ include { RUN_SELSCAN          } from '../subworkflows/local/run_selscan'
 //
 include { TABIX_BGZIPTABIX              } from '../modules/nf-core/tabix/bgziptabix/main'
 include { TABIX_TABIX                   } from '../modules/nf-core/tabix/tabix/main'
-include { MULTIQC                       } from '../modules/nf-core/multiqc/main'
 include { ADMIXTURE                     } from '../modules/nf-core/admixture/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS   } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { BCFTOOLS_SPLIT                } from '../modules/nf-core/bcftools/split/main'
+include { MULTIQC; MULTIQC as MULTIQC_GENETIC_STRUCTURE                      } from '../modules/nf-core/multiqc/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -242,7 +242,7 @@ workflow SCALEPOPGEN {
             else{
                     n4_bed = n3_bed
             }
-
+            g_ch_multiqc_files = Channel.empty().ifEmpty([])
             if(params.smartpca){
                 //
                 // SUBWORKFLOW : RUN_PCA
@@ -251,6 +251,7 @@ workflow SCALEPOPGEN {
                     n4_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
+                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_PCA.out.html)
             }
             if(params.admixture){
                 //
@@ -260,6 +261,7 @@ workflow SCALEPOPGEN {
                     n4_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
+                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.qmat_html)
             }
             if(params.pairwise_global_fst){
                 //
@@ -269,6 +271,7 @@ workflow SCALEPOPGEN {
                     n4_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
+                g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_FST.out.html)
             }
             if(params.ibs_dist){
                 //
@@ -278,7 +281,18 @@ workflow SCALEPOPGEN {
                     n4_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
+                g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_1_MIN_IBS_DIST.out.html)
             }
+            //
+            //MODULE: MULTIQC_GENETIC_STRUCTURE
+            //
+            mqc_genetic_struct_config = Channel.fromPath(params.multiqc_genetic_struct_yml)
+            MULTIQC_GENETIC_STRUCTURE(
+                g_ch_multiqc_files,
+                mqc_genetic_struct_config,
+                [],
+                []
+            )
     }
     if(params.treemix){
         //

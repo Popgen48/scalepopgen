@@ -198,18 +198,18 @@
                     "description": "Whether or not to apply ld-based pruning of the dataset before running PCA or/and admixture analysis. Default: False."
                 },
                 "ld_window_size": {
-                    "type": "string",
-                    "default": "50",
+                    "type": "integer",
+                    "default": 50,
                     "description": "Window size for LD calculation (as implemented in plink). Default: 50"
                 },
                 "ld_step_size": {
-                    "type": "string",
-                    "default": "10",
+                    "type": "integer",
+                    "default": 10,
                     "description": "Step size for LD calculation (as implemented in plink). Default: 10"
                 },
                 "r2_threshold": {
-                    "type": "string",
-                    "default": "0.1",
+                    "type": "number",
+                    "default": 0.1,
                     "description": "r2 value of a SNP pair above which one of the SNPs will be discarded. Default: 0.1"
                 },
                 "smartpca": {
@@ -261,7 +261,7 @@
                     "description": "Path to the yaml file containing the parameters of plotting interactive Q matrix of optimal value of \"K\". Default: \"./parameters/plots/admixture.yml"
                 },
                 "pairwise_global_fst": {
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "fst_plot_yml": {
                     "type": "string",
@@ -269,7 +269,7 @@
                     "description": "Path to the yaml file containing the paramterers to plot interactive fst-based NJ tree. Default:\"./parameters/plots/fst_nj.yml\""
                 },
                 "ibs_dist": {
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "ibs_plot_yml": {
                     "type": "string",
@@ -633,6 +633,17 @@
     "properties": {
         "xpehh": {
             "type": "string"
+        },
+        "selscan_map": {
+            "type": "string"
+        },
+        "multiqc_summary_stats_yml": {
+            "type": "string",
+            "default": "popgen48-scalepopgen/assets/multiqc_summary_stats.yml"
+        },
+        "multiqc_genetic_struct_yml": {
+            "type": "string",
+            "default": "popgen48-scalepopgen/assets/multiqc_genetic_structure.yml"
         }
     }
 }

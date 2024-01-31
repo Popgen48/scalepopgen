@@ -67,5 +67,11 @@ workflow RUN_ADMIXTURE{
             admixture_plot_yml,
             admixture_plot_pop_order
         )
-            
+        cv_html = PYTHON_PLOT_ADMIXTURE_CV_ERROR.out.cv_html
+        qmat_html = PYTHON_PLOT_ADMIXTURE_Q_MAT.out.qmat_html
+        cv_html.view()
+        qmat_html.view()
+    emit:    
+        cv_html
+        qmat_html
 }

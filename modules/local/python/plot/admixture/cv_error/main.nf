@@ -3,15 +3,17 @@ process PYTHON_PLOT_ADMIXTURE_CV_ERROR{
     tag { "estimating_bestK" }
     label "oneCpu"
     conda "${moduleDir}/environment.yml"
-    container "popgen48/plot_admixture:1.0.0"
-    publishDir("${params.outdir}/genetic_structure/admixture/", mode:"copy")
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/plot_admixture:1.0.0' :
+        'popgen48/plot_admixture:1.0.0' }"
+    publishDir("${params.outdir}/genetic_structure/interactive_plots/", mode:"copy")
     errorStrategy 'ignore'
 
     input:
 	path(k_cv_log_files)
 
     output:
-    	path("*.html")
+    	path("*_mqc.html"), emit: cv_html
 
     when:
      	task.ext.when == null || task.ext.when
@@ -22,6 +24,8 @@ process PYTHON_PLOT_ADMIXTURE_CV_ERROR{
         
         """
 	python3 ${baseDir}/bin/est_best_k_and_plot.py ${args} ${k_cv_log_files}
+
+        cat ${baseDir}/assets/cvplot_comments.txt *.html > cvplot_mqc.html
 
 	""" 
 

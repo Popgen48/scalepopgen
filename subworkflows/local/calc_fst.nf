@@ -35,4 +35,7 @@ workflow CALC_FST{
             m_pop_sc_color,
             fst_plot_yml
         )
+        html = PYTHON_PLOT_PAIRWISE_FST.out.html
+    emit:
+        html
 }

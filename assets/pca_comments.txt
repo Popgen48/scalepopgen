@@ -1,0 +1,6 @@
+<!--
+id: 'PCA'
+section_name: 'Principal Component Analysis (PCA)'
+description: 'PCA was carried out using smartpca program of eigensoft package'
+-->
+

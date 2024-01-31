@@ -1,0 +1,6 @@
+<!--
+id: 'CV_plot'
+section_name: 'cross-validation (CV) plot for ADMIXTURE analysis'
+description: 'Note that the color-pattern is not consistent across the different values of K'
+-->
+

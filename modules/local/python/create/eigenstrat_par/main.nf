@@ -3,7 +3,9 @@ process PYTHON_CREATE_EIGENSTRAT_PAR{
     tag { "create smartpca par" }
     label "process_single"
     conda 'conda-forge::python=3.10'
-    container "python:3.10-alpine"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/python_bash:3.10-alpine' :
+        'popgen48/python_bash:3.10-alpine' }"
     publishDir("${params.outdir}/eigenstraat/parameter_files/", mode:"copy")
 
     input:

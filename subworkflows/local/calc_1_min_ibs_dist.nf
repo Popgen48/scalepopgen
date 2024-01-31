@@ -28,4 +28,8 @@ workflow CALC_1_MIN_IBS_DIST{
             m_pop_sc_color,
             ibs_plot_yml
         )
+        html = PYTHON_PLOT_1_MIN_IBS_DIST.out.html
+
+    emit:
+        html
 }

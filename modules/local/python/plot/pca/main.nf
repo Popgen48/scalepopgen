@@ -3,7 +3,9 @@ process PYTHON_PLOT_PCA{
     tag { "plot_interactive_pca" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
-    container "popgen48/plot_pca:1.0.0"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/plot_pca:1.0.0' :
+        'popgen48/plot_pca:1.0.0' }"
     publishDir("${params.outdir}/genetic_structure/interactive_plots/pca/", mode:"copy")
 
     input:
@@ -14,7 +16,7 @@ process PYTHON_PLOT_PCA{
         path(marker_map)
 
     output:
-        path("*.html")
+        path("*_mqc.html"), emit:html
         path("*.log")
         path("pop_markershape_col.txt")
         
@@ -36,6 +38,8 @@ process PYTHON_PLOT_PCA{
 
         python ${baseDir}/bin/plot_interactive_pca.py ${eigenvect} ${eigenval} pop_markershape_col.txt ${pca_plot_yml} ${prefix}
 
+        cat ${baseDir}/assets/pca_comments.txt *.html > ${prefix}_mqc.html
+
         cp .command.log plot_interactive_pca_${prefix}.log
 
 	"""
@@ -48,6 +52,8 @@ process PYTHON_PLOT_PCA{
         awk 'NR==FNR{markershape[\$1]=\$2;next}{print \$1,markershape[\$1],\$3}' ${f_pop_marker} ${m_pop_sc_col} > pop_markershape_col.txt
 
         python ${baseDir}/bin/plot_interactive_pca.py ${eigenvect} ${eigenval} pop_markershape_col.txt ${pca_plot_yml} ${prefix}
+
+        cat ${baseDir}/assets/pca_comments.txt *.html > ${prefix}_mqc.html
         
         cp .command.log plot_interactive_pca_${prefix}.log
 

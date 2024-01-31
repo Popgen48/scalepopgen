@@ -3,7 +3,9 @@ process PYTHON_PLOT_1_MIN_IBS_DIST{
     tag { "plot_1_min_ibs_distance" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
-    container "popgen48/plot_ibs:1.0.0"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/plot_ibs:1.0.0' :
+        'popgen48/plot_ibs:1.0.0' }"
     publishDir("${params.outdir}/genetic_structure/interactive_plots/1_min_ibs_dist/", mode:"copy")
 
     input:
@@ -13,7 +15,7 @@ process PYTHON_PLOT_1_MIN_IBS_DIST{
         path(nj_yml)
 
     output:
-        path("*.html")
+        path("*_mqc.html"), emit: html
         path("*.svg")
         path("polyphyletic_pop_list.txt")
         path("*.ibs.dist")
@@ -35,6 +37,8 @@ process PYTHON_PLOT_1_MIN_IBS_DIST{
         else
             python3 ${baseDir}/bin/make_ibs_dist_nj_tree.py -i ${mdist} -m ${id} -c ${pop_sc_color} -y ${nj_yml} -o ${prefix}
         fi
+
+        cat ${baseDir}/assets/ibs_comments.txt *.html > ${prefix}_ibs_mqc.html
 
         cp .command.log calc_1_mins_ibs_dist.log
 
