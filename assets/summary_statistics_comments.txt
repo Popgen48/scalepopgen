@@ -1,4 +1,7 @@
 <!--
+parent_id: summary_statistics
+parent_name: "summary statistics"
+parent_description: "summary statistics of individual sample and population"
 id: 'sum_sta'
 section_name: 'Sample-wise summary statistics of SNP counts'
 description: 'The SNP counts are calculated using plink2'

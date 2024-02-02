@@ -1,0 +1,7 @@
+name: phylip
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - phylip==3.697

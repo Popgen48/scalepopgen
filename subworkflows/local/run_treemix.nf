@@ -11,9 +11,7 @@ include { RSCRIPT_PLOT_TREE as RSCRIPT_PLOT_TREE_M0             } from "../../mo
 include { RSCRIPT_PLOT_TREE as RSCRIPT_PLOT_TREE_M0_BOOTSTRAP   } from "../../modules/local/rscript/plot_tree/main"
 include { RSCRIPT_PLOT_TREE as RSCRIPT_PLOT_TREE_ADD_MIG        } from "../../modules/local/rscript/plot_tree/main"
 include { RSCRIPT_OPTM                                          } from "../../modules/local/rscript/optm/main"
-//include { PREPARE_POP_FILE } from "../modules/treemix/prepare_pop_file.nf"
-//include { RUN_CONSENSE } from "../modules/phylip/run_consense"
-//include { EST_OPT_MIGRATION_EDGE } from "../modules/treemix/est_opt_migration_edge"
+include { PHYLIP_CONSENSE                                       } from "../../modules/local/phylip/consense/main"
 
 
 def generate_random_num(num_bootstrap, upper_limit, set_random_seed){
@@ -119,6 +117,12 @@ workflow RUN_TREEMIX {
                 TREEMIX_RUN_M0_BOOTSTRAP.out.covse,
                 Channel.value("bootstrap")
             )
+            //
+            //MODULE: PHYLIP_CONSENSE
+            //
+            PHYLIP_CONSENSE(
+                TREEMIX_RUN_M0_BOOTSTRAP.out.treeout.collect()
+            )
         }
         if(params.n_mig > 0){
             m_val = Channel.from(1..params.n_mig)
@@ -159,24 +163,4 @@ workflow RUN_TREEMIX {
             )
         }
 
-        //chrwise_treemix_input = ( chrom_vcf_idx_map ).collect()
-        /*
-        genomewide_treemix_input = MERGE_TREEMIX_INPUTS(chrwise_treemix_input)
-        treemixin_mp = genomewide_treemix_input.combine(pop_file)
-        RUN_TREEMIX_DEFAULT(treemixin_mp)
-        if ( params.n_bootstrap > 0 ){
-            random_num_tuple = generate_random_num(params.n_bootstrap, params.upper_limit)
-            treemix_input_num_t = treemixin_mp.combine(random_num_tuple)
-            bootstrapped_trees = RUN_TREEMIX_WITH_BOOTSTRAP(treemix_input_num_t)
-            RUN_CONSENSE(bootstrapped_trees.treeout.collect())
-        }
-        if (params.starting_m_value > 0){
-            m_value = Channel.from(params.starting_m_value..params.ending_m_value)
-            m_treemixin_mp = m_value.combine(treemixin_mp)
-            itr_v = Channel.from(1..params.n_iter)
-            it_m_treemixin_mp = itr_v.combine(m_treemixin_mp)
-            mig_out = ADD_MIGRATION_EDGES( it_m_treemixin_mp )
-            EST_OPT_MIGRATION_EDGE( mig_out.llik.collect(), mig_out.modelcov.collect(), mig_out.cov.collect())
-        }
-        */
 }

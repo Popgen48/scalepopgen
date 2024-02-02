@@ -1,4 +1,7 @@
 <!--
+parent_id: genetic_structure
+parent_name: "Genetic structure"
+parent_description: "analysis carried out to explore genetic structure of populations"
 id: 'fst'
 section_name: 'Fst-distance based NJ tree'
 description: 'Fst distances were calculated using plink and NJ distances were calculated using Biopython module'

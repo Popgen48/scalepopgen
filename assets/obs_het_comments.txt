@@ -1,4 +1,7 @@
 <!--
+parent_id: summary_statistics
+parent_name: "summary statistics"
+parent_description: "summary statistics of individual sample and population"
 id: 'obs_het'
 section_name: 'Population-wise distribution of observed heterozygosity'
 description: 'Distribution of observed heterozygosity in a user-defined window'

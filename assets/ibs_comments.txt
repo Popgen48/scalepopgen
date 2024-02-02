@@ -1,4 +1,7 @@
 <!--
+parent_id: genetic_structure
+parent_name: "Genetic structure"
+parent_description: "analysis carried out to explore genetic structure of populations"
 id: 'ibs'
 section_name: 'Identical by state (IBS) distance based Neighbor Joining (NJ) tree'
 description: '1-IBS distance was calculated using plink and NJ distances were calculated using Biopyton module'

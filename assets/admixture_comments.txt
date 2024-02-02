@@ -1,4 +1,7 @@
 <!--
+parent_id: genetic_structure
+parent_name: "Genetic structure"
+parent_description: "analysis carried out to explore genetic structure of populations"
 id: 'adm'
 section_name: 'Q-matrices of ADMIXTURE analysis'
 description: 'Note that the color-pattern is not consistent across the different values of K'

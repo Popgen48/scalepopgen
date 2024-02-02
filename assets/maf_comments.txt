@@ -1,4 +1,7 @@
 <!--
+parent_id: summary_statistics
+parent_name: "summary statistics"
+parent_description: "summary statistics of individual sample and population"
 id: 'maf'
 section_name: 'Population-wise distribution of minor allele frequency'
 description: 'Distribution of mean minor allele frequency in a user-defined window'
