@@ -9,67 +9,107 @@
 
 ## Introduction
 
-**popgen48/scalepopgen** is a bioinformatics pipeline that ...
+**scalepopgen** is a fully automated nextflow-based pipeline that takes **VCF** or **PLINK binary** files as input and apply a variety of open-source tools to carry out comprehensive population genomic analyses. Additionally, python and R scripts have been developed to combine and plot the results of analyses, which allows user to immediately get an impression about the genomic patterns of the analyzed samples. 
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+<p>Broadly, the pipeline consists of the following four “sub-workflows”:</p>
+<ul>
+<li>filtering and basic statistics</li>
+<li>explore genetic structure</li>
+<li>phylogeny using treemix</li>
+<li>signatures of selection</li>
+</ul>
+<p>The sub-workflows can be used separately or in combination with each other.</p>
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/contributing/design_guidelines#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+The pipeline can be run on any Linux operating system and require these three dependencies: Nextflow, Java and a software container or environment system such as `conda`, `mamba`, `singularity` or `docker`. Regarding the latter, we highly recommend using `mamba`. The pipeline can be run on both, local linux system as well as high performance computing (HPC) clusters. Note that the user only install the three dependencies listed above, while Nextflow automatically downloads the rest of the tools for the analyses.
 
 ## Usage
 
-:::note
-If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
-to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
-with `-profile test` before running the workflow on actual data.
+::: note
+If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up the Nextflow. Please, make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 :::
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
+After successful installation of Nextflow, Java and one of the container systems, download the scalepopgen:
 
-First, prepare a samplesheet with your input data that looks as follows:
-
-`samplesheet.csv`:
-
-```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+```
+git clone https://github.com/Popgen48/scalepopgen_v1.git
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
+#### INPUT FILES
 
--->
+All VCF files need to be splitted by the chromosomes and indexed with tabix. The VCF inputs should be listed in the comma-separated input sheet with the extension ".csv" and the header row exactly like in the example below. Please note that the chromosome name must not contain any punctuation marks.
 
-Now, you can run the pipeline using:
+**vcf_input.csv:**
+```
+chrom,vcf,vcf_idx
+chr1,chrom1.vcf.gz,chrom1.vcf.gz.tbi
+chr2,chrom2.vcf.gz,chrom2.vcf.gz.tbi
+```
+In addition to the VCF input format, it is also necessary to prepare a sample map file of individuals and populations. Sample map has two tab-delimited columns without header line. In the first column are individual IDs and in the second are population IDs as demonstrated on the example below. It is also important that the name of the file ends with ".map".
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
+**sample.map:**
+```
+ind1  pop1
+ind2  pop1
+ind3  pop2
+ind4  pop2
+```
+
+Similarly for the PLINK binary files, user need to specify them in the comma-separated input sheet with the header row, but with the extension ".p.csv".
+
+**plink_input.csv:**
+```
+prefix,bed,bim,fam
+popgen,popgen.bed,popgen.bim,popgen.fam
+```
+
+
+The workflow implement a lot of programs and tools, which consequently means a lot of parameters that need to be determined and provided as the yml format file. In order to make it easier for the users, we developed a Command-Line Interface (CLI), which helps to specify options for each sub-workflow. In fact, we highly recommend the CLI for creating parameter file as it guides the user through various options and at the same time checks the input formats.
+
+The CLI can be downloaded and installed with the following commands:
+
+```
+git clone https://github.com/Popgen48/scalepopgen-cli.git
+cd scalepopgen-cli/
+#pip install --upgrade pip --> to update the version of pip 
+pip3 install --no-cache-dir -r requirements.txt --user
+```
+
+Start the CLI with:
+```
+python scalepopgen_cli.py
+```
+![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/1e853c26-404d-43d5-b3fb-d7a1c9e879d4)
+
+Navigate through different sub-workflows and their options.
+
+![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/96936bd8-a3d6-46e9-814a-5119ef0eee4a)
+![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/d980e7bb-cddf-478a-9849-db40dd96c399)
+
+
+Once you select and specify the parameters according to analyses you want to perform, simply save them to yml file and copy the path within the `-params-file` option.
+
+![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/c2dfc4fd-032d-4241-8499-a233bf378216)
+
+
+Now, you can run the scalepopgen:
 
 ```bash
 nextflow run popgen48/scalepopgen \
-   -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv \
-   --outdir <OUTDIR>
+   -profile <docker/singularity/conda/mamba> \
+   -params-file <path/to/parameters.yml> \
+   -qs <maximum number of processes>
 ```
 
-:::warning
-Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
-provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+::: warning
+Custom config files, including those provided by the Nextflow option `-c`, can be used to provide any other configuration, _**except for the parameters**_;
 see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 :::
 
 ## Credits
 
-popgen48/scalepopgen was originally written by @BioInf2305.
+**scalepopgen** was originally written by @BioInf2305 with small contributions from @NPogo.
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+Many thanks to `nf-core` community for their assistance and help in the development of this pipeline.
 
 <!-- TODO nf-core: If applicable, make list of people who have also contributed -->
 
