@@ -4,7 +4,7 @@ process PYTHON_CONVERT_VCF2TREEMIX{
     label "process_single"
     conda "${moduleDir}/environment.yml"
     container "biocontainers/pysam:0.22.0--py310h41dec4a_0"
-    publishDir("${params.outdir}/treemix/input_files/chromosomewise_treemix_files", mode:"copy")
+    publishDir("${params.outdir}/treemix/input_files/", mode:"copy")
 
     input:
         tuple val(meta), file(vcf), file(idx), file(map_file)

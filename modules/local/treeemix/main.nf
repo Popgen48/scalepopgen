@@ -6,7 +6,7 @@ process TREEMIX{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/treemix:1.13' :
         'popgen48/treemix:1.13' }"
-    publishDir("${params.outdir}/treemix/${local_dir}/", mode:"copy")
+    publishDir("${params.outdir}/treemix/treemix/${local_dir}/", mode:"copy")
 
     input:
         tuple path(treemix_in), val(n_seed), val(n_mig), val(n_iter)

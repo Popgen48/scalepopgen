@@ -6,7 +6,7 @@ process RSCRIPT_OPTM{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/rscript_optm:0.1.6' :
         'popgen48/rscript_optm:0.1.6' }"
-    publishDir("${params.outdir}/treemix", mode:"copy")
+    publishDir("${params.outdir}/treemix/optm/", mode:"copy")
 
     input:
         path(llik)

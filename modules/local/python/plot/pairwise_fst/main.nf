@@ -17,7 +17,7 @@ process PYTHON_PLOT_PAIRWISE_FST{
     output:
         path("*.tree")
         path("*.dist")
-        path("*.html"), emit:html
+        path("*_mqc.html"), emit:html
         path("*.svg")
 
     when:
