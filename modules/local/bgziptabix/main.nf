@@ -5,6 +5,7 @@ process LOCAL_TABIX_BGZIPTABIX {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/tabix:1.11--hdfd78af_0' :
         'biocontainers/tabix:1.11--hdfd78af_0' }"
+    publishDir("${params.outdir}/tabix/", mode:"copy")
 
     input:
     tuple val(meta), path(input)

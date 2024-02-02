@@ -6,7 +6,7 @@ process PYTHON_PLOT_ADMIXTURE_CV_ERROR{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/plot_admixture:1.0.0' :
         'popgen48/plot_admixture:1.0.0' }"
-    publishDir("${params.outdir}/genetic_structure/interactive_plots/", mode:"copy")
+    publishDir("${params.outdir}/admixture/python/plot/admixture/cv_error/", mode:"copy")
     errorStrategy 'ignore'
 
     input:

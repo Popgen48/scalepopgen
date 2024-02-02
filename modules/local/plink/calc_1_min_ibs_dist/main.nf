@@ -6,7 +6,7 @@ process PLINK_CALC_1_MIN_IBS_DIST{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/plink:1.90b6.21--h779adbc_1' :
         'biocontainers/plink:1.90b6.21--h779adbc_1' }"
-    publishDir("${params.outdir}/genetic_structure/interactive_plots/1_min_ibs_clustering/", mode:"copy")
+    publishDir("${params.outdir}/ibs_clustering/plink/calc_1_mins_ibs_dist", mode:"copy")
 
     input:
         tuple val(meta), path(bed)

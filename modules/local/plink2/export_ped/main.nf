@@ -5,6 +5,7 @@ process PLINK2_EXPORT_PED{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/plink2:2.00a3.7--h9f5acd7_2' :
         'biocontainers/plink2:2.00a3.7--h9f5acd7_3' }"
+    publishDir("${params.outdir}/pca/plink2/export_ped/", mode:"copy")
 
     input:
     tuple val(meta), path(bed)

@@ -6,7 +6,7 @@ process VCFTOOLS_REMOVE{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
         'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"
-    publishDir("${params.outdir}/vcftools/indi_filtered/", mode:"copy")
+    publishDir("${params.outdir}/sample_filtering/vcftools/remove/", mode:"copy")
 
     input:
         tuple val(meta), path(f_vcf), path(idx), path(rem_indi)

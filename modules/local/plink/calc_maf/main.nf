@@ -6,8 +6,7 @@ process PLINK_CALC_MAF{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/plink:1.90b6.21--h779adbc_1' :
         'biocontainers/plink:1.90b6.21--h779adbc_1' }"
-
-    publishDir("${params.outdir}/summary_stats/", mode:"copy")
+    publishDir("${params.outdir}/summary_stats/plink/calc_maf_hardy/", mode:"copy")
 
     input:
         tuple val(meta), path(bed_f)

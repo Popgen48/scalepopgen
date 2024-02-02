@@ -5,6 +5,7 @@ process EIGENSOFT_CONVERTF{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/eigensoft:8.0.0--h2469040_1':
         'biocontainers/eigensoft:8.0.0--h2469040_1' }"
+    publishDir("${params.outdir}/pca/eigensoft/convertf/", mode:"copy")
 
     input:
     tuple val(meta), path(map), path(ped)

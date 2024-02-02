@@ -1,5 +1,5 @@
 <!--
-id: 'Summary statistics'
+id: 'sum_sta'
 section_name: 'Sample-wise summary statistics of SNP counts'
 description: 'The SNP counts are calculated using plink2'
 -->

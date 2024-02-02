@@ -6,7 +6,7 @@ process VCFTOOLS_CONCAT{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
         'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"
-    publishDir("${params.outdir}/vcftools/concat/", mode:"copy")
+    publishDir("${params.outdir}/${process}/vcftools/concat/", mode:"copy")
 
     input:
         path(vcf)

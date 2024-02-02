@@ -6,7 +6,7 @@ process PYTHON_CREATE_SMARTPCA_PAR{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/python_bash:3.10-alpine' :
         'popgen48/python_bash:3.10-alpine' }"
-    publishDir("${params.outdir}/eigenstraat/parameter_files/", mode:"copy")
+    publishDir("${params.outdir}/pca/python/create/smartpca_par", mode:"copy")
 
     input:
         val(meta)

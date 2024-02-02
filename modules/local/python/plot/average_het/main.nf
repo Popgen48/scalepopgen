@@ -6,7 +6,7 @@ process PYTHON_PLOT_AVERAGE_HET{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/plot_maf:1.0.0' :
         'popgen48/plot_maf:1.0.0' }"
-    publishDir("${params.outdir}/summary_stats/", mode:"copy")
+    publishDir("${params.outdir}/summary_stats/python/plot/average_het/", mode:"copy")
 
     input:
         path(bim)

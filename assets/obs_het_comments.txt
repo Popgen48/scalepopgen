@@ -1,5 +1,5 @@
 <!--
-id: 'Observed Heterozygosity'
+id: 'obs_het'
 section_name: 'Population-wise distribution of observed heterozygosity'
 description: 'Distribution of observed heterozygosity in a user-defined window'
 -->

@@ -6,7 +6,7 @@ process VCFTOOLS_KEEP{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
         'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"
-    publishDir("${params.outdir}/vcftools/${local_dir}/", mode:"copy")
+    publishDir("${params.outdir}/${local_dir}/vcftools/keep/", mode:"copy")
 
     input:
         tuple val(meta), file(f_vcf), file(idx), file(f_map), file(unrel_id)
@@ -21,7 +21,7 @@ process VCFTOOLS_KEEP{
     script:
         chrom = meta.id
         output_v = analysis == "keep" ? chrom+"_filt_samples.vcf.gz" : chrom+"_"+unrel_id.getName().minus(".txt")+".vcf.gz"
-        local_dir = analysis == "keep" ? "sample_filtering": "selscan/prepare_input"
+        local_dir = analysis == "keep" ? "sample_filtering": "selection/selscan/prepare_input"
         outprefix = params.outprefix
                 
             """

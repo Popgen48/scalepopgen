@@ -6,7 +6,7 @@ process PYTHON_PLOT_PCA{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/plot_pca:1.0.0' :
         'popgen48/plot_pca:1.0.0' }"
-    publishDir("${params.outdir}/genetic_structure/interactive_plots/pca/", mode:"copy")
+    publishDir("${params.outdir}/pca/python/plot/pca/", mode:"copy")
 
     input:
         tuple val(meta), path(eigenvect)

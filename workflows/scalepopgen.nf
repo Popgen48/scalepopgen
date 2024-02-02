@@ -185,6 +185,9 @@ workflow SCALEPOPGEN {
         }
     }
     if (params.genetic_structure || params.indiv_summary){
+
+            g_ch_multiqc_files = Channel.empty().ifEmpty([])
+
             if(is_vcf){
                 //
                 //MODULE: PLINK2_VCF
@@ -214,6 +217,7 @@ workflow SCALEPOPGEN {
                         n2_meta_bed,
                         GAWK_GENERATE_COLORS.out.color
                     )
+                g_ch_multiqc_files = g_ch_multiqc_files.combine(PREPARE_INDIV_REPORT.out.ch_multiqc_files)
             }
             if ( params.rem_indi_structure ){
                     indi_list = Channel.fromPath( params.rem_indi_structure, checkIfExists: true)
@@ -242,7 +246,6 @@ workflow SCALEPOPGEN {
             else{
                     n4_bed = n3_bed
             }
-            g_ch_multiqc_files = Channel.empty().ifEmpty([])
             if(params.smartpca){
                 //
                 // SUBWORKFLOW : RUN_PCA
@@ -286,7 +289,7 @@ workflow SCALEPOPGEN {
             //
             //MODULE: MULTIQC_GENETIC_STRUCTURE
             //
-            mqc_genetic_struct_config = Channel.fromPath(params.multiqc_genetic_struct_yml)
+            mqc_genetic_struct_config = Channel.fromPath(params.multiqc_report_yml)
             MULTIQC_GENETIC_STRUCTURE(
                 g_ch_multiqc_files,
                 mqc_genetic_struct_config,

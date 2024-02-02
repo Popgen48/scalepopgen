@@ -17,7 +17,8 @@ process PYTHON_CONVERT_VCF2TREEMIX{
         task.ext.when == null || task.ext.when
 
     script:
-        args = is_vcf == true ? "-o "+meta.id+" -c "+meta.id+" -O t ":" -o "+meta.id+" -O z"
+        args = is_vcf == true ? "-o "+meta.id+" -O t ":" -o "+meta.id+" -O z"
+        //args = is_vcf == true ? "-o "+meta.id+" -c "+meta.id+" -O t ":" -o "+meta.id+" -O z"
 
         """
 

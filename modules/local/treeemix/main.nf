@@ -1,7 +1,7 @@
 process TREEMIX{
 
     tag { "${n_iter}_${n_mig}_${n_seed}" }
-    label "process_single"
+    label "process_high"
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/treemix:1.13' :

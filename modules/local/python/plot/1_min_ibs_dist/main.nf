@@ -6,7 +6,7 @@ process PYTHON_PLOT_1_MIN_IBS_DIST{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/plot_ibs:1.0.0' :
         'popgen48/plot_ibs:1.0.0' }"
-    publishDir("${params.outdir}/genetic_structure/interactive_plots/1_min_ibs_dist/", mode:"copy")
+    publishDir("${params.outdir}/ibs_clustering/python/plot/calc_1_mins_ibs_dist", mode:"copy")
 
     input:
         path(mdist)

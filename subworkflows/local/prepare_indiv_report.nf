@@ -5,7 +5,7 @@ include { GAWK_MAKE_CLUSTER_FILE as GAWK_MAF_CALC_INPUT     } from '../../module
 include { PYTHON_PLOT_AVERAGE_MAF                           } from '../../modules/local/python/plot/average_maf/main'
 include { GAWK_SPLIT_FAM_FILE                               } from '../../modules/local/gawk/split_fam_file/main'
 include { PYTHON_PLOT_AVERAGE_HET                           } from '../../modules/local/python/plot/average_het/main'
-include { MULTIQC as MULTIQC_INDIV_REPORT                   } from '../../modules/nf-core/multiqc/main'
+//include { MULTIQC as MULTIQC_INDIV_REPORT                   } from '../../modules/nf-core/multiqc/main'
 
 workflow PREPARE_INDIV_REPORT{
     take:
@@ -82,8 +82,10 @@ workflow PREPARE_INDIV_REPORT{
             PLINK_CALC_HARDY.out.hwesummary.collect(),
         )
         
+        
         ch_multiqc_files = PYTHON_PLOT_SAMPLE_STATS.out.sample_stats_html.combine(PYTHON_PLOT_AVERAGE_MAF.out.maf_stats_html).combine(PYTHON_PLOT_AVERAGE_HET.out.obs_het_html).combine(PYTHON_PLOT_AVERAGE_HET.out.exp_het_html)
 
+        /*
         multiqc_config = Channel.fromPath(params.multiqc_summary_stats_yml)
         
         //
@@ -95,4 +97,7 @@ workflow PREPARE_INDIV_REPORT{
             [],
             []
         )
+        */
+    emit:
+        ch_multiqc_files
 }

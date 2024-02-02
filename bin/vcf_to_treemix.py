@@ -52,6 +52,7 @@ class VcfToTreemix:
         else:
             dest = open(self.out_prefix + "_treemixIn.txt", "w")
             dest.write(" ".join(self.pop_list))
+        print(self.chrom_cord_dict)
         for chrom in self.chrom_cord_dict:
             chromRegions = self.chrom_cord_dict[chrom]
             for region in chromRegions:

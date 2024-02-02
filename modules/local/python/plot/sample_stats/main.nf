@@ -6,7 +6,7 @@ process PYTHON_PLOT_SAMPLE_STATS{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/plot_admixture:1.0.0' :
         'popgen48/plot_admixture:1.0.0' }"
-    publishDir("${params.outdir}/summary_stats/samples/", mode:"copy")
+    publishDir("${params.outdir}/summary_stats/python/plot/sample_stats/", mode:"copy")
 
     input:
 	path(sample_summary)

@@ -7,7 +7,7 @@ process PLINK2_SAMPLE_COUNTS{
         'https://depot.galaxyproject.org/singularity/plink2:2.00a3.7--h9f5acd7_2' :
         'biocontainers/plink2:2.00a3.7--h9f5acd7_3' }"
 
-    publishDir("${params.outdir}/summary_stats/", mode:"copy")
+    publishDir("${params.outdir}/summary_stats/plink2/sample_counts/", mode:"copy")
 
     input:
         tuple val(meta), path(bed_f)

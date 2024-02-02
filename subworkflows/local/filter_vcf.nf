@@ -29,7 +29,7 @@ workflow FILTER_VCF{
                 //
                 REMOVE_SAMPLE_LIST(
                     rif,
-                    Channel.value("remove")
+                    Channel.value("sample_filtering")
                 )
              versions = versions.mix(REMOVE_SAMPLE_LIST.out.versions)
                    
@@ -53,7 +53,7 @@ workflow FILTER_VCF{
 
                 VCFTOOLS_CONCAT(
                     vcflist,
-                    Channel.value("filtering")
+                    Channel.value("sample_filtering")
                 )
 
                 versions = versions.mix(VCFTOOLS_CONCAT.out.versions)
@@ -74,7 +74,7 @@ workflow FILTER_VCF{
                 //
                 GAWK_EXTRACT_SAMPLEID(
                     PLINK2_FILTER_SAMPLES.out.bed.map{meta,bed->bed[2]},
-                    Channel.value("keep")
+                    Channel.value("sample_filtering")
                 )
         
                 versions = versions.mix(GAWK_EXTRACT_SAMPLEID.out.versions)

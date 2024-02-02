@@ -1,5 +1,5 @@
 <!--
-id: 'ADMIXTURE'
+id: 'adm'
 section_name: 'Q-matrices of ADMIXTURE analysis'
 description: 'Note that the color-pattern is not consistent across the different values of K'
 -->

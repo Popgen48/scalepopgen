@@ -1,5 +1,5 @@
 <!--
-id: 'FST'
+id: 'fst'
 section_name: 'Fst-distance based NJ tree'
 description: 'Fst distances were calculated using plink and NJ distances were calculated using Biopython module'
 -->

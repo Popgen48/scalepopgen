@@ -1,0 +1,56 @@
+custom_data:
+    order:
+      - sum_sta
+      - maf
+      - obs_het
+      - exp_het
+      - pca
+      - ibs
+      - fst
+      - cvp
+      - adm
+    my_data_type:
+        id: sum_sta
+        section_name: 'Sample-wise summary statistics of SNP counts'
+        description: 'The SNP counts are calculated using plink2'
+        plot_type: 'html'
+    my_data_type:
+      id: maf
+      section_name: 'Population-wise distribution of minor allele frequency'
+      description: 'Distribution of mean minor allele frequency in a user-defined window'
+      plot_type: 'html'
+    my_data_type:
+      id: obs_het
+      section_name: 'Population-wise distribution of observed heterozygosity'
+      description: 'Distribution of observed heterozygosity in a user-defined window'
+      plot_type: 'html'
+    my_data_type:
+      id: exp_het
+      section_name: 'Population-wise distribution of Expected heterozygosity'
+      description: 'Distribution of expected heterozygosity in a user-defined window'
+      plot_type: 'html'
+    my_data_type:
+        id: pca
+        section_name: 'Principal Component Analysis (PCA)'
+        description: 'PCA was carried out using smartpca program of eigensoft package'
+        plot_type: 'html'
+    my_data_type:
+      id: ibs
+      section_name: 'Identical by state (IBS) distance based Neighbor Joining (NJ) tree'
+      description: '1-IBS distance was calculated using plink and NJ distances were calculated using Biopyton module'
+      plot_type: 'html'
+    my_data_type:
+      id: fst
+      section_name: 'Fst-distance based NJ tree'
+      description: 'Fst distances were calculated using plink and NJ distances were calculated using Biopython module'
+      plot_type: 'html'
+    my_data_type:
+      id: cvp
+      section_name: 'cross-validation (CV) plot for ADMIXTURE analysis'
+      description: 'Note that the color-pattern is not consistent across the different values of K'
+      plot_type: 'html'
+    my_data_type:
+      id: adm
+      section_name: 'Q-matrices of ADMIXTURE analysis'
+      description: 'Note that the color-pattern is not consistent across the different values of K'
+      plot_type: 'html'
