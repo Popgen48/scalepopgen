@@ -184,9 +184,11 @@ workflow SCALEPOPGEN {
 
         }
     }
+    
+    g_ch_multiqc_files = Channel.empty().ifEmpty([])
+
     if (params.genetic_structure || params.indiv_summary){
 
-            g_ch_multiqc_files = Channel.empty().ifEmpty([])
 
             if(is_vcf){
                 //
@@ -289,13 +291,6 @@ workflow SCALEPOPGEN {
             //
             //MODULE: MULTIQC_GENETIC_STRUCTURE
             //
-            mqc_genetic_struct_config = Channel.fromPath(params.multiqc_report_yml)
-            MULTIQC_GENETIC_STRUCTURE(
-                g_ch_multiqc_files,
-                mqc_genetic_struct_config,
-                [],
-                []
-            )
     }
     if(params.treemix){
         //
@@ -305,7 +300,20 @@ workflow SCALEPOPGEN {
             n1_meta_vcf_idx_map,
             is_vcf
         )
+        g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.jpg)
     }
+
+    mqc_genetic_struct_config = Channel.fromPath(params.multiqc_report_yml)
+    //
+    //MODULE: MULTIQC_GENETIC_STRUCTURE
+    //
+    MULTIQC_GENETIC_STRUCTURE(
+        g_ch_multiqc_files,
+        mqc_genetic_struct_config,
+        [],
+        []
+    )
+
     if(params.pairwise_local_fst || params.tajimas_d || params.pi_val || params.fst_one_vs_all){
         //
         // SUBWORKFLOW : RUN_VCFTOOLS
