@@ -12,7 +12,7 @@ include { RSCRIPT_PLOT_TREE as RSCRIPT_PLOT_TREE_M0_BOOTSTRAP   } from "../../mo
 include { RSCRIPT_PLOT_TREE as RSCRIPT_PLOT_TREE_ADD_MIG        } from "../../modules/local/rscript/plot_tree/main"
 include { RSCRIPT_OPTM                                          } from "../../modules/local/rscript/optm/main"
 include { PHYLIP_CONSENSE                                       } from "../../modules/local/phylip/consense/main"
-include { PYTHON_PDF2IMAGE                                      } from "../../modules/local/python/pdf2image/main"
+include { PDF2HTML                                              } from "../../modules/local/pdf2html/main"
 
 
 def generate_random_num(num_bootstrap, upper_limit, set_random_seed){
@@ -97,11 +97,11 @@ workflow RUN_TREEMIX {
             Channel.value("default")
         )
 
-        PYTHON_PDF2IMAGE(
+        PDF2HTML(
             RSCRIPT_PLOT_TREE_M0.out.pdf
         )
         
-        jpg = PYTHON_PDF2IMAGE.out.jpg
+        jpg = PDF2HTML.out.html
 
         if(params.n_bootstrap > 0){
             random_num_tuple = generate_random_num(params.n_bootstrap, 34680, params.set_random_seed)
