@@ -1,0 +1,6 @@
+name: imagemagick
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - imagemagick==7.1.0_44
