@@ -25,7 +25,7 @@ process PYTHON_PLOT_ADMIXTURE_CV_ERROR{
         """
 	python3 ${baseDir}/bin/est_best_k_and_plot.py ${args} ${k_cv_log_files}
 
-        cat ${baseDir}/assets/cvplot_comments.txt *.html > cvplot_mqc.html
+        cat ${baseDir}/assets/cvplt_comments.txt *.html > cvplot_mqc.html
 
 	""" 
 

@@ -267,6 +267,7 @@ workflow SCALEPOPGEN {
                     GAWK_GENERATE_COLORS.out.color
                 )
                 g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.qmat_html)
+                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.cv_html)
             }
             if(params.pairwise_global_fst){
                 //
