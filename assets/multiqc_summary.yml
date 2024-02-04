@@ -1,57 +1,167 @@
-custom_content:
-    order:
-      - sum_sta
-      - maf
-      - obs_het
-      - exp_het
-      - pca
-      - ibs
-      - fst
-      - cvp
-      - adm
 custom_data:
     sum_sta:
-        id: "sum_sta"
-        section_name: 'Sample-wise summary statistics of SNP counts'
-        description: 'The SNP counts are calculated using plink2'
-        plot_type: 'html'
+      parent_id: "summary_statistics"
+      parent_name: "summary statistics"
+      parent_description: "summary statistics of individual sample and population"
+      id: "sum_sta"
+      section_name: 'Sample-wise summary statistics of SNP counts'
+      description: 'The SNP counts are calculated using plink2'
+      plot_type: 'html'
     maf:
+      parent_id: "summary_statistics"
+      parent_name: "summary statistics"
+      parent_description: "summary statistics of individual sample and population"
       id: "maf"
       section_name: 'Population-wise distribution of minor allele frequency'
       description: 'Distribution of mean minor allele frequency in a user-defined window'
       plot_type: 'html'
     obs_het:
+      parent_id: "summary_statistics"
+      parent_name: "summary statistics"
+      parent_description: "summary statistics of individual sample and population"
       id: "obs_het"
       section_name: 'Population-wise distribution of observed heterozygosity'
       description: 'Distribution of observed heterozygosity in a user-defined window'
       plot_type: 'html'
     exp_het:
+      parent_id: "summary_statistics"
+      parent_name: "summary statistics"
+      parent_description: "summary statistics of individual sample and population"
       id: "exp_het"
       section_name: 'Population-wise distribution of Expected heterozygosity'
       description: 'Distribution of expected heterozygosity in a user-defined window'
       plot_type: 'html'
     pca:
+      parent_id: "genetic_structure"
+      parent_name: "Genetic structure"
+      parent_description: "analysis carried out to explore genetic structure of populations"
       id: "pca"
       section_name: 'Principal Component Analysis (PCA)'
       description: 'PCA was carried out using smartpca program of eigensoft package'
       plot_type: 'html'
     ibs:
+      parent_id: "genetic_structure"
+      parent_name: "Genetic structure"
+      parent_description: "analysis carried out to explore genetic structure of populations"
       id: "ibs"
       section_name: 'Identical by state (IBS) distance based Neighbor Joining (NJ) tree'
       description: '1-IBS distance was calculated using plink and NJ distances were calculated using Biopyton module'
       plot_type: 'html'
     fst:
+      parent_id: "genetic_structure"
+      parent_name: "Genetic structure"
+      parent_description: "analysis carried out to explore genetic structure of populations"
       id: "fst"
       section_name: 'Fst-distance based NJ tree'
       description: 'Fst distances were calculated using plink and NJ distances were calculated using Biopython module'
       plot_type: 'html'
     cvp:
+      parent_id: "genetic_structure"
+      parent_name: "Genetic structure"
+      parent_description: "analysis carried out to explore genetic structure of populations"
       id: "cvp"
       section_name: 'cross-validation (CV) plot for ADMIXTURE analysis'
       description: 'Note that the color-pattern is not consistent across the different values of K'
       plot_type: 'html'
     adm:
+      parent_id: "genetic_structure"
+      parent_name: "Genetic structure"
+      parent_description: "analysis carried out to explore genetic structure of populations"
       id: "adm"
       section_name: 'Q-matrices of ADMIXTURE analysis'
       description: 'Note that the color-pattern is not consistent across the different values of K'
       plot_type: 'html'
+    Treemix_default:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix"
+    Treemix_mig1:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m1"
+    Treemix_mig2:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m2"
+    Treemix_mig3:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m3"
+    Treemix_mig4:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m4"
+    Treemix_mig5:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m5"
+    Treemix_mig6:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m6"
+    Treemix_mig7:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m7"
+    Treemix_mig8:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m8"
+    Treemix_mig9:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m9"
+    Treemix_mig10:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "Treemix_m10"
+sp:
+  Treemix_default:
+    fn: "Treemix_default.png"
+  Treemix_mig1:
+    fn: "Treemix_m1.png"
+  Treemix_mig2:
+    fn: "Treemix_m2.png"
+  Treemix_mig3:
+    fn: "Treemix_m3.png"
+  Treemix_mig4:
+    fn: "Treemix_m4.png"
+  Treemix_mig5:
+    fn: "Treemix_m5.png"
+  Treemix_mig6:
+    fn: "Treemix_m6.png"
+  Treemix_mig7:
+    fn: "Treemix_m7.png"
+  Treemix_mig8:
+    fn: "Treemix_m8.png"
+  Treemix_mig9:
+    fn: "Treemix_m9.png"
+  Treemix_mig10:
+    fn: "Treemix_m10.png"
+ignore_images: false
+
+custom_content:
+    order:
+      - summary_statistics
+      - sum_sta
+      - maf
+      - obs_het
+      - exp_het
+      - genetic_structure
+      - pca
+      - cvp
+      - adm
+      - ibs
+      - fst
+      - Treemix

@@ -16,13 +16,14 @@ process RSCRIPT_PLOT_TREE{
         val(method)
 
     output:
-	path("*.pdf"), emit: pdf
+	tuple val(n_mig), path("*.pdf"), emit: pdf
 
     when:
-     task.ext.when == null || task.ext.when
+        task.ext.when == null || task.ext.when
 
     script:
         prefix = treeout.getName().minus(".treeout.gz")
+        n_mig = method=="add_mig"? prefix.split("\\.")[-1]:prefix
 
         """
 	Rscript ${baseDir}/bin/plot_tree.r ${prefix} ${prefix}.pdf

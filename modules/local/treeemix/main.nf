@@ -25,7 +25,7 @@ process TREEMIX{
      task.ext.when == null || task.ext.when
 
     script:
-        def args1 = params.outgroup ? " -root "+params.outgroup+ " -k "+params.k_snps : ""
+        def args1 = params.outgroup ? " -root "+params.outgroup:''
         def args2 = (method == "bootstrap" || method == "add_mig") ? (params.set_random_seed == true ? " --seed "+n_seed : '') : ''
         def args3 = (method == "bootstrap" || method == "add_mig") ? (method == "bootstrap" ? " -bootstrap ": " -global -m "+n_mig):''
         def outprefix = (method == "bootstrap" || method == "default") ? params.outprefix + "_"+n_seed : params.outprefix +"."+n_iter+"."+n_mig

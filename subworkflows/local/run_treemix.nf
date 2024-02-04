@@ -12,7 +12,9 @@ include { RSCRIPT_PLOT_TREE as RSCRIPT_PLOT_TREE_M0_BOOTSTRAP   } from "../../mo
 include { RSCRIPT_PLOT_TREE as RSCRIPT_PLOT_TREE_ADD_MIG        } from "../../modules/local/rscript/plot_tree/main"
 include { RSCRIPT_OPTM                                          } from "../../modules/local/rscript/optm/main"
 include { PHYLIP_CONSENSE                                       } from "../../modules/local/phylip/consense/main"
-include { IMAGEMAGIK                                            } from "../../modules/local/imagemagik/main"
+include { IMAGEMAGIK_CONVERT as IMAGEMAGIK_RUN_M0               } from "../../modules/local/imagemagik/convert/main"
+include { IMAGEMAGIK_CONVERT as IMAGEMAGIK_RUN_ADD_MIG          } from "../../modules/local/imagemagik/convert/main"
+include { IMAGEMAGIK_CONVERT_APPEND                             } from "../../modules/local/imagemagik/convert_append/main"
 
 
 def generate_random_num(num_bootstrap, upper_limit, set_random_seed){
@@ -96,12 +98,15 @@ workflow RUN_TREEMIX {
             TREEMIX_RUN_M0.out.covse,
             Channel.value("default")
         )
-
-        IMAGEMAGIK(
-            RSCRIPT_PLOT_TREE_M0.out.pdf
+        //
+        // MODULE: IMAGEMAGIK_RUN_M0
+        //
+        IMAGEMAGIK_RUN_M0(
+            RSCRIPT_PLOT_TREE_M0.out.pdf,
+            Channel.value("default")
         )
         
-        jpg = IMAGEMAGIK.out.png
+        jpg = IMAGEMAGIK_RUN_M0.out.png.map{meta,png->png}
 
         if(params.n_bootstrap > 0){
             random_num_tuple = generate_random_num(params.n_bootstrap, 34680, params.set_random_seed)
@@ -168,7 +173,25 @@ workflow RUN_TREEMIX {
                 TREEMIX_ADD_MIG.out.modelcov.collect(),
                 TREEMIX_ADD_MIG.out.cov.collect()
             )
+            //
+            //MODULE:IMAGEMAGIK_RUN_ADD_MIG
+            //
+            IMAGEMAGIK_RUN_ADD_MIG(
+                RSCRIPT_PLOT_TREE_ADD_MIG.out.pdf,
+                Channel.value("add_mig")
+            )
+
+            IMAGEMAGIK_RUN_ADD_MIG.out.png.view()
+            //
+            //MODULE: IMAGEMAGIK_CONVERT_APPEND
+            //
+            IMAGEMAGIK_CONVERT_APPEND(
+                IMAGEMAGIK_RUN_ADD_MIG.out.png.groupTuple()
+            )
+            jpg_m = IMAGEMAGIK_CONVERT_APPEND.out.png.collect()
         }
     emit:
         jpg
+        jpg_m
+        
 }
