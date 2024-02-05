@@ -14,6 +14,7 @@ include { RSCRIPT_OPTM                                          } from "../../mo
 include { PHYLIP_CONSENSE                                       } from "../../modules/local/phylip/consense/main"
 include { IMAGEMAGIK_CONVERT as IMAGEMAGIK_RUN_M0               } from "../../modules/local/imagemagik/convert/main"
 include { IMAGEMAGIK_CONVERT as IMAGEMAGIK_RUN_ADD_MIG          } from "../../modules/local/imagemagik/convert/main"
+include { IMAGEMAGIK_CONVERT as IMAGEMAGIK_OPTM                 } from "../../modules/local/imagemagik/convert/main"
 include { IMAGEMAGIK_CONVERT_APPEND                             } from "../../modules/local/imagemagik/convert_append/main"
 
 
@@ -174,6 +175,16 @@ workflow RUN_TREEMIX {
                 TREEMIX_ADD_MIG.out.cov.collect()
             )
             //
+            //MODULE: IMAGEMAGIK_OPTM
+            //
+            IMAGEMAGIK_OPTM(
+                RSCRIPT_OPTM.out.pdf,
+                Channel.value("optm")
+            )
+
+            jpg_o = IMAGEMAGIK_OPTM.out.png.map{meta,fig->fig}
+    
+            //
             //MODULE:IMAGEMAGIK_RUN_ADD_MIG
             //
             IMAGEMAGIK_RUN_ADD_MIG(
@@ -181,7 +192,6 @@ workflow RUN_TREEMIX {
                 Channel.value("add_mig")
             )
 
-            IMAGEMAGIK_RUN_ADD_MIG.out.png.view()
             //
             //MODULE: IMAGEMAGIK_CONVERT_APPEND
             //
@@ -193,5 +203,5 @@ workflow RUN_TREEMIX {
     emit:
         jpg
         jpg_m
-        
+        jpg_o
 }

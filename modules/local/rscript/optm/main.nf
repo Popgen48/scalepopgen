@@ -9,19 +9,20 @@ process RSCRIPT_OPTM{
     publishDir("${params.outdir}/treemix/optm/", mode:"copy")
 
     input:
-        path(llik)
+        path(llik_f)
 	path(modelcov)
 	path(cov)
 
     output:
-        path("OptM_results*")
+        tuple val(prefix), path("OptM_resu*.pdf"), emit: pdf
+        tuple val(prefix), path("OptM_resul*.{tsv,log}"), emit: tsv
 
     when:
      task.ext.when == null || task.ext.when
     
    
     script:
-        
+        prefix = "optm"
 
         """
 	    Rscript ${baseDir}/bin/est_opt_mig_edge.r -d `pwd` > OptM_results.log 2>&1

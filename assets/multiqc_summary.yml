@@ -76,6 +76,11 @@ custom_data:
       parent_name: "Treemix_p"
       parent_description: "Treemix_results"
       section_name: "Treemix"
+    Treemix_optm:
+      parent_id: "Treemix"
+      parent_name: "Treemix_p"
+      parent_description: "Treemix_results"
+      section_name: "OptM results"
     Treemix_mig1:
       parent_id: "Treemix"
       parent_name: "Treemix_p"
@@ -129,6 +134,8 @@ custom_data:
 sp:
   Treemix_default:
     fn: "Treemix_default.png"
+  Treemix_optm:
+    fn: "OptM_results.png"
   Treemix_mig1:
     fn: "Treemix_m1.png"
   Treemix_mig2:

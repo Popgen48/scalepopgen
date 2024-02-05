@@ -303,6 +303,7 @@ workflow SCALEPOPGEN {
         )
         g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.jpg)
         g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.jpg_m)
+        g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.jpg_o)
     }
 
     mqc_genetic_struct_config = Channel.fromPath(params.multiqc_report_yml)
