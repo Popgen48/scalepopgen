@@ -52,14 +52,12 @@ class VcfToTreemix:
         else:
             dest = open(self.out_prefix + "_treemixIn.txt", "w")
             dest.write(" ".join(self.pop_list))
-        print(self.chrom_cord_dict)
         for chrom in self.chrom_cord_dict:
             chromRegions = self.chrom_cord_dict[chrom]
             for region in chromRegions:
                 start = int(region[0])
                 end = int(region[1])
                 for rec in self.vcf_file.fetch(chrom, start, end):
-                    print(rec.id)
                     dest.write("\n".encode()) if self.out_mode == "z" else dest.write(
                         "\n"
                     )
