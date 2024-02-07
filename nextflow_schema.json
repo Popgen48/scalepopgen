@@ -13,7 +13,8 @@
             "properties": {
                 "min_sample_size": {
                     "type": "integer",
-                    "default": 8
+                    "default": 8,
+                    "description": "the minimum sample size per population necessary for inclusion in the analysis of selection signatures."
                 },
                 "skip_pop": {
                     "type": "string",
@@ -21,8 +22,7 @@
                 },
                 "skip_outgroup": {
                     "type": "boolean",
-                    "description": "Setting this to \"false\" will not apply the methods to identify signatures of selection on outgroup samples. Default: True",
-                    "default": true
+                    "description": "Setting this to \"false\" will not apply the methods to identify signatures of selection on outgroup samples. Default: True"
                 },
                 "selection_plot_yml": {
                     "type": "string",
@@ -34,7 +34,8 @@
                     "description": "Whether or not to calculate pairwise fst in windows or for each SNPs for every possible pair of population.Default: false"
                 },
                 "fst_one_vs_all": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "whether to compute pairwise FST with one population in the pair being the pooled samples excluding the population under comparison"
                 },
                 "tajimas_d": {
                     "type": "boolean",
@@ -45,7 +46,8 @@
                     "description": "Whether to calculate per-SNP pi values or per-window pi values for each population using vcftools. Default: False"
                 },
                 "skip_chromwise": {
-                    "type": "string"
+                    "type": "boolean",
+                    "description": "Determine if vcftools should be executed separately for each chromosome within each population. Setting this to true concatenates the chromosomes for each population before conducting the analysis"
                 },
                 "window_size": {
                     "type": "integer",
@@ -59,20 +61,25 @@
                 },
                 "perc_threshold": {
                     "type": "number",
-                    "default": 0.01
+                    "default": 0.01,
+                    "description": "cutoff to consider regions as candidates of selection"
                 },
                 "est_anc_alleles": {
-                    "type": "string"
+                    "type": "boolean",
+                    "description": "whether to run the workflow to detect ancestral alleles using est-sfs"
                 },
                 "anc_alleles_map": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "the map file containing information about ancestral allele at each SNP position"
                 },
                 "sweepfinder2": {
-                    "type": "string"
+                    "type": "boolean",
+                    "description": "whether to run sweepfinder2 workflow"
                 },
                 "sweepfinder2_model": {
                     "type": "string",
-                    "default": "l"
+                    "default": "l",
+                    "description": "the type of model in sweepfinder2 to run, valid options are: l, s, or lr"
                 },
                 "grid_space": {
                     "type": "integer",
@@ -85,11 +92,11 @@
                     "default": -9
                 },
                 "recomb_map": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "the path to the file containing information about recombination map file as required by sweepfinder2, if not provided, recombination file will be created using default recombination rate value"
                 },
                 "ihs": {
                     "type": "boolean",
-                    "default": true,
                     "description": "Whether or not to calculate iHS using selscan. Default: True"
                 }
             }
@@ -105,13 +112,16 @@
                     "description": "Setting this to false will skip phasing the data for the analyses with selscan."
                 },
                 "phasing_panel": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "a map file containing first column as chromosome id and second column as the path to its respective vcf reference panel"
                 },
                 "phasing_map": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "a map file containing first column as chromosome id and second column as the path to its recombination map file"
                 },
                 "beagle5": {
-                    "type": "string"
+                    "type": "boolean",
+                    "description": "phase genotypes using beagle5"
                 },
                 "burnin": {
                     "type": "integer",
@@ -131,6 +141,19 @@
                 "impute": {
                     "type": "boolean",
                     "description": "An option to impute the missing genotypes . Default: False"
+                },
+                "beagle5_args": {
+                    "type": "string",
+                    "description": "set additional parameters of beagle5 tool"
+                },
+                "shapeit5": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "whether to phase genotypes using shapeit5"
+                },
+                "shapeit5_args": {
+                    "type": "string",
+                    "description": "set additional parameters for shapeit5 tool"
                 }
             }
         },
@@ -150,7 +173,8 @@
                     "description": "Number of block of snps in treemix analysis. Default = 500"
                 },
                 "treemix_args": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Set additional parameters of Treemix tools"
                 },
                 "n_bootstrap": {
                     "type": "integer",
@@ -159,7 +183,8 @@
                 },
                 "set_random_seed": {
                     "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "description": "whether to set the seed for random number generation"
                 },
                 "n_mig": {
                     "type": "integer",
@@ -173,7 +198,8 @@
                 },
                 "rand_k_snps": {
                     "type": "boolean",
-                    "default": true
+                    "default": true,
+                    "description": "whether or not to randomized the values of k_snps for each iteration of n_iter"
                 }
             }
         },
@@ -214,7 +240,6 @@
                 },
                 "smartpca": {
                     "type": "boolean",
-                    "default": true,
                     "description": "Run PCA using the method implemented in smartpca tool of eigensoft. Default: True"
                 },
                 "smartpca_param": {
@@ -249,11 +274,13 @@
                 },
                 "admixture_args": {
                     "type": "string",
-                    "default": "--cv=5"
+                    "default": "--cv=5",
+                    "description": "Set additional parameters of ADMIXTURE tools"
                 },
                 "admixture_colors": {
                     "type": "string",
-                    "default": "popgen48-scalepopgen/extra/hexcolorcodes.txt"
+                    "default": "popgen48-scalepopgen/extra/hexcolorcodes.txt",
+                    "description": "path to the file containing color list"
                 },
                 "admixture_plot_yml": {
                     "type": "string",
@@ -261,7 +288,8 @@
                     "description": "Path to the yaml file containing the parameters of plotting interactive Q matrix of optimal value of \"K\". Default: \"./parameters/plots/admixture.yml"
                 },
                 "pairwise_global_fst": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Calculate pairwise Fst distances between each pair of populations"
                 },
                 "fst_plot_yml": {
                     "type": "string",
@@ -269,7 +297,8 @@
                     "description": "Path to the yaml file containing the paramterers to plot interactive fst-based NJ tree. Default:\"./parameters/plots/fst_nj.yml\""
                 },
                 "ibs_dist": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Calculate 1-ibs distances between each pair of samples"
                 },
                 "ibs_plot_yml": {
                     "type": "string",
@@ -277,7 +306,8 @@
                     "description": "Path to the yaml file containing the paramterers to plot interactive ibs distance-based NJ tree. Default:\"./parameters/plots/ibs_nj.yml\""
                 },
                 "admixture_plot_pop_order": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "File path containing population IDs in desired order for Admixture plot."
                 }
             }
         },
@@ -632,7 +662,7 @@
     ],
     "properties": {
         "xpehh": {
-            "type": "string"
+            "type": "boolean"
         },
         "selscan_map": {
             "type": "string"
