@@ -6,8 +6,9 @@ import numpy as np
 window_size = sys.argv[1]
 sel_threshold    = sys.argv[2]
 method = sys.argv[3]
-outprefix = sys.argv[4]
-files = sys.argv[5:]
+pop = sys.argv[4]
+outprefix = sys.argv[5]
+files = sys.argv[6:]
 
 df = pd.DataFrame()
 
@@ -68,4 +69,4 @@ merge_df = f_df.to_csv(outprefix+".out",sep=" ",header=True,index=False)
 with open(outprefix+".cutoff","w") as dest:
     cutoff = 1-float(sel_threshold) if (method == "fst_all" or method == "sweepfinder2" or method == "ihs") else float(sel_threshold)
     dest.write("id"+","+"cutoff"+"\n")
-    dest.write(outprefix+","+str(f_df[col_name].quantile(cutoff))+"\n")
+    dest.write(pop+","+str(f_df[col_name].quantile(cutoff))+"\n")

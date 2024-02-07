@@ -14,11 +14,11 @@ process PYTHON_PLOT_SELECTION_RESULTS{
         
 
     output:
-        tuple val(meta), path("*.html")
+        tuple val(meta), path("*.html"), emit: html
 
     script:
         window_size = method == "LR" ? 1:params.window_size
-        outprefix = meta.id
+        outprefix = merged_result.getName().minus(".out")
 
         """
         

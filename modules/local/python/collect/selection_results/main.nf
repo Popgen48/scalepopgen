@@ -13,21 +13,21 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
         val(method)
 
     output:
-        tuple val(meta), path("${pop_n}_${method}.out"), emit: txt
-        tuple val(meta), path("${pop_n}_${method}.cutoff"), emit: cutoff
+        tuple val(meta), path("${pop_u}_${method}.out"), emit: txt
+        tuple val(meta), path("${pop_u}_${method}.cutoff"), emit: cutoff
         
     
     script:
-        pop_n = (method == "sweepfinder2" || method == "ihs") ? pop.id: pop
+        pop_u = (method == "sweepfinder2" || method == "ihs") ? pop.id: pop
         window_size = params.window_size
         perc_threshold = params.perc_threshold
-        outfile = pop_n+"_"+method
+        outfile = pop_u+"_"+method
         meta = [:]
-        meta.id = pop_n+"_"+method
+        meta.id = pop_u
 
         """
         
-        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${perc_threshold} ${method} ${outfile} ${results}
+        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${perc_threshold} ${method} ${pop_u} ${outfile} ${results}
         
         
         """ 

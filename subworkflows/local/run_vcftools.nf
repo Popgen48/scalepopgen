@@ -44,6 +44,9 @@ workflow RUN_VCFTOOLS{
         
         selection_plot_yml = Channel.fromPath(params.selection_plot_yml, checkIfExists: true)
 
+
+
+
         // sample map file should be processed separately to split id pop-wise
 
         map_f = chrom_vcf_idx_map.map{ chrom, vcf, idx, mp -> mp}.unique()
@@ -108,7 +111,9 @@ workflow RUN_VCFTOOLS{
                 Channel.value("tajimas_d")
             )
             
-        
+            l_t_html_files = PLOT_TAJIMAS_D.out.html
+
+            //l_html_files.view()
             
         }
         if( params.pi_val ){
@@ -135,6 +140,7 @@ workflow RUN_VCFTOOLS{
                 trcp.combine(selection_plot_yml),
                 Channel.value("pi_value")
             )
+            l_p_html_files = PLOT_PI.out.html
         }
         if( params.pairwise_local_fst){
             
@@ -185,6 +191,14 @@ workflow RUN_VCFTOOLS{
                 trcf.combine(selection_plot_yml),
                 Channel.value("fst_values")
             )
+            
+            l_f_html_files = PLOT_ALL_FST.out.html
+            
         }
+            
+        l_html_files = params.tajimas_d ? l_t_html_files: []
+        l_html_files = params.pi_val ? (params.tajimas_d ? l_html_files.combine(l_p_html_files, by:0): l_p_html_files):l_html_files
+        l_html_files = params.fst_one_vs_all ? ( (params.tajimas_d || params.pi_val) ? l_html_files.combine(l_f_html_files, by:0):l_f_html_files):l_html_files
         
+        l_html_files.view()
 }
