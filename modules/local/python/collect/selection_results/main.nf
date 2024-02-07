@@ -3,8 +3,10 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
     tag { "${pop}" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
-    container "popgen48/prepare_manhattan_input:1.0.0"
-    publishDir("${params.outdir}/summary_stats/samples/", mode:"copy")
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/prepare_manhattan_input:1.0.0' :
+        'popgen48/plot_admixture:1.0.0' }"
+    publishDir("${params.outdir}/selection/vcftools/${method}/${pop}/genomewide/", mode:"copy")
 
     input:
         tuple val(pop), path(results)

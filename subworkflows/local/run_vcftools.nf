@@ -124,7 +124,7 @@ workflow RUN_VCFTOOLS{
             //
             COLLECT_PI(
                 VCFTOOLS_PI.out.txt.groupTuple(),
-                Channel.value("pi")
+                Channel.value("pi_val")
             )
             //
             //MODULE: PLOT_PI
@@ -174,7 +174,7 @@ workflow RUN_VCFTOOLS{
             //
             COLLECT_ALL_FST(
                 VCFTOOLS_ALL_FST.out.txt.groupTuple(),
-                Channel.value("fst")
+                Channel.value("fst_all")
             )
             //
             //MODULE: PLOT_ALL_FST

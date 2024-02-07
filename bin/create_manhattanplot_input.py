@@ -41,10 +41,10 @@ if method == "tajimas_d":
     df["BIN_START"] = df["BIN_START"]+1
     col_name = "TajimaD"
 
-if method == "fst":
+if method == "fst_all":
     col_name = "MEAN_FST"
 
-if method == "pi":
+if method == "pi_val":
     col_name = "PI"
 
 if method == "sweepfinder2":
@@ -66,6 +66,6 @@ merge_df = f_df.to_csv(outprefix+".out",sep=" ",header=True,index=False)
 
 
 with open(outprefix+".cutoff","w") as dest:
-    cutoff = 1-float(sel_threshold) if (method == "fst" or method == "sweepfinder2" or method == "ihs") else float(sel_threshold)
+    cutoff = 1-float(sel_threshold) if (method == "fst_all" or method == "sweepfinder2" or method == "ihs") else float(sel_threshold)
     dest.write("id"+","+"cutoff"+"\n")
     dest.write(outprefix+","+str(f_df[col_name].quantile(cutoff))+"\n")

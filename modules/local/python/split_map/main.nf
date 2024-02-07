@@ -3,8 +3,10 @@ process PYTHON_SPLIT_MAP{
     tag { "${tool}" }
     label "process_single"
     conda 'conda-forge::python=3.10'
-    container "python:3.10-alpine"
-    publishDir("${params.outdir}/selection/input_pop/${tool}", mode:"copy")
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/python_bash:3.10-alpine' :
+        'popgen48/python_bash:3.10-alpine' }"
+    publishDir("${params.outdir}/selection/vcftools/input_pop/${tool}", mode:"copy")
 
     input:
         path(sample_map)

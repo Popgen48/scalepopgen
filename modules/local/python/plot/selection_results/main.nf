@@ -1,10 +1,12 @@
 process PYTHON_PLOT_SELECTION_RESULTS{
 
     tag { "${outprefix}" }
-    label "oneCpu"
-    container "popgen48/plot_selection_results:1.0.0"
+    label "process_single"
     conda "${moduleDir}/environment.yml"
-    publishDir("${params.outdir}/selection/${method}/", mode:"copy")
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'docker://popgen48/plot_selection_results:1.0.0' :
+        'popgen48/plot_selection_results:1.0.0' }"
+    publishDir("${params.outdir}/selection/python/plot/${method}/", mode:"copy")
 
     input:
         tuple val(meta), val(cutoff), path(merged_result), path(yml)

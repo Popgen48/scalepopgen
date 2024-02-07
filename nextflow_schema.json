@@ -34,7 +34,7 @@
                     "description": "Whether or not to calculate pairwise fst in windows or for each SNPs for every possible pair of population.Default: false"
                 },
                 "fst_one_vs_all": {
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "tajimas_d": {
                     "type": "boolean",
@@ -637,13 +637,9 @@
         "selscan_map": {
             "type": "string"
         },
-        "multiqc_summary_stats_yml": {
+        "multiqc_report_yml": {
             "type": "string",
-            "default": "popgen48-scalepopgen/assets/multiqc_summary_stats.yml"
-        },
-        "multiqc_genetic_struct_yml": {
-            "type": "string",
-            "default": "popgen48-scalepopgen/assets/multiqc_genetic_structure.yml"
+            "default": "popgen48-scalepopgen/assets/multiqc_summary.yml"
         }
     }
 }

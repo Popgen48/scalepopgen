@@ -5,7 +5,7 @@ process VCFTOOLS_SELECTION{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
         'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"
-    publishDir("${params.outdir}/vcftools/selection/${method}/${pop1}", mode:"copy")
+    publishDir("${params.outdir}/selection/vcftools/${method}/${pop1}/${chrom}", mode:"copy")
 
     input:
         tuple val(meta), path(vcf), path(file1), path(file2)
