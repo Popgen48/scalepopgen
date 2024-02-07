@@ -77,10 +77,9 @@ Navigate through different sub-workflows and their options.
 ![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/d980e7bb-cddf-478a-9849-db40dd96c399)
 
 
-Once you select and specify the parameters according to analyses you want to perform, simply save them to yml file and copy the path within the `-params-file` option.
+Once you select and specify the parameters according to analyses you want to perform, simply save them to YAML file and copy the path within the `-params-file` option.
 
-![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/c2dfc4fd-032d-4241-8499-a233bf378216)
-
+![CLI5](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/2ff87f49-7a8d-40f3-b392-51e4c1afa92e)
 
 Now, you can run the scalepopgen:
 
