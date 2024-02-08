@@ -26,12 +26,14 @@ def create_fastq_channel(LinkedHashMap row) {
     // if the length is 3, the row contains information about vcf files splitted by chromosome
     if (row.size() == 3 ){
         meta.id         = row.chrom
+        /*
         if (!file(row.vcf).exists()) {
             exit 1, "ERROR: Please check input samplesheet -> vcf file does not exist!\n${row.vcf}"
         }
         if (!file(row.vcf_idx).exists()) {
             exit 1, "ERROR: Please check input samplesheet -> vcf index file does not exist!\n${row.vcf_idx}"
         }
+        */
         vcf_meta = [ meta, file(row.vcf), file(row.vcf_idx)  ]
     }
     else{
