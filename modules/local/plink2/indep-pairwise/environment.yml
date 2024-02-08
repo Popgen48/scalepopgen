@@ -1,0 +1,7 @@
+name: plink2_indep-pairwise
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - plink2==2.00a3.7

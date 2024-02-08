@@ -14,37 +14,12 @@ workflow RUN_ADMIXTURE{
         m_pop_sc_color
 
     main:
-        if(params.allow_extra_chrom){
-            if(!params.chrom_map){
-                //
-                //MODULE: GAWK_UPDATE_CHROM_IDS
-                //
-                GAWK_UPDATE_CHROM_IDS(
-                    bed.map{meta,bed->bed[1]}
-                )
-                chrom_map = GAWK_UPDATE_CHROM_IDS.out.map
-            }
-            else{
-                chrom_map = Channel.fromPath(params.chrom_map, checkIfExists: true)
-            }
-            //
-            //MODULE: PLINK2_MAKE_BED --> with updated chromosome ids
-            //
-            PLINK_MAKE_BED(
-                bed,
-                chrom_map
-            )
-            n2_bed = PLINK_MAKE_BED.out.bed
-        }
-        else{
-            n2_bed = bed
-        }
         //
         //MODULE: ADMIXTURE
         //
         k = Channel.from(params.start_k..params.end_k)
         ADMIXTURE(
-            n2_bed.map{meta,bed->tuple(meta,bed[0],bed[1],bed[2])}.combine(k)
+            bed.map{meta,bed->tuple(meta,bed[0],bed[1],bed[2])}.combine(k)
         )
 
         //
@@ -62,7 +37,7 @@ workflow RUN_ADMIXTURE{
         admixture_plot_pop_order = params.admixture_plot_pop_order ?:[]
         PYTHON_PLOT_ADMIXTURE_Q_MAT(
             ADMIXTURE.out.ancestry_fractions.map{meta,q_mat->q_mat}.collect(),
-            n2_bed.map{meta,bed->bed[2]},
+            bed.map{meta,bed->bed[2]},
             admixture_colors,
             admixture_plot_yml,
             admixture_plot_pop_order

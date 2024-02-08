@@ -1,7 +1,7 @@
 process PLINK2_MERGE_BED{
     tag "merging_bed"
     label 'process_low'
-    conda "${moduleDir}/../environment.yml"
+    conda "bioconda::plink2==2.00a3.7"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/plink2:2.00a3.7--h9f5acd7_2' :
         'biocontainers/plink2:2.00a3.7--h9f5acd7_3' }"

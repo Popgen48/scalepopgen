@@ -38,6 +38,8 @@ include { PLINK2_REMOVE_CUSTOM_INDI     } from '../modules/local/plink2/remove_c
 include { PLINK2_INDEP_PAIRWISE         } from '../modules/local/plink2/indep-pairwise/main'
 include { GAWK_GENERATE_COLORS          } from '../modules/local/gawk/generate_colors/main'
 include { PLINK2_CONVERT_BED_TO_VCF     } from '../modules/local/plink2/convert_bed_to_vcf/main'
+include { GAWK_UPDATE_CHROM_IDS          } from '../modules/local/gawk/update_chrom_ids/main'
+include { PLINK_MAKE_BED                 } from '../modules/local/plink/make_bed/main'
 include { GAWK_MAKE_SAMPLE_MAP          } from '../modules/local/gawk/make_sample_map/main'
 include { GAWK_ADD_CONTIG_LENGTH        } from '../modules/local/gawk/add_contig_length/main'
 include { GAWK_EXTRACT_SAMPLEID; GAWK_EXTRACT_SAMPLEID as REMOVE_SAMPLE_LIST } from '../modules/local/gawk/extract_sampleid/main'
@@ -248,12 +250,37 @@ workflow SCALEPOPGEN {
             else{
                     n4_bed = n3_bed
             }
+            if(params.allow_extra_chrom){
+                if(!params.chrom_map){
+                        //
+                        //MODULE: GAWK_UPDATE_CHROM_IDS
+                        //
+                        GAWK_UPDATE_CHROM_IDS(
+                            n4_bed.map{meta,bed->bed[1]}
+                        )
+                        chrom_map = GAWK_UPDATE_CHROM_IDS.out.map
+                    }
+                    else{
+                        chrom_map = Channel.fromPath(params.chrom_map, checkIfExists: true)
+                    }
+            //
+            //MODULE: PLINK2_MAKE_BED --> with updated chromosome ids
+                //
+                PLINK_MAKE_BED(
+                    n4_bed,
+                    chrom_map
+                )
+                n5_bed = PLINK_MAKE_BED.out.bed
+            }
+            else{
+                n5_bed = n4_bed
+            }
             if(params.smartpca){
                 //
                 // SUBWORKFLOW : RUN_PCA
                 //
                 RUN_PCA(
-                    n4_bed,
+                    n5_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
                 g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_PCA.out.html)
@@ -263,7 +290,7 @@ workflow SCALEPOPGEN {
                 // SUBWORKFLOW : RUN_ADMIXTURE
                 //
                 RUN_ADMIXTURE(
-                    n4_bed,
+                    n5_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
                 g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.qmat_html)
@@ -274,7 +301,7 @@ workflow SCALEPOPGEN {
                 // SUBWORKFLOW : CALC_FST
                 //
                 CALC_FST(
-                    n4_bed,
+                    n5_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
                 g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_FST.out.html)
@@ -284,7 +311,7 @@ workflow SCALEPOPGEN {
                 // SUBWORKFLOW : CALC_1_MIN_IBS_DIST
                 //
                 CALC_1_MIN_IBS_DIST(
-                    n4_bed,
+                    n5_bed,
                     GAWK_GENERATE_COLORS.out.color
                 )
                 g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_1_MIN_IBS_DIST.out.html)

@@ -1,4 +1,4 @@
-name: plot_admixture
+name: plot_admixture_cv_error
 channels:
   - conda-forge
   - defaults

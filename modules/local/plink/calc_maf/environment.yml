@@ -1,0 +1,7 @@
+name: plink_calc_maf
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - plink==1.90b6.12

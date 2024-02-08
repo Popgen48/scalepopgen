@@ -1,0 +1,8 @@
+name: vcftools_remove
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bioconda::vcftools=0.1.16
+  - bioconda::htslib=1.19.1

@@ -2,7 +2,7 @@ process PLINK_CALC_1_MIN_IBS_DIST{
 
     tag { "1_min_ibs_distance_${new_prefix}" }
     label 'process_single'
-    conda "${moduleDir}/../environment.yml"
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/plink:1.90b6.21--h779adbc_1' :
         'biocontainers/plink:1.90b6.21--h779adbc_1' }"

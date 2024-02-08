@@ -2,7 +2,7 @@ process VCFTOOLS_FILTER_SITES{
 
     tag { "filter_sites_${chrom}" }
     label "process_medium"
-    conda "${moduleDir}/../environment.yml"
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/vcftools_bgzip:0.1.16_1.19.1' :
         'popgen48/vcftools_bgzip:0.1.16_1.19.1' }"

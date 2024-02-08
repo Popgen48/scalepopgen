@@ -1,4 +1,4 @@
-name: plot_maf
+name: plot_average_maf
 channels:
   - conda-forge
   - defaults

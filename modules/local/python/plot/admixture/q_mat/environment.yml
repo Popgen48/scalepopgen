@@ -1,4 +1,4 @@
-name: plot_admixture
+name: plot_admixture_qmat
 channels:
   - conda-forge
   - defaults

@@ -1,4 +1,4 @@
-name: plot_admixture
+name: plot_sample_stats
 channels:
   - conda-forge
   - defaults

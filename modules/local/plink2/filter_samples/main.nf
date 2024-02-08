@@ -2,7 +2,7 @@ process PLINK2_FILTER_SAMPLES{
 
     tag { "filter_indi_${new_prefix}" }
     label "process_single"
-    conda "${moduleDir}/../environment.yml"
+    conda "bioconda::plink2==2.00a3.7"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/plink2:2.00a3.7--h9f5acd7_2' :
         'biocontainers/plink2:2.00a3.7--h9f5acd7_3' }"
@@ -45,7 +45,7 @@ process PLINK2_FILTER_SAMPLES{
             opt_args = opt_args + " --allow-extra-chr "
         }
         opt_args = opt_args + " --make-bed --out "+new_prefix+"_rem_indi"
-        if ( params.rem_indi != [] ){
+        if ( params.rem_indi ){
             opt_args = opt_args + " --remove "+rem_indi
         }
         if ( params.king_cutoff > 0 ){
