@@ -90,6 +90,23 @@ nextflow run popgen48/scalepopgen \
    -qs <maximum number of processes>
 ```
 
+After git clone, to test the functionality, run the following Command with a small dataset
+
+```bash
+nextflow run popgen48/scalepopgen \
+   -profile test,<docker/singularity/conda/mamba> \
+   -qs 10
+```
+
+To reproduce, the results discussed in the paper, 
+
+```bash
+nextflow run popgen48/scalepopgen \
+   -profile test_full,<docker/singularity/conda/mamba> \
+   -qs 10
+```
+
+
 ::: warning
 Custom config files, including those provided by the Nextflow option `-c`, can be used to provide any other configuration, _**except for the parameters**_;
 see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).

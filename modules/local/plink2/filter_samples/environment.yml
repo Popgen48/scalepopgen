@@ -1,7 +1,0 @@
-name: plink2_filter_samples
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - plink2==2.00a3.7
