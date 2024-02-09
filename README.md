@@ -125,6 +125,9 @@ Many thanks to `nf-core` community for their assistance and help in the developm
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
+## Additional Remarks
+Within the next couple of days, the codes will be updated to arrange the structures of output folders and the tool will have its **first release** on 12.02.2024.
+
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
