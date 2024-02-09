@@ -98,7 +98,7 @@ nextflow run popgen48/scalepopgen \
    -qs 10
 ```
 
-To reproduce, the results discussed in the paper, 
+To reproduce the results discussed in the paper, 
 
 ```bash
 nextflow run popgen48/scalepopgen \
