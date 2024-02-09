@@ -41,6 +41,7 @@ def change_meta_in_channel( meta_file ){
 
 workflow RUN_SELSCAN{
     take:
+
         chrom_vcf_idx_map
 
     main:
@@ -61,7 +62,7 @@ workflow RUN_SELSCAN{
 
         
         chrom_vcf_idx_map_pop = chrom_vcf_idx_map.combine(pop_file)
-
+        
         //preparing map file ihs and XP-EHH analysis, needed by selscan
 
 
@@ -74,7 +75,10 @@ workflow RUN_SELSCAN{
                 .set{ n1_chrom_recombmap }
         }
         else{
-                n1_chrom_recombmap = GAWK_PREPARE_RECOMB_MAP_SELSCAN( chrom_vcf_idx_map_pop.map{meta, vcf, idx, map, pop->tuple(meta,vcf)}.unique() )
+                GAWK_PREPARE_RECOMB_MAP_SELSCAN( 
+                    chrom_vcf_idx_map_pop.map{meta, vcf, idx, map, pop->tuple(meta,vcf)}.unique() 
+                )
+                n1_chrom_recombmap = GAWK_PREPARE_RECOMB_MAP_SELSCAN.out.meta_selscanmap
         }
 
 
@@ -86,9 +90,12 @@ workflow RUN_SELSCAN{
             Channel.value("selscan")
         )
 
+
         // make pairwise tuple of splitted (based on pop id) phased vcf files 
 
         ihs_input = SPLIT_VCF_BY_POP.out.vcf.combine(n1_chrom_recombmap, by:0).map{change_meta_in_channel(it)}
+
+        ihs_input.view()
         
         //
         //MODULE: SELSCAN_IHS

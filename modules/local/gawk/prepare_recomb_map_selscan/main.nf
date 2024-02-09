@@ -17,6 +17,7 @@ process GAWK_PREPARE_RECOMB_MAP_SELSCAN{
 
     script:
 
+        chrom = meta.id
         def cm_to_bp = 1000000
         prefix = vcf.baseName
         

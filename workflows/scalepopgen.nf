@@ -401,14 +401,12 @@ workflow SCALEPOPGEN {
                 PHASE_GENOTYPES(
                     n2_meta_vcf_idx_map
                 )
-
                 //
                 //SUBWORKFLOW : RUN_SELSCAN
                 //
                 RUN_SELSCAN(
                     PHASE_GENOTYPES.out.n3_meta_vcf_idx_map
                 )
-
             }
     }
     /*
