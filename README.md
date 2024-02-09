@@ -134,7 +134,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 Note that the CLI also generates a separate folder with the prefix **citation_**; this folder contains the relevant references in bibxtex format. These references should be cited in the manuscript. 
 
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
+Other important list of references for the additional tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).
 
