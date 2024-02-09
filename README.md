@@ -89,7 +89,7 @@ nextflow run popgen48/scalepopgen \
    -params-file <path/to/parameters.yml> \
    -qs <maximum number of processes>
 ```
-Note that the CLI also generates a separate folder with the prefix *citation_*; this folder contains the relevant references in bibxtex format. These references should be cited in the manuscript. 
+Note that the CLI also generates a separate folder with the prefix **citation_**; this folder contains the relevant references in bibxtex format. These references should be cited in the manuscript. 
 
 After git clone, to test the functionality, run the following Command with a small dataset
 
@@ -131,6 +131,8 @@ If you would like to contribute to this pipeline, please see the [contributing g
 <!-- If you use  popgen48/scalepopgen for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+
+Note that the CLI also generates a separate folder with the prefix **citation_**; this folder contains the relevant references in bibxtex format. These references should be cited in the manuscript. 
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
