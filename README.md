@@ -89,6 +89,7 @@ nextflow run popgen48/scalepopgen \
    -params-file <path/to/parameters.yml> \
    -qs <maximum number of processes>
 ```
+Note that the CLI also generates a separate folder with the prefix *citation_*; this folder contains the relevant references in bibxtex format. These references should be cited in the manuscript. 
 
 After git clone, to test the functionality, run the following Command with a small dataset
 
