@@ -84,7 +84,7 @@ Once you select and specify the parameters according to analyses you want to per
 Now, you can run the scalepopgen:
 
 ```bash
-nextflow run popgen48/scalepopgen \
+nextflow run scalepopgen_v1/ \
    -profile <docker/singularity/conda/mamba> \
    -params-file <path/to/parameters.yml> \
    -qs <maximum number of processes>
@@ -94,7 +94,7 @@ Note that the CLI also generates a separate folder with the prefix **citation_**
 After git clone, to test the functionality, run the following Command with a small dataset
 
 ```bash
-nextflow run popgen48/scalepopgen \
+nextflow run scalepopgen_v1/ \
    -profile test,<docker/singularity/conda/mamba> \
    -qs 10
 ```
@@ -102,7 +102,7 @@ nextflow run popgen48/scalepopgen \
 To reproduce the results discussed in the paper, 
 
 ```bash
-nextflow run popgen48/scalepopgen \
+nextflow run scalepopgen_v1/ \
    -profile test_full,<docker/singularity/conda/mamba> \
    -qs 10
 ```
