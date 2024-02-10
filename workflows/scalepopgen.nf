@@ -257,6 +257,7 @@ workflow SCALEPOPGEN {
                 GAWK_UPDATE_CHROM_IDS(
                     n4_bed.map{meta,bed->bed[1]},
                     params.chrom_id_map ?  Channel.fromPath(params.chrom_id_map, checkIfExists: true):[]
+                    )
 
                 chrom_id_map = GAWK_UPDATE_CHROM_IDS.out.map
                 //
