@@ -251,20 +251,16 @@ workflow SCALEPOPGEN {
                     n4_bed = n3_bed
             }
             if(params.allow_extra_chrom){
-                if(!params.chrom_id_map){
-                        //
-                        //MODULE: GAWK_UPDATE_CHROM_IDS
-                        //
-                        GAWK_UPDATE_CHROM_IDS(
-                            n4_bed.map{meta,bed->bed[1]}
-                        )
-                        chrom_id_map = GAWK_UPDATE_CHROM_IDS.out.map
-                    }
-                    else{
-                        chrom_id_map = Channel.fromPath(params.chrom_id_map, checkIfExists: true)
-                    }
-            //
-            //MODULE: PLINK2_MAKE_BED --> with updated chromosome ids
+                //
+                //MODULE: GAWK_UPDATE_CHROM_IDS
+                //
+                GAWK_UPDATE_CHROM_IDS(
+                    n4_bed.map{meta,bed->bed[1]},
+                    params.chrom_id_map ?  Channel.fromPath(params.chrom_id_map, checkIfExists: true):[]
+
+                chrom_id_map = GAWK_UPDATE_CHROM_IDS.out.map
+                //
+                //MODULE: PLINK2_MAKE_BED --> with updated chromosome ids
                 //
                 PLINK_MAKE_BED(
                     n4_bed,
