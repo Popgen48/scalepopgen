@@ -9,7 +9,8 @@ process GAWK_UPDATE_CHROM_IDS{
     publishDir("${params.outdir}/admixture/gawk/update_chrom_ids/", mode:"copy")
 
     input:
-        path(bim)
+        path(bim),
+        path(chrom_id_map)
 
     output:
         path("${outprefix}_chrom.map"), emit: map
@@ -21,16 +22,32 @@ process GAWK_UPDATE_CHROM_IDS{
     script:
         outprefix = params.outprefix
 
+        if( ! chrom_id_map ){
+
 	"""
 	    
-    awk -v cnt=0 '{if(!(\$1 not in a)){a[\$1];cnt++};print \$2,cnt}' ${bim} > ${outprefix}_chrom.map
+        awk -v cnt=0 '{if(!(\$1 not in a)){a[\$1];cnt++};print \$2,cnt}' ${bim} > ${outprefix}_chrom.map
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
-    END_VERSIONS
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+        END_VERSIONS
 
 	    
 	"""
+        }
+        else{
 
+        """
+        
+        awk -v cnt=0 'NR==FNR{chrom_id[\$1]=$2;next}{print \$2,chrom_id[\$1]}' ${chrom_id_map} ${bim} > ${outprefix}_chrom.map
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            gawk: \$(awk -Wversion | sed '1!d; s/.*Awk //; s/,.*//')
+        END_VERSIONS
+
+        """
+
+        }
 }
