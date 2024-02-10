@@ -5,7 +5,7 @@ process GAWK_MAKE_CLUSTER_FILE{
     conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
-        'biocontainers/gawk:5.1.0' }"    
+        'quay.io/biocontainers/gawk:5.1.0' }"    
     publishDir("${params.outdir}/gawk/make_cluster_file/", mode:"copy")
 
     input:

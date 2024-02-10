@@ -195,10 +195,12 @@ workflow RUN_VCFTOOLS{
             l_f_html_files = PLOT_ALL_FST.out.html
             
         }
-            
+        
+        /*
         l_html_files = params.tajimas_d ? l_t_html_files: []
         l_html_files = params.pi_val ? (params.tajimas_d ? l_html_files.combine(l_p_html_files, by:0): l_p_html_files):l_html_files
         l_html_files = params.fst_one_vs_all ? ( (params.tajimas_d || params.pi_val) ? l_html_files.combine(l_f_html_files, by:0):l_f_html_files):l_html_files
         
         l_html_files.view()
+        */
 }

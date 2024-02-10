@@ -8,6 +8,7 @@ include { VCFTOOLS_KEEP as SPLIT_VCF_BY_POP        } from '../../modules/local/v
 include { SELSCAN_METHOD as SELSCAN_IHS            } from '../../modules/local/selscan/method/main'
 include { SELSCAN_NORM as SELSCAN_NORM_IHS         } from '../../modules/local/selscan/norm/main'
 include { PYTHON_COLLECT_SELECTION_RESULTS as COLLECT_IHS_RESULTS  } from '../../modules/local/python/collect/selection_results/main'
+include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_IHS                       } from '../../modules/local/python/plot/selection_results/main'
 
 def PREPARE_PAIRWISE_VCF( file_list_pop ){
 
@@ -95,7 +96,6 @@ workflow RUN_SELSCAN{
 
         ihs_input = SPLIT_VCF_BY_POP.out.vcf.combine(n1_chrom_recombmap, by:0).map{change_meta_in_channel(it)}
 
-        ihs_input.view()
         
         //
         //MODULE: SELSCAN_IHS
@@ -113,12 +113,19 @@ workflow RUN_SELSCAN{
             Channel.value("ihs")
         )
 
+        if (params.chrom_id_map){
+                chrom_id_map = Channel.fromPath(params.chrom_id_map,checkIfExists: true )
+                i_collect_ihs_results = SELSCAN_NORM_IHS.out.txt.combine(chrom_id_map)
+        }
+        else{
+                i_collect_ihs_results = SELSCAN_NORM_IHS.out.txt.combine([null])
+        }
         //
         //MODULE: COLLECT_IHS_RESULTS
         //
 
         COLLECT_IHS_RESULTS(
-            SELSCAN_NORM_IHS.out.txt,
+            i_collect_ihs_results,
             Channel.value("ihs")
         )
 }

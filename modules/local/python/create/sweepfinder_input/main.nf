@@ -2,7 +2,9 @@ process PYTHON_CREATE_SWEEPFINDER_INPUT{
 
     tag { "${chrom}" }
     label "process_single"
-    container "biocontainers/pysam:0.22.0--py310h41dec4a_0"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/pysam:0.22.0--py310h41dec4a_0':
+        'quay.io/biocontainers/pysam:0.22.0--py310h41dec4a_0' }"
     conda "${moduleDir}/environment.yml"
     publishDir("${params.outdir}/selection/sweepfinder2/input_files/", mode:"copy")
 

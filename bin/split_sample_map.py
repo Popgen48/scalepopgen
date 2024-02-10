@@ -28,7 +28,7 @@ def split_sample_map(map_f, min_s, skip_p, skip_o, outgroup, tool, outprefix):
     pop_sample_dict = read_map(map_f)
     with open(outprefix+"_included_samples.csv","w") as dest_g:
         for pop in pop_sample_dict:
-            if len(pop_sample_dict[pop])>=int(min_s):
+            if len(pop_sample_dict[pop])>=int(min_s) and pop not in skip_pop_l:
                 with open(pop+".txt","w") as dest:
                     dest_g.write("\n".join(pop_sample_dict[pop])+"\n")
                     if tool != "sweepfinder2":

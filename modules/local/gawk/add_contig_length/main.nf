@@ -5,7 +5,7 @@ process GAWK_ADD_CONTIG_LENGTH{
     conda "${moduleDir}/../environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
-        'biocontainers/gawk:5.1.0' }"    
+        'quay.io/biocontainers/gawk:5.1.0' }"    
     publishDir("${params.outdir}/gawk/add_contig_length/", mode:"copy")
 
     input:

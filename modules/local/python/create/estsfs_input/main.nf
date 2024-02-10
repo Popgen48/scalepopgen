@@ -2,8 +2,10 @@ process PYTHON_CREATE_ESTSFS_INPUT{
 
     tag { "${chrom}" }
     label "process_single"
-    container "biocontainers/pysam:0.22.0--py310h41dec4a_0"
     conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/pysam:0.22.0--py310h41dec4a_0':
+        'quay.io/biocontainers/pysam:0.22.0--py310h41dec4a_0' }"
     publishDir("${params.outdir}/selection/est-sfs/", mode:"copy")
 
     input:

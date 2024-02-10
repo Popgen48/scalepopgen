@@ -6,7 +6,7 @@ process ADMIXTURE {
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/admixture:1.3.0--0':
-        'biocontainers/admixture:1.3.0--0' }"
+        'quay.io/biocontainers/admixture:1.3.0--0' }"
     publishDir("${params.outdir}/admixture/ADMIXTURE/", mode:"copy")
 
     input:

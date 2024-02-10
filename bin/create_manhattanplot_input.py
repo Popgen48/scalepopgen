@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import pandas as pd
 import numpy as np
 
@@ -7,11 +8,19 @@ window_size = sys.argv[1]
 sel_threshold    = sys.argv[2]
 method = sys.argv[3]
 pop = sys.argv[4]
-outprefix = sys.argv[5]
-files = sys.argv[6:]
+chrom_map_file = sys.argv[5]
+outprefix = sys.argv[6]
+files = sys.argv[7:]
 
 df = pd.DataFrame()
 
+chrom_id_map_dict = {}
+
+if chrom_map_file != "none":
+    with open(chrom_map_file) as source:
+        for line in source:
+            line = line.rstrip().split()
+            chrom_id_map_dict[line[0]] = int(line[1])
 
 for file in files:
     if method != "ihs":
@@ -24,14 +33,17 @@ for file in files:
             df1["BIN_START"] = df1["BIN_START"].round(0).astype(int)
     else:
         df1 = pd.read_csv(file,delim_whitespace=True,index_col=False, names=["locusID","BIN_START","1_freq","ihh1","ihh0","row_ihs","std_ihs","quantile"])
-        chrom = os.path.basename(file).split("_")[0]
+        chrom = re.search('.+?(?=_'+re.escape(pop)+'.)',file)[0]
         new_column = [chrom]*len(df1.index)
         df1.insert(0,"CHROM",new_column,True)
         df1["std_ihs"] = df1["std_ihs"].abs()
 
     df = pd.concat([df, df1], ignore_index=True)
 
-#df["CHROM"] = pd.to_numeric(df["CHROM"], errors='coerce')
+if chrom_map_file != "none":
+    for chrom in chrom_id_map_dict.keys():
+        df.replace(chrom, chrom_id_map_dict[chrom], inplace=True)
+
 df["CHROM"] = df["CHROM"].astype(int)
 df["BIN_START"] = df["BIN_START"].astype(int)
 

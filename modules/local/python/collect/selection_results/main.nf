@@ -9,7 +9,7 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
     publishDir("${params.outdir}/selection/vcftools/${method}/${pop}/genomewide/", mode:"copy")
 
     input:
-        tuple val(pop), path(results)
+        tuple val(pop), path(results), path(chrom_length_map)
         val(method)
 
     output:
@@ -24,10 +24,14 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
         outfile = pop_u+"_"+method
         meta = [:]
         meta.id = pop_u
+        l_chrom_map = "none"
+        if(chrom_length_map){
+                l_chrom_map = chrom_length_map
+        }
 
         """
         
-        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${perc_threshold} ${method} ${pop_u} ${outfile} ${results}
+        python3 ${baseDir}/bin/create_manhattanplot_input.py ${window_size} ${perc_threshold} ${method} ${pop_u} ${l_chrom_map} ${outfile} ${results}
         
         
         """ 

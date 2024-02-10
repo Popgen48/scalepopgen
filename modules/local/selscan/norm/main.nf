@@ -6,7 +6,7 @@ process SELSCAN_NORM{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/selscan:1.2.0a--h0fdf51a_4' :
         'biocontainers/selscan:1.2.0a--h0fdf51a_5' }"
-    publishDir("${params.outdir}/selscan/${method}/normalized/${local_dir}/", mode:"copy")
+    publishDir("${params.outdir}/selection/selscan/${method}/normalized/${local_dir}/", mode:"copy")
 
     input:
         tuple val(meta), path(out_files)
@@ -17,6 +17,7 @@ process SELSCAN_NORM{
 
     script:
         
+        local_dir = meta.id
         def args = task.ext.args ?: ''
         args1 = method == "ihs" ? " --ihs ": " --xpehh "
        
