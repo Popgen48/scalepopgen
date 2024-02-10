@@ -4,8 +4,8 @@ process PHYLIP_CONSENSE{
     label "process_single"
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/phylip%3A3.696--2' :
-        'quay.io/biocontainers/phylip:v1-3.697dfsg-1-deb_cv1' }"
+        'docker://popgen48/phylip:3.697' :
+        'popgen48/phylip:3.697' }"
     publishDir("${params.outdir}/treemix/phylip/consense", mode:"copy")
 
     input:
