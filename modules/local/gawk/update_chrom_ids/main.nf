@@ -40,7 +40,7 @@ process GAWK_UPDATE_CHROM_IDS{
 
         """
         
-        awk -v cnt=0 'NR==FNR{chrom_id[\$1]=$2;next}{print \$2,chrom_id[\$1]}' ${chrom_id_map} ${bim} > ${outprefix}_chrom.map
+        awk -v cnt=0 'NR==FNR{chrom_id[\$1]=\$2;next}{print \$2,chrom_id[\$1]}' ${chrom_id_map} ${bim} > ${outprefix}_chrom.map
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
