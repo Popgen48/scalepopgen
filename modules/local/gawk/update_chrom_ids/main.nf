@@ -9,7 +9,7 @@ process GAWK_UPDATE_CHROM_IDS{
     publishDir("${params.outdir}/admixture/gawk/update_chrom_ids/", mode:"copy")
 
     input:
-        path(bim),
+        path(bim)
         path(chrom_id_map)
 
     output:
