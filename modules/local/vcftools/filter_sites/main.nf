@@ -19,7 +19,7 @@ process VCFTOOLS_FILTER_SITES{
     script:
         def opt_arg = ""
         chrom = meta.id
-        prefix = f_vcf.getSimpleName()
+        prefix = chrom
         if(params.maf >= 0){
             opt_arg = opt_arg + " --maf "+params.maf
         }

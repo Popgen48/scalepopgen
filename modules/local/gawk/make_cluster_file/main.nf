@@ -2,7 +2,7 @@ process GAWK_MAKE_CLUSTER_FILE{
 
     tag { "making_cluster_file" }
     label "process_single"
-    conda "${moduleDir}/../environment.yml"
+    conda "conda-forge::gawk==5.1.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
         'quay.io/biocontainers/gawk:5.1.0' }"    

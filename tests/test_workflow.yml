@@ -1,0 +1,84 @@
+- name: Run workflow to filter samples
+  command: nextflow run main.nf -profile test_sample_filters,mamba --outdir results
+  tags:
+    - sample_filters
+  files:
+    - path: results/sample_filtering/vcftools/keep/NC_030835.1_filt_samples.vcf.gz
+      md5sum: 345943a67406af7e4806e97aed55fdc8
+    - path: results/sample_filtering/vcftools/keep/NC_030836.1_filt_samples.vcf.gz
+      md5sum: 1554ca15ca2dab790a2ff36cb0723c36
+    - path: results/tabix/NC_030835.1_filt_samples.vcf.gz.tbi
+      md5sum: 3d3b9ae62a0bad30883e348d3fc1621f
+    - path: results/tabix/NC_030836.1_filt_samples.vcf.gz.tbi
+      md5sum: 1896cb71da30f606917d00a6195158d5
+    - path: results/gawk/prepare_new_map/scalepopgen_new_sample_pop.map
+      md5sum: 70d01c1c7d52bd2e5d3727f8536a3244
+
+- name: Run workflow to filter snps
+  command: nextflow run main.nf -profile test_snp_filters,mamba --outdir results
+  tags:
+    - snp_filters
+  files:
+    - path: results/snp_filtering/vcftools/sites_filtes/28_filt_samples_filt_sites.vcf.gz
+      md5sum: 837ec4362b0b5ede5fe4d7b6e0a653f7
+    - path: results/snp_filtering/vcftools/sites_filtes/29_filt_samples_filt_sites.vcf.gz
+      md5sum: bdc8463af5653d716d98d00a45a68349
+    - path: results/tabix/28_filt_samples_filt_sites.vcf.gz.tbi
+      md5sum: 0fa1008c4f9b1b5304089916dbc2899b
+    - path: results/tabix/29_filt_samples_filt_sites.vcf.gz.tbi
+      md5sum: 08f5ae4334b0210fe42a14af1b04c073
+
+- name: Entier filtering workflow
+  command: nextflow run main.nf -profile test_sample_snp_filters,mamba --outdir results
+  tags:
+    - sample_snp_filters
+  files:
+    - path: results/snp_filtering/vcftools/sites_filtes/NC_030835.1_filt_sites.vcf.gz
+      md5sum: fdf3ddc70fcb2c6823705457abcce361
+    - path: results/snp_filtering/vcftools/sites_filtes/NC_030836.1_filt_sites.vcf.gz
+      md5sum: 8b5e2fb3f9abc69fcfb9d6b503939ebc
+    - path: results/tabix/NC_030835.1_filt_sites.vcf.gz.tbi
+      md5sum: 9b8871f940f04270e1c888f13e0b232e
+    - path: results/tabix/NC_030836.1_filt_sites.vcf.gz.tbi
+      md5sum: 34fdec468ea9f1546326a2d2f19f795a
+    - path: results/gawk/prepare_new_map/scalepopgen_new_sample_pop.map
+      md5sum: ef1e0896931aa0031f7e5bc16512e326
+
+- name: filtering and summary stats
+  command: nextflow run main.nf -profile test_filters_summary_stats,mamba --outdir results
+  tags:
+    - filter_stats
+  files:
+    - path: results/plink2/NC_030835.1.bed
+      md5sum: 82645f22f37527b104ad465bf94eec8d
+    - path: results/plink2/NC_030835.1.bim
+      md5sum: 24f40b673b1b277a9cfedc3a86016bfb
+    - path: results/plink2/NC_030835.1.fam
+      md5sum: 19a231f545ecf193cddfcf5ccdeafd16
+    - path: results/plink2/NC_030836.1.bed
+      md5sum: fb6f38b1cbc9355399de3cfbd0b9bf09
+    - path: results/plink2/NC_030836.1.bim
+      md5sum: 74c17e2e5fca3b27e0bbeed951e4c125
+    - path: results/plink2/NC_030836.1.fam
+      md5sum: 19a231f545ecf193cddfcf5ccdeafd16
+    - path: results/plink2/scalepopgen.bed
+      md5sum: 8c97f8a8c953bfb288db6c99a4599608
+    - path: results/plink2/scalepopgen.bim
+      md5sum: 353b8b260e414884a812403359fb0d8a
+    - path: results/plink2/scalepopgen.fam
+      md5sum: 971f08e975dee80137465ae67f11e46d
+    - path: results/summary_stats/plink2/sample_counts/scalepopgen_sample_summary.scount
+      md5sum: c8aa0926fe3440ef047efa349b6db353
+    # md5sum alters due to merging procedure of bokeh generated htmls
+    - path: results/summary_stats/python/plot/sample_stats/scalepopgen_samplewise_snp_counts_mqc.html
+    - path: results/gawk/make_cluster_file/scalepopgen.cluster
+      md5sum: d93f97b1e08ed55dbd89abe6a24002af
+    - path: results/summary_stats/plink/calc_maf_hardy/scalepopgen.frq.strat
+      md5sum: d86cbf775aeff4ffef212a1db0e3ec0b
+    - path: results/summary_stats/python/plot/average_maf/scalepopgen_maf_summary_mqc.html
+    - path: results/summary_stats/python/plot/average_maf/populationwise_maf_report.txt
+      md5sum: ef5268619e0fe0b4e8469664abd6ce19
+    - path: results/summary_stats/python/plot/average_het/scalepopgen_exp_het_mqc.html
+    - path: results/summary_stats/python/plot/average_het/scalepopgen_obs_het_mqc.html
+    # md5sum alters due to random channel inputs 
+    - path: results/summary_stats/python/plot/average_het/populationwise_heterozygosity_report.txt

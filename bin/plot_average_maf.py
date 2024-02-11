@@ -11,8 +11,6 @@ maf_file = sys.argv[4]
 
 bim_dict = read_bim_file(bim, window_size)
 pop_color_dict = read_color_map_file(color_file)
-pop_obs_het_dict = OrderedDict()
-pop_exp_het_dict = OrderedDict()
 
 
 def make_figure(dict_i, dict_c, outprefix):
@@ -45,17 +43,18 @@ t_pop_maf_dict = {}
 tmp_pop_list = []
 pop_maf_dict_genomewide = {}
 
+# read plink generated maf file with the suffix,"frq.strat"
 with open(maf_file) as source:
     for line in source:
         if is_header:
-            is_header = False
+            is_header = False #first line is always header
             hrc += 1
         else:
             line = line.rstrip().split()
             if line[2] in tmp_pop_list:
                 hrc += 1
                 del tmp_pop_list[:]
-            c_hwc = bim_dict[hrc]
+            c_hwc = bim_dict[hrc] # window count of current record based on bim_dict
             if c_hwc != hwc:
                 if len(t_pop_maf_dict) > 0:
                     for pop in t_pop_maf_dict:
@@ -63,7 +62,7 @@ with open(maf_file) as source:
                             float(np.mean(t_pop_maf_dict[pop])), 3
                         )
                 t_pop_maf_dict.clear()
-                hwc = c_hwc
+                hwc = c_hwc # assign window count to the current record based on bim_dict 
             if line[2] not in t_pop_maf_dict:
                 t_pop_maf_dict[line[2]] = []
             if line[2] not in pop_maf_dict:

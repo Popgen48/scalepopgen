@@ -7,5 +7,5 @@ results/
 testing/
 testing*
 *.pyc
-tests/
-.nf-test/
+*.test
+*.log

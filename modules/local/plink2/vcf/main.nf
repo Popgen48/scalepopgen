@@ -30,7 +30,7 @@ process PLINK2_VCF {
 
     #new SNP id was created so that the same positions on multiple chromosome does not break the merge-bed command 
 
-    awk 'BEGIN{OFS="\t"}{\$2=\$1"_"\$4;print}' ${prefix}.bim > ${prefix}.1.bim
+    awk 'BEGIN{OFS="\\t"}{\$2=\$1"_"\$4;print}' ${prefix}.bim > ${prefix}.1.bim
 
     mv ${prefix}.1.bim ${prefix}.bim
 

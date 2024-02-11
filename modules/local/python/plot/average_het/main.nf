@@ -16,6 +16,7 @@ process PYTHON_PLOT_AVERAGE_HET{
     output:
     	path("${outprefix}_obs_het_mqc.html"), emit: obs_het_html
     	path("${outprefix}_exp_het_mqc.html"), emit: exp_het_html
+        path("populationwise_heterozygosity_report.txt")
 
     when:
      	task.ext.when == null || task.ext.when

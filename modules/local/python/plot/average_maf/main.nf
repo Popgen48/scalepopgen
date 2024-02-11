@@ -15,6 +15,7 @@ process PYTHON_PLOT_AVERAGE_MAF{
 
     output:
     	path("${outprefix}_maf_summary_mqc.html"), emit: maf_stats_html
+    	path("populationwise_maf_report.txt")
 
     when:
      	task.ext.when == null || task.ext.when
