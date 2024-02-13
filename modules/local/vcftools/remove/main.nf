@@ -12,7 +12,7 @@ process VCFTOOLS_REMOVE{
         tuple val(meta), path(f_vcf), path(idx), path(rem_indi)
 
     output:
-        tuple val(meta), path("${chrom}_filt_samples.vcf.gz"), emit:f_meta_vcf
+        tuple val(meta), path("${chrom}_filt_samples.vcf.gz"), emit:vcf
         path("*.log")
         path "versions.yml", emit: versions
     

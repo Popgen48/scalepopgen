@@ -108,7 +108,7 @@ workflow RUN_SWEEPFINDER2{
         // MODULE: COLLECT_SWEEPFINDER2
         //
         COLLECT_SWEEPFINDER2(
-                params.chrom_id_map ? SWEEPFINDER2.out.pop_txt.groupTuple().combine(Channel.fromPath(params.chrom_id_map,checkIfExists:true)) : SWEEPFINDER2.out.pop_txt.groupTuple.map{meta,o_files->tuple(meta,o_files,[])},
+                params.chrom_id_map ? SWEEPFINDER2.out.pop_txt.groupTuple().combine(Channel.fromPath(params.chrom_id_map,checkIfExists:true)) : SWEEPFINDER2.out.pop_txt.groupTuple().map{meta,o_files->tuple(meta,o_files,[])},
             Channel.value("sweepfinder2")
         )
         //

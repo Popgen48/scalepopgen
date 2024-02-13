@@ -371,32 +371,26 @@
                 },
                 "maf": {
                     "type": "number",
-                    "default": -9,
                     "description": "Sites with minor allele frequencies less than this will be filtered, if set to any value < 0, this filter will be ignored."
                 },
                 "min_meanDP": {
                     "type": "number",
-                    "default": -9,
                     "description": "Sites with average depth (across the samples) less than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "max_meanDP": {
                     "type": "number",
-                    "default": -9,
                     "description": "Sites with average depth (across the samples) greater than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "hwe": {
                     "type": "number",
-                    "default": -9,
                     "description": "Sites with p-value (hwe) less than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "max_missing": {
                     "type": "number",
-                    "default": -9,
                     "description": "Sites with genotypes missing more than this proportion of samples will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "minQ": {
                     "type": "integer",
-                    "default": -9,
                     "description": "Sites with SNP quality less than this will be filtered out, set to any value < 0, this filter will be ignored."
                 },
                 "indiv_summary": {
