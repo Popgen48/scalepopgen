@@ -97,7 +97,7 @@ workflow RUN_VCFTOOLS{
             //MODULE: COLLECT_TAJIMAS_D
             //
             COLLECT_TAJIMAS_D(
-                VCFTOOLS_TAJIMAS_D.out.txt.groupTuple(),
+                params.chrom_id_map ? VCFTOOLS_TAJIMAS_D.out.txt.groupTuple().combine(Channel.fromPath(params.chrom_id_map,checkIfExists:true)) : VCFTOOLS_TAJIMAS_D.out.txt.groupTuple.map{meta,o_files->tuple(meta,o_files,[])},
                 Channel.value("tajimas_d")
             )
         
@@ -128,7 +128,7 @@ workflow RUN_VCFTOOLS{
             //MODULE: COLLECT_PI
             //
             COLLECT_PI(
-                VCFTOOLS_PI.out.txt.groupTuple(),
+                params.chrom_id_map ? VCFTOOLS_PI.out.txt.groupTuple().combine(Channel.fromPath(params.chrom_id_map,checkIfExists:true)) : VCFTOOLS_PI.out.txt.groupTuple.map{meta,o_files->tuple(meta,o_files,[])},
                 Channel.value("pi_val")
             )
             //
@@ -179,7 +179,7 @@ workflow RUN_VCFTOOLS{
             //MODULE: COLLECT_ALL_FST
             //
             COLLECT_ALL_FST(
-                VCFTOOLS_ALL_FST.out.txt.groupTuple(),
+                params.chrom_id_map ? VCFTOOLS_ALL_FST.out.txt.groupTuple().combine(Channel.fromPath(params.chrom_id_map,checkIfExists:true)) : VCFTOOLS_ALL_FST.out.txt.groupTuple.map{meta,o_files->tuple(meta,o_files,[])},
                 Channel.value("fst_all")
             )
             //
