@@ -128,11 +128,12 @@ workflow FILTER_VCF{
     if(params.apply_snp_filters){
 
             n_map = n0_meta_vcf_idx_map.map{meta,vcf,idx,map->map}.unique()
+            rsnpf = params.custom_snps ? Channel.fromPath(params.custom_snps, checkIfExists: true):[null]
             //
             //MODULE: VCFTOOLS_FILTER_SITES
             //
             VCFTOOLS_FILTER_SITES(
-                n0_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}
+                n0_meta_vcf_idx_map.map{meta,vcf,idx,map->tuple(meta,vcf)}.combine(rsnpf).map{meta,vcf,rsnpf->tuple(meta,vcf,rsnpf?:[])}
             )
             n1_meta_vcf_idx_map = VCFTOOLS_FILTER_SITES.out.vcf.combine(n_map).map{meta,vcf,map->tuple(meta,vcf,[],map)}
 

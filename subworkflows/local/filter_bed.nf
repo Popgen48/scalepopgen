@@ -29,15 +29,15 @@ workflow FILTER_BED{
         }
         if (params.apply_snp_filters ){
             
-            if(params.rem_snps){
-                rms = Channel.fromPath(params.rem_snps, checkIfExists: true)
+            if(params.custom_snps){
+                rms = Channel.fromPath(params.custom_snps, checkIfExists: true)
             }
             //
             //MODULE: FILTER_SNPS
             //
             FILTER_SNPS(
                 n0_meta_bed,
-                params.rem_snps ? rms : []
+                params.custom_snps ? rms : []
             )
             n1_meta_bed = FILTER_SNPS.out.n1_meta_bed
 

@@ -7,24 +7,45 @@ include { GAWK_PREPARE_RECOMB_MAP_SELSCAN          } from '../../modules/local/g
 include { VCFTOOLS_KEEP as SPLIT_VCF_BY_POP        } from '../../modules/local/vcftools/keep/main'
 include { SELSCAN_METHOD as SELSCAN_IHS            } from '../../modules/local/selscan/method/main'
 include { SELSCAN_NORM as SELSCAN_NORM_IHS         } from '../../modules/local/selscan/norm/main'
+include { SELSCAN_METHOD as SELSCAN_XPEHH          } from '../../modules/local/selscan/method/main'
+include { SELSCAN_NORM as SELSCAN_NORM_XPEHH       } from '../../modules/local/selscan/norm/main'
 include { PYTHON_COLLECT_SELECTION_RESULTS as COLLECT_IHS_RESULTS  } from '../../modules/local/python/collect/selection_results/main'
 include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_IHS                       } from '../../modules/local/python/plot/selection_results/main'
 
-def PREPARE_PAIRWISE_VCF( file_list_pop ){
-
-        file1 = file_list_pop.flatten()
-        file2 = file_list_pop.flatten()
-        file_pairs = file1.combine(file2)
-        file_pairsB = file_pairs.branch{ file1_path, file2_path ->
-
-            samePop : file1_path == file2_path
-                return tuple(file1_path, file2_path).sort()
-            diffPop : file1_path != file2_path && file1_path.baseName.split("__")[0] == file2_path.baseName.split("__")[0]
-                return tuple(file1_path, file2_path).sort()
-        
+/*
+* Arrange the grouped tuple to list of unique pairwise files
+* for example input is --> [[id:chrom1],[chrom1_pop1.vcf.gz, chrom1_pop2.vcf.gz, chrom1_pop3.vcf.gz]]
+* output is --> [[[id:chrom1],chrom1_pop1.vcf.gz, chrom1_pop2.vcf.gz],[[id:chrom1],chrom1_pop1.vcf.gz,chrom1_pop3.vcf.gz],[[id:chrom1],chrom1_pop2.vcf.gz, chrom1_pop3.vcf.gz]]
+*/
+def prepare_pairwise_vcf( it ){
+    files = it[1]
+    new_tuple = []
+    for(i in 0 .. files.size()-1){
+        new_files = files[i..files.size()-1]
+        for(j in 0 .. new_files.size()-1){
+            if(files[i] != new_files[j]){
+             new_tuple.add([it[0],[files[i],new_files[j]]])
+            }
         }
-        return file_pairsB.diffPop
+    }
+    return new_tuple.sort()
+}
 
+def change_meta_in_channel_xpehh(meta_file){
+    def n_meta = [:]
+    suffix = meta_file[0].id
+    pattern = ~/${suffix}_/
+    vcf_prefix1 = meta_file[1].getName().minus(".vcf.gz")
+    vcf_prefix2 = meta_file[2].getName().minus(".vcf.gz")
+    id_list = [(vcf_prefix1-pattern),(vcf_prefix2-pattern)].sort()
+    n_meta.id = id_list[0]+"_"+id_list[1]
+    if(id_list[0] == vcf_prefix1 - pattern){
+        n_meta_vcf1_vcf2_recombmap = [n_meta, meta_file[1], meta_file[2], meta_file[3]]
+    }
+    else{
+        n_meta_vcf1_vcf2_recombmap = [n_meta, meta_file[2], meta_file[1], meta_file[3]]
+    }
+    return n_meta_vcf1_vcf2_recombmap
 }
 
 def change_meta_in_channel( meta_file ){
@@ -91,7 +112,6 @@ workflow RUN_SELSCAN{
             Channel.value("selscan")
         )
 
-
         // make pairwise tuple of splitted (based on pop id) phased vcf files 
 
         ihs_input = SPLIT_VCF_BY_POP.out.vcf.combine(n1_chrom_recombmap, by:0).map{change_meta_in_channel(it)}
@@ -113,19 +133,33 @@ workflow RUN_SELSCAN{
             Channel.value("ihs")
         )
 
-        if (params.chrom_id_map){
-                chrom_id_map = Channel.fromPath(params.chrom_id_map,checkIfExists: true )
-                i_collect_ihs_results = SELSCAN_NORM_IHS.out.txt.combine(chrom_id_map)
-        }
-        else{
-                i_collect_ihs_results = SELSCAN_NORM_IHS.out.txt.combine([null])
-        }
         //
         //MODULE: COLLECT_IHS_RESULTS
         //
 
         COLLECT_IHS_RESULTS(
-            i_collect_ihs_results,
+            params.chrom_id_map ? SELSCAN_NORM_IHS.out.txt.combine(Channel.fromPath(params.chrom_id_map, checkIfExists: true)) : SELSCAN_NORM_IHS.out.txt.map{meta,o_files->tuple(meta,o_files,[])},
             Channel.value("ihs")
+        )
+        //prepare xpehh input Channel
+        
+        ch_xpehh_grouped = SPLIT_VCF_BY_POP.out.vcf.groupTuple().map{it->prepare_pairwise_vcf(it)}
+        ch_xpehh = ch_xpehh_grouped.flatten().collate(3).combine(n1_chrom_recombmap, by:0).map{change_meta_in_channel_xpehh(it)}
+
+        //
+        //MODULE: SELSCAN_XPEHH
+        //
+        SELSCAN_XPEHH(
+            ch_xpehh,
+            Channel.value("xpehh")
+        )
+
+        //
+        //MODULE: SELSCAN_NORM_XPEHH
+        //
+
+        SELSCAN_NORM_XPEHH(
+            SELSCAN_XPEHH.out.groupTuple(),
+            Channel.value("xpehh")
         )
 }

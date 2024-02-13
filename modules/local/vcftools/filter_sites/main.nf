@@ -9,7 +9,7 @@ process VCFTOOLS_FILTER_SITES{
     publishDir("${params.outdir}/snp_filtering/vcftools/sites_filtes/", mode:"copy")
 
     input:
-        tuple val(meta), path(f_vcf)
+        tuple val(meta), path(f_vcf), path(f_rem_snp)
 
     output:
         tuple val(meta), path("*filt_sites.vcf.gz"), emit: vcf
@@ -38,8 +38,13 @@ process VCFTOOLS_FILTER_SITES{
         if(params.minQ >= 0){
             opt_arg = opt_arg + " --minQ "+params.minQ
         }
-        if(params.rem_snps){
-            opt_arg = opt_arg + " --exclude-positions "+params.rem_snps
+        if(params.custom_snps){
+            if(params.custom_snps_process == "exclude"){
+                opt_arg = opt_arg + " --exclude-positions "+ f_rem_snp
+            }
+            else{
+                opt_arg = opt_arg + " --positions "+ f_rem_snp
+            }
         }
 
         """

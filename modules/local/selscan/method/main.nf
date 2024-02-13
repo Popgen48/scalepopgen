@@ -18,9 +18,9 @@ process SELSCAN_METHOD{
     script:
         
         local_dir = meta.id
-        prefix = t_vcf.getName().minus(".vcf.gz")
+        def prefix = (method == "xpehh") ? t_vcf.getName().minus(".vcf.gz")+"_"+r_vcf.getName().minus(".vcf.gz"):t_vcf.getName().minus(".vcf.gz")
         def args = task.ext.args ?: ''
-        def args1 = method == "xpehh" ? " --xpehh "+args+ "--vcf-ref "+${r_vcf}:" --ihs "+ args
+        def args1 = (method == "xpehh") ? " --xpehh "+args+ "--vcf-ref "+r_vcf:" --ihs "+ args
         
 
 

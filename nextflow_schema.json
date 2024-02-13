@@ -5,6 +5,42 @@
     "description": "scalepopgen is a fully automated nextflow-based pipeline that takes vcf files or plink generated bed files as input and employ a variety of open-source tools to carry out comprehensive population genomic analyses. ",
     "type": "object",
     "definitions": {
+        "selscan_options": {
+            "title": "selscan options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "ihs": {
+                    "type": "boolean",
+                    "description": "Whether or not to calculate iHS using selscan. Default: True"
+                },
+                "xpehh": {
+                    "type": "boolean",
+                    "description": "whether to run xpehh analysis as implemented in selscan"
+                },
+                "selscan_map": {
+                    "type": "string",
+                    "description": "path to a map file containing first column as chromosome id and second column as the path to its recombination map as required by selscan"
+                },
+                "ihs_args": {
+                    "type": "string",
+                    "description": "additional arguments to be used for iHS analysis in selscan"
+                },
+                "xpehh_args": {
+                    "type": "string",
+                    "description": "additional arguments to be used for XP-EHH analysis in selscan"
+                },
+                "ihs_norm_args": {
+                    "type": "string",
+                    "description": "additional arguments to normalize ihs score"
+                },
+                "xpehh_norm_args": {
+                    "type": "string",
+                    "description": "additional arguments to normalize xpehh score"
+                }
+            }
+        },
         "signature_of_selection_options": {
             "title": "signature of selection options",
             "type": "object",
@@ -94,10 +130,6 @@
                 "recomb_map": {
                     "type": "string",
                     "description": "the path to the file containing information about recombination map file as required by sweepfinder2, if not provided, recombination file will be created using default recombination rate value"
-                },
-                "ihs": {
-                    "type": "boolean",
-                    "description": "Whether or not to calculate iHS using selscan. Default: True"
                 }
             }
         },
@@ -255,9 +287,6 @@
                     "type": "string",
                     "description": "Path to the file containing first column as population id and second column as marker shape. Available markers shape are listed in \"./extra/markershapes.txt\" . If no such file is provided, random marker shapes will be selected."
                 },
-                "chrom_map": {
-                    "type": "string"
-                },
                 "admixture": {
                     "type": "boolean",
                     "description": "Run admixture analysis. Default: False"
@@ -340,12 +369,6 @@
                     "type": "boolean",
                     "description": "Whether or not to perform sample filtering. Note that setting this to false overrides all parameters associated with sample filtering. In other words, sample filtering will not be carried out irrespective of arguments set for --king_cutoff, --rem_indi or --mind."
                 },
-                "rem_snps": {
-                    "type": "string",
-                    "description": "Path to the file containing SNP ids to be removed in case of plink-bed files. In case of vcf file, this file should contain two columns: first column as chromsome_id and second column as positions to be removed.",
-                    "pattern": "^\\S+\\.map$",
-                    "format": "file-path"
-                },
                 "apply_snp_filters": {
                     "type": "boolean",
                     "description": "Setting this to false overrides all other sites-filtering parameters, i.e. sites-filtering will not be carried out irrespective of any parameters set for --remove_snps,  --maf, --min_meanDP, --max_meanDP, --hwe, --max_missing and --minQ. Note that, depending on the input files, these parameters may or may not be applied. For example, depth-related information and SNP quality information are not available (of course) for plink bed files and therefore, these parameters will be ignored in that case. However, parameters like max_missing, hwe and maf are applied to vcf as well as to plink-bed files."
@@ -383,6 +406,15 @@
                 "indiv_summary": {
                     "type": "boolean",
                     "description": "Calculate sample-based summary statistics from vcf files; calculated only after applying individual- and site-based filtering."
+                },
+                "custom_snps": {
+                    "type": "string",
+                    "description": "filepath containing custom SNPs to be processed"
+                },
+                "custom_snps_process": {
+                    "type": "string",
+                    "description": "process to be carried out on the custom snps file, options: \"include\", \"exclude\"",
+                    "enum": ["include", "exclude"]
                 }
             }
         },
@@ -460,6 +492,13 @@
                 "outgroup": {
                     "type": "string",
                     "description": "The population id to be used as an outgroup, this will be used in the following analyses:                              1). treemix --> as a root in ML phylogenetic tree                              2). Fst-based NJ clustering --> as a root                               3). selection analysis --> to determine the ancestral and derived alleles                              For more details, read the online documentation."
+                },
+                "multiqc_report_yml": {
+                    "type": "string",
+                    "default": "popgen48-scalepopgen/assets/multiqc_summary.yml"
+                },
+                "chrom_id_map": {
+                    "type": "string"
                 }
             }
         },
@@ -633,6 +672,9 @@
     },
     "allOf": [
         {
+            "$ref": "#/definitions/selscan_options"
+        },
+        {
             "$ref": "#/definitions/signature_of_selection_options"
         },
         {
@@ -659,17 +701,5 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ],
-    "properties": {
-        "xpehh": {
-            "type": "boolean"
-        },
-        "selscan_map": {
-            "type": "string"
-        },
-        "multiqc_report_yml": {
-            "type": "string",
-            "default": "popgen48-scalepopgen/assets/multiqc_summary.yml"
-        }
-    }
+    ]
 }

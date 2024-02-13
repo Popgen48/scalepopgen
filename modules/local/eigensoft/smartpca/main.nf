@@ -14,6 +14,7 @@ process EIGENSOFT_SMARTPCA {
     output:
     tuple val(meta), path("*.evec"), emit: evec
     tuple val(meta), path("*.eval"), emit: eval
+    path("*.log"), emit:log
     path "versions.yml"           , emit: versions
 
     when:
@@ -27,6 +28,8 @@ process EIGENSOFT_SMARTPCA {
     """
     smartpca \\
         -p ${parameter_file}
+    
+    cp .command.log ${prefix}.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

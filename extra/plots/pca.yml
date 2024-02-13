@@ -7,4 +7,4 @@
  fill_alpha: 0.2
  line_alpha: 1.0
  marker_size : 8
- show_sample_label: False
+ show_sample_label: true
