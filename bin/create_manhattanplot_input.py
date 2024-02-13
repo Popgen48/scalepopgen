@@ -26,7 +26,7 @@ for file in files:
     if method != "ihs":
         df1 = pd.read_csv(file,delim_whitespace=True,index_col=False)
         if method == "sweepfinder2":
-            chrom = os.path.basename(file).split("_")[0]
+            chrom = re.search('.+?(?=_'+re.escape(pop)+'.)',file)[0]
             new_column = [chrom]*len(df1.index)
             df1.insert(0,"CHROM",new_column,True)
             df1.rename(columns={'location': 'BIN_START'}, inplace=True)

@@ -6,7 +6,7 @@ process PYTHON_PLOT_PAIRWISE_FST{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/plot_fst:1.0.0' :
         'popgen48/plot_fst:1.0.0' }"
-    publishDir("${params.outdir}/genetic_structure/interactive_plots/fst/", mode:"copy")
+    publishDir("${params.outdir}/fst_clustering/python/plot/", mode:"copy")
 
     input:
         path(pairwise_fst)

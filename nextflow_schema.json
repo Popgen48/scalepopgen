@@ -49,7 +49,6 @@
             "properties": {
                 "min_sample_size": {
                     "type": "integer",
-                    "default": 8,
                     "description": "the minimum sample size per population necessary for inclusion in the analysis of selection signatures."
                 },
                 "skip_pop": {
@@ -124,8 +123,7 @@
                 },
                 "grid_points": {
                     "type": "integer",
-                    "description": "The number of points equally spaced across the genome, option \"G\" in SweepFinder2.",
-                    "default": -9
+                    "description": "The number of points equally spaced across the genome, option \"G\" in SweepFinder2."
                 },
                 "recomb_map": {
                     "type": "string",
@@ -354,14 +352,12 @@
                 "mind": {
                     "type": "number",
                     "description": "Samples with missing genotypes greater than this will be removed. Setting this to 0 will disable this parameter.",
-                    "default": 0,
                     "minimum": 0,
                     "maximum": 1
                 },
                 "king_cutoff": {
                     "type": "number",
                     "description": "King relationship coefficient value above which the pairs of individuals are considered to be related and based on these pairwise values, plink2 will output the unrelated samples. Setting this to 0 will skip this parameter.",
-                    "default": 0,
                     "minimum": 0,
                     "maximum": 1
                 },

@@ -49,7 +49,7 @@ process PYTHON_PLOT_PCA{
 
 	"""
 
-        awk 'NR==FNR{markershape[\$1]=\$2;next}{print \$1,markershape[\$1],\$3}' ${f_pop_marker} ${m_pop_sc_col} > pop_markershape_col.txt
+        awk 'NR==FNR{markershape[\$1]=\$2;next}{print \$1,markershape[\$1],\$3}' ${marker_map} ${m_pop_sc_col} > pop_markershape_col.txt
 
         python ${baseDir}/bin/plot_interactive_pca.py ${eigenvect} ${eigenval} pop_markershape_col.txt ${pca_plot_yml} ${prefix}
 

@@ -127,3 +127,63 @@
     - path: results/pca/eigensoft/smartpca/scalepopgen_rem_indi_ld_filtered_update_chrom_id.evec
       md5sum: c6b9f0959e3abdf50c7064dc0742de2a
     - path: results/pca/python/plot/pca/scalepopgen_rem_indi_ld_filtered_update_chrom_id_mqc.html
+
+- name: filtering and admixture
+  command: nextflow run scalepopgen_v1/ -profile test_filter_admixture,mamba --outdir results
+  tags:
+    - test_filters_admixture
+  files:
+    - path: results/admixture/ADMIXTURE/10.log
+    - path: results/admixture/ADMIXTURE/11.log
+    - path: results/admixture/ADMIXTURE/2.log
+    - path: results/admixture/ADMIXTURE/3.log
+    - path: results/admixture/ADMIXTURE/4.log
+    - path: results/admixture/ADMIXTURE/5.log
+    - path: results/admixture/ADMIXTURE/6.log
+    - path: results/admixture/ADMIXTURE/7.log
+    - path: results/admixture/ADMIXTURE/8.log
+    - path: results/admixture/ADMIXTURE/9.log
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.10.P
+      md5sum: 543d2d387638515ea31a7bc602011bfe
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.10.Q
+      md5sum: 0663b95b3a9df1784855b40c9c27b16f
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.11.P
+      md5sum: c205dad8965c2a83e736735bc6a55644
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.11.Q
+      md5sum: f46ab9608530860ad6033835ed03773e
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.2.P
+      md5sum: 465387085009cdbe4df3bb78a8d94ddc
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.2.Q
+      md5sum: b54fe7b494a6332a24b0786023b5e368
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.3.P
+      md5sum: 483fb31a0e4a85cf4bae013013b39511
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.3.Q
+      md5sum: b32ab859732b63b23c478de1faa0e3ce
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.4.P
+      md5sum: 0b57f6d4aa16bc862a40f66913dcc4c6
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.4.Q
+      md5sum: 6998ce3223760cfa137e3cd3b3ed699a
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.5.P
+      md5sum: 23d51b60520f7be0a47cf4c73f114865
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.5.Q
+      md5sum: 3ab73bf252cc03936200598ec9adbfc1
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.6.P
+      md5sum: f05e3ea57069754c04c5fd0f4a53e25b
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.6.Q
+      md5sum: 075c7bfec15f8ab2cea4f2af4b9c1bab
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.7.P
+      md5sum: c2c1e802a7f9867d253cb2a179dc8c7f
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.7.Q
+      md5sum: 89cb273df5a88d162f874d71ca0d6ac6
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.8.P
+      md5sum: 779568baf6766ad04bfca3a0618e4e6c
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.8.Q
+      md5sum: 780a3960b978de3101606368a22a42bf
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.9.P
+      md5sum: 02ad848a7777ed2f35cc2f1f48e82890
+    - path: results/admixture/ADMIXTURE/scalepopgen_rem_indi_ld_filtered_update_chrom_id.9.Q
+      md5sum: f21ac2f13489e87922758dde469ac7b3
+    - path: results/admixture/ADMIXTURE/versions.yml
+      md5sum: 1f289165d75b809905f64e53d675e2d3
+    - path: results/admixture/python/plot/admixture/cv_error/cvplot_mqc.html
+    - path: results/admixture/python/plot/admixture/q_mat/scalepopgen_qmats_mqc.html

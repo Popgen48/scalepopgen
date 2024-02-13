@@ -42,10 +42,10 @@ workflow RUN_SWEEPFINDER2{
 
         n1_chrom_vcf_anc_popid = n1_chrom_vcf_anc.combine(pop_idfile)
 
-        if ( params.recombination_map ){
+        if ( params.recomb_map ){
             //read recombination map file
             Channel
-                    .fromPath( params.recombination_map, checkIfExists: true )
+                    .fromPath( params.recomb_map, checkIfExists: true )
                     .splitCsv(sep:",")
                     .map{ chrom, recomb -> if(!file(recomb).exists() ){ exit 1, 'ERROR: input recomb file does not exist  \
                         -> ${recomb}' }else{tuple(chrom, file(recomb))} }
@@ -108,7 +108,7 @@ workflow RUN_SWEEPFINDER2{
         // MODULE: COLLECT_SWEEPFINDER2
         //
         COLLECT_SWEEPFINDER2(
-            SWEEPFINDER2.out.pop_txt.groupTuple(),
+                params.chrom_id_map ? SWEEPFINDER2.out.pop_txt.groupTuple().combine(Channel.fromPath(params.chrom_id_map,checkIfExists:true)) : SWEEPFINDER2.out.pop_txt.groupTuple.map{meta,o_files->tuple(meta,o_files,[])},
             Channel.value("sweepfinder2")
         )
         //

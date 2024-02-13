@@ -6,7 +6,7 @@ process PLINK2_CALC_PAIRWISE_FST{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/plink2:2.00a3.7--h9f5acd7_2' :
         'quay.io/biocontainers/plink2:2.00a3.7--h9f5acd7_3' }"
-    publishDir("${params.outdir}/genetic_structure/interactive_plots/fst/", mode:"copy")
+    publishDir("${params.outdir}/fst_clustering/plink2", mode:"copy")
 
     input:
         tuple val(meta), path(bed)

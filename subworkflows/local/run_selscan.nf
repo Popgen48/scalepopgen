@@ -10,7 +10,7 @@ include { SELSCAN_NORM as SELSCAN_NORM_IHS         } from '../../modules/local/s
 include { SELSCAN_METHOD as SELSCAN_XPEHH          } from '../../modules/local/selscan/method/main'
 include { SELSCAN_NORM as SELSCAN_NORM_XPEHH       } from '../../modules/local/selscan/norm/main'
 include { PYTHON_COLLECT_SELECTION_RESULTS as COLLECT_IHS_RESULTS  } from '../../modules/local/python/collect/selection_results/main'
-include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_IHS                       } from '../../modules/local/python/plot/selection_results/main'
+//include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_IHS                       } from '../../modules/local/python/plot/selection_results/main'
 
 /*
 * Arrange the grouped tuple to list of unique pairwise files
