@@ -5,7 +5,7 @@ process SWEEPFINDER2{
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/sweepfinder2:1.0--hec16e2b_4' :
-        'biocontainers/sweepfinder2:1.0--hec16e2b_4' }"
+        'quay.io/biocontainers/sweepfinder2:1.0--hec16e2b_4' }"
     publishDir("${params.outdir}/selection/sweepfinder2/", mode:"copy")
 
     input:
