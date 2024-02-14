@@ -35,7 +35,7 @@ process FILTER_SNPS{
 
         if ( rem_snps != [] ){
         
-            opt_args = opt_args + " --exclude " + rem_snps
+            opt_args = opt_args + " --" +params.custom_snps_process+" "+ rem_snps
         }
         
         if ( params.max_missing > 0 ){
