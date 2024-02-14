@@ -6,7 +6,7 @@ process GAWK_MERGE_FREQ_FILES{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/gawk:5.1.0' :
         'quay.io/biocontainers/gawk:5.1.0' }"    
-    publishDir("${params.outdir}/sweepfinder2/input_files/", mode:"copy")
+    publishDir("${params.outdir}/selection/sweepfinder2/input_files/merge_freq_files", mode:"copy")
 
     input:
         tuple val(meta), path( freqs )

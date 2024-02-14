@@ -9,6 +9,21 @@ include { SWEEPFINDER2; SWEEPFINDER2 as SWEEPFINDER2_COMPUTE_EMPIRICAL_AFS      
 include { PYTHON_COLLECT_SELECTION_RESULTS as COLLECT_SWEEPFINDER2                 } from '../../modules/local/python/collect/selection_results/main'
 include { PYTHON_PLOT_SELECTION_RESULTS as PLOT_SWEEPFINDER2                       } from '../../modules/local/python/plot/selection_results/main'
 
+def change_meta_afs(ch){
+    def n_meta = [:]
+    suffix = ch[0].id
+    pattern = ~/${ch[1]}_/
+    n_meta.id = suffix-pattern
+    return [n_meta, ch[2]]
+}
+
+def change_meta_sweepfinder2(ch){
+    def n_meta = [:]
+    suffix = ch[0].id
+    pattern = ~/${ch[1]}_/
+    n_meta.id = suffix-pattern
+    return [n_meta, ch[2], ch[4]]
+}
 
 workflow RUN_SWEEPFINDER2{
     take:
@@ -68,9 +83,12 @@ workflow RUN_SWEEPFINDER2{
             Channel.value(params.sweepfinder2_model)
         )
 
-        pop_freq_M = PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_freq.groupTuple()
+
+
 
         if ( params.sweepfinder2_model == "l"  || params.sweepfinder2_model == "lr"){
+            
+            pop_freq_M = PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_freq.map{change_meta_afs(it)}.groupTuple()
 
             //
             // MODULE: GAWK_MERGE_FREQ_FILES
@@ -86,21 +104,23 @@ workflow RUN_SWEEPFINDER2{
                 GAWK_MERGE_FREQ_FILES.out.pop_cfreq.map{pop,freq->tuple(pop, freq, [], [])},
                 Channel.value("afs")
             )
-
-
-            pop_freq_afs = PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_freq.combine(SWEEPFINDER2_COMPUTE_EMPIRICAL_AFS.out.pop_txt, by:0)
         
-            pop_freq_afs_recomb = params.sweepfinder2_model == "lr" ? pop_freq_afs.combine(PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_recomb, by:0):pop_freq_afs.combine([null])
+            pop_freq_recomb = params.sweepfinder2_model == "lr" ? PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_freq.combine(PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_recomb, by:0) : PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_freq.combine([null])
+
+
+            pop_freq_recomb_afs = pop_freq_recomb.map{change_meta_sweepfinder2(it)}.combine(SWEEPFINDER2_COMPUTE_EMPIRICAL_AFS.out.pop_txt, by:0)
+        
         
         }
         else{
-            pop_freq_afs_recomb =pop_freq_M.combine([null]).combine([null])
+            pop_freq_recomb_afs = PYTHON_CREATE_SWEEPFINDER_INPUT.out.pop_freq.map{meta, chrom, freq->tuple(meta, freq)}.combine([null]).combine([null])
         }
+
         //
         // MODULE: SWEEPFINDER2
         //
         SWEEPFINDER2(
-            pop_freq_afs_recomb.map{pop, freq, afs, recomb->tuple(pop, freq, afs?:[], recomb?:[])},
+            pop_freq_recomb_afs.map{pop, freq, recomb, afs ->tuple(pop, freq, recomb?:[], afs?:[])},
             Channel.value(params.sweepfinder2_model)
         )
 

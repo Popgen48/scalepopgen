@@ -13,17 +13,17 @@ process PYTHON_CREATE_SWEEPFINDER_INPUT{
         val(method)
 
     output:
-        tuple val(n_meta), path ( "${chrom}*.freq" ), emit: pop_freq
-        tuple val(n_meta), path ( "${chrom}*recomb" ), emit: pop_recomb optional true
+        tuple val(n_meta), val(chrom), path ( "${chrom}*.freq" ), emit: pop_freq
+        tuple val(n_meta), val(chrom), path ( "${chrom}*recomb" ), emit: pop_recomb optional true
 
     script:
         def args = ""
         args1 = anc ? "-a "+ anc : ""
-        args2 = method == "lr" ? ( recomb ? " -r -R "+recomb : "-r") : ""
+        args2 = method == "lr" ? ( recomb ? " -r -R "+recomb : " -r ") : ""
         chrom = meta.id
         n_meta = [:]
         pop_f = pop_id.getName().minus(".txt")
-        n_meta.id = method == "lr" ? chrom:pop_f
+        n_meta.id = method == "lr" ? chrom+"_"+pop_f:pop_f
         args = args1 + args2+ " -o "+chrom
         
         """

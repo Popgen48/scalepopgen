@@ -55,7 +55,7 @@ class Vcf2SweepfinderInput:
             )
             if self.create_recomb:
                 self.file_pointer_dict[popId].append(
-                    open(self.outprefix + ".recomb", "w")
+                    open(f'{self.outprefix}_{popId}.recomb', "w")
                 )
                 self.file_pointer_dict[popId][1].write("position" + "\t" + "rate" + "\n")
             if self.create_grid:

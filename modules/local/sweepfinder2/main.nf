@@ -1,6 +1,6 @@
 process SWEEPFINDER2{
 
-    tag { "sweepfinder_input_${pop}" }
+    tag { "${pop}" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -9,7 +9,7 @@ process SWEEPFINDER2{
     publishDir("${params.outdir}/selection/sweepfinder2/", mode:"copy")
 
     input:
-        tuple val(meta), path( freqs ), path(afs), path( recomb )
+        tuple val(meta), path( freqs ), path(recomb), path(afs)
         val(method)
 
     output:
@@ -33,6 +33,7 @@ process SWEEPFINDER2{
             args3 = recomb?:''
             args = args1+" "+args2+" "+args3
         }
+        
 
         """
             SweepFinder2 ${args} ${output}

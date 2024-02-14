@@ -6,7 +6,7 @@ process PYTHON_COLLECT_SELECTION_RESULTS{
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'docker://popgen48/prepare_manhattan_input:1.0.0' :
         'popgen48/plot_admixture:1.0.0' }"
-    publishDir("${params.outdir}/selection/vcftools/${method}/${pop}/genomewide/", mode:"copy")
+    publishDir("${params.outdir}/selection/genomewide_results/${method}/${pop_u}", mode:"copy")
 
     input:
         tuple val(pop), path(results), path(chrom_length_map)

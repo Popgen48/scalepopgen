@@ -78,7 +78,7 @@ def vcf_to_est_sfs(chrom, vcf_in, sample_map, outgroup_id, model, n_random):
                     focal_sp = True
                 else:
                     focal_sp = False
-                if gt == (None, None):
+                if gt[0] == None:
                     missing = 1
                     break
                 elif gt == (0, 0):
