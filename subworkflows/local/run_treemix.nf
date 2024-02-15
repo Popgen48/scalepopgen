@@ -60,6 +60,8 @@ workflow RUN_TREEMIX {
         chrom_vcf_idx_map
         is_vcf
     main:
+        t_ch_multiqc_files = Channel.empty().ifEmpty([])
+
         vcf = chrom_vcf_idx_map.map{ chrom, vcf, idx, mp -> vcf}
         mp = chrom_vcf_idx_map.map{ chrom, vcf, idx, mp -> mp }.unique()
         //
@@ -108,6 +110,8 @@ workflow RUN_TREEMIX {
         )
         
         jpg = IMAGEMAGIK_RUN_M0.out.png.map{meta,png->png}
+        
+        t_ch_multiqc_files = t_ch_multiqc_files.combine(jpg)
 
         if(params.n_bootstrap > 0){
             random_num_tuple = generate_random_num(params.n_bootstrap, 34680, params.set_random_seed)
@@ -183,6 +187,8 @@ workflow RUN_TREEMIX {
             )
 
             jpg_o = IMAGEMAGIK_OPTM.out.png.map{meta,fig->fig}
+            
+            t_ch_multiqc_files = t_ch_multiqc_files.combine(jpg_o)
     
             //
             //MODULE:IMAGEMAGIK_RUN_ADD_MIG
@@ -199,9 +205,9 @@ workflow RUN_TREEMIX {
                 IMAGEMAGIK_RUN_ADD_MIG.out.png.groupTuple()
             )
             jpg_m = IMAGEMAGIK_CONVERT_APPEND.out.png.collect()
+
+            t_ch_multiqc_files = t_ch_multiqc_files.combine(jpg_m)
         }
     emit:
-        jpg
-        jpg_m
-        jpg_o
+        t_ch_multiqc_files
 }

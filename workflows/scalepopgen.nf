@@ -190,133 +190,9 @@ workflow SCALEPOPGEN {
     g_ch_multiqc_files = Channel.empty().ifEmpty([])
 
     if (params.genetic_structure || params.indiv_summary || params.treemix){
-
-
-            if(is_vcf){
-                //
-                //MODULE: PLINK2_VCF
-                //
-                PLINK2_VCF(
-                    n1_meta_vcf_idx_map.map{meta, vcf, idx, map->tuple(meta,vcf)}
-                )
-                //PLINK2_VCF.out.bed.view()
-                
-                //
-                //MODULE: PLINK2_MERGE_BED
-                //
-                PLINK2_MERGE_BED(
-                    PLINK2_VCF.out.bed.collect(),
-                    n1_meta_vcf_idx_map.map{meta, vcf, idx, map->map}.unique()
-                )
-                n2_meta_bed = PLINK2_MERGE_BED.out.bed
-                }
-            else{
-                n2_meta_bed = n1_meta_bed
-            }
-            if (params.indiv_summary){
-                    //
-                    //SUBWORKFLOW: PREPARE_INDIV_REPORT
-                    //
-                    PREPARE_INDIV_REPORT(
-                        n2_meta_bed,
-                        GAWK_GENERATE_COLORS.out.color
-                    )
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(PREPARE_INDIV_REPORT.out.ch_multiqc_files)
-            }
-            if ( params.rem_indi_structure ){
-                    indi_list = Channel.fromPath( params.rem_indi_structure, checkIfExists: true)
-                    //
-                    //MODULE: PLINK2_REMOVE_CUSTOM_INDI
-                    //
-                    PLINK2_REMOVE_CUSTOM_INDI(
-                        n2_meta_bed, 
-                        indi_list 
-                    )
-                    n3_bed = PLINK2_REMOVE_CUSTOM_INDI.out.bed
-            }
             
-            else{
-                    n3_bed = n2_meta_bed
-            }
-            if ( params.ld_filt ){
-                    //
-                    //MODULE: PLINK2_LD_FILTERS
-                    //
-                    PLINK2_INDEP_PAIRWISE(
-                        n3_bed
-                    )
-                    n4_bed = PLINK2_INDEP_PAIRWISE.out.bed
-            }
-            else{
-                    n4_bed = n3_bed
-            }
-            if(params.allow_extra_chrom){
-                //
-                //MODULE: GAWK_UPDATE_CHROM_IDS
-                //
-                GAWK_UPDATE_CHROM_IDS(
-                    n4_bed.map{meta,bed->bed[1]},
-                    params.chrom_id_map ?  Channel.fromPath(params.chrom_id_map, checkIfExists: true):[]
-                    )
-
-                chrom_id_map = GAWK_UPDATE_CHROM_IDS.out.map
-                //
-                //MODULE: PLINK2_MAKE_BED --> with updated chromosome ids
-                //
-                PLINK_MAKE_BED(
-                    n4_bed,
-                    chrom_id_map
-                )
-                n5_bed = PLINK_MAKE_BED.out.bed
-            }
-            else{
-                n5_bed = n4_bed
-            }
-            if(params.smartpca){
-                //
-                // SUBWORKFLOW : RUN_PCA
-                //
-                RUN_PCA(
-                    n5_bed,
-                    GAWK_GENERATE_COLORS.out.color
-                )
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_PCA.out.html)
-            }
-            if(params.admixture){
-                //
-                // SUBWORKFLOW : RUN_ADMIXTURE
-                //
-                RUN_ADMIXTURE(
-                    n5_bed,
-                    GAWK_GENERATE_COLORS.out.color
-                )
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.qmat_html)
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.cv_html)
-            }
-            if(params.pairwise_global_fst){
-                //
-                // SUBWORKFLOW : CALC_FST
-                //
-                CALC_FST(
-                    n5_bed,
-                    GAWK_GENERATE_COLORS.out.color
-                )
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_FST.out.html)
-            }
-            if(params.ibs_dist){
-                //
-                // SUBWORKFLOW : CALC_1_MIN_IBS_DIST
-                //
-                CALC_1_MIN_IBS_DIST(
-                    n5_bed,
-                    GAWK_GENERATE_COLORS.out.color
-                )
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_1_MIN_IBS_DIST.out.html)
-            }
-            //
-            //MODULE: MULTIQC_GENETIC_STRUCTURE
-            //
             if(params.treemix){
+
                 //
                 // SUBWORKFLOW : RUN_TREEMIX
                 //
@@ -324,11 +200,135 @@ workflow SCALEPOPGEN {
                     n1_meta_vcf_idx_map,
                     is_vcf
                 )
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.jpg)
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.jpg_m)
-                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.jpg_o)
+                g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_TREEMIX.out.t_ch_multiqc_files)
+
             }
 
+            if(params.genetic_structure || params.indiv_summary){
+
+                if( is_vcf ){
+                    //
+                    //MODULE: PLINK2_VCF
+                    //
+                    PLINK2_VCF(
+                        n1_meta_vcf_idx_map.map{meta, vcf, idx, map->tuple(meta,vcf)}
+                    )
+                    //PLINK2_VCF.out.bed.view()
+                    
+                    //
+                    //MODULE: PLINK2_MERGE_BED
+                    //
+                    PLINK2_MERGE_BED(
+                        PLINK2_VCF.out.bed.collect(),
+                        n1_meta_vcf_idx_map.map{meta, vcf, idx, map->map}.unique()
+                    )
+                    n2_meta_bed = PLINK2_MERGE_BED.out.bed
+                    }
+                else{
+                    n2_meta_bed = n1_meta_bed
+                }
+                if (params.indiv_summary){
+                        //
+                        //SUBWORKFLOW: PREPARE_INDIV_REPORT
+                        //
+                        PREPARE_INDIV_REPORT(
+                            n2_meta_bed,
+                            GAWK_GENERATE_COLORS.out.color
+                        )
+                    g_ch_multiqc_files = g_ch_multiqc_files.combine(PREPARE_INDIV_REPORT.out.ch_multiqc_files)
+                }
+                if ( params.rem_indi_structure ){
+                        indi_list = Channel.fromPath( params.rem_indi_structure, checkIfExists: true)
+                        //
+                        //MODULE: PLINK2_REMOVE_CUSTOM_INDI
+                        //
+                        PLINK2_REMOVE_CUSTOM_INDI(
+                            n2_meta_bed, 
+                            indi_list 
+                        )
+                        n3_bed = PLINK2_REMOVE_CUSTOM_INDI.out.bed
+                }
+                
+                else{
+                        n3_bed = n2_meta_bed
+                }
+                if ( params.ld_filt ){
+                        //
+                        //MODULE: PLINK2_LD_FILTERS
+                        //
+                        PLINK2_INDEP_PAIRWISE(
+                            n3_bed
+                        )
+                        n4_bed = PLINK2_INDEP_PAIRWISE.out.bed
+                }
+                else{
+                        n4_bed = n3_bed
+                }
+                if(params.allow_extra_chrom){
+                    //
+                    //MODULE: GAWK_UPDATE_CHROM_IDS
+                    //
+                    GAWK_UPDATE_CHROM_IDS(
+                        n4_bed.map{meta,bed->bed[1]},
+                        params.chrom_id_map ?  Channel.fromPath(params.chrom_id_map, checkIfExists: true):[]
+                        )
+
+                    chrom_id_map = GAWK_UPDATE_CHROM_IDS.out.map
+                    //
+                    //MODULE: PLINK2_MAKE_BED --> with updated chromosome ids
+                    //
+                    PLINK_MAKE_BED(
+                        n4_bed,
+                        chrom_id_map
+                    )
+                    n5_bed = PLINK_MAKE_BED.out.bed
+                }
+                else{
+                    n5_bed = n4_bed
+                }
+                if(params.smartpca){
+                    //
+                    // SUBWORKFLOW : RUN_PCA
+                    //
+                    RUN_PCA(
+                        n5_bed,
+                        GAWK_GENERATE_COLORS.out.color
+                    )
+                    g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_PCA.out.html)
+                }
+                if(params.admixture){
+                    //
+                    // SUBWORKFLOW : RUN_ADMIXTURE
+                    //
+                    RUN_ADMIXTURE(
+                        n5_bed,
+                        GAWK_GENERATE_COLORS.out.color
+                    )
+                    g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.qmat_html)
+                    g_ch_multiqc_files = g_ch_multiqc_files.combine(RUN_ADMIXTURE.out.cv_html)
+                }
+                if(params.pairwise_global_fst){
+                    //
+                    // SUBWORKFLOW : CALC_FST
+                    //
+                    CALC_FST(
+                        n5_bed,
+                        GAWK_GENERATE_COLORS.out.color
+                    )
+                    g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_FST.out.html)
+                }
+                if(params.ibs_dist){
+                    //
+                    // SUBWORKFLOW : CALC_1_MIN_IBS_DIST
+                    //
+                    CALC_1_MIN_IBS_DIST(
+                        n5_bed,
+                        GAWK_GENERATE_COLORS.out.color
+                    )
+                    g_ch_multiqc_files = g_ch_multiqc_files.combine(CALC_1_MIN_IBS_DIST.out.html)
+                }
+
+            }
             mqc_genetic_struct_config = Channel.fromPath(params.multiqc_report_yml)
             //
             //MODULE: MULTIQC_GENETIC_STRUCTURE

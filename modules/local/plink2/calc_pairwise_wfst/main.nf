@@ -24,7 +24,7 @@ process PLINK2_CALC_PAIRWISE_FST{
     script:
         def args = task.ext.args ?: ''
         def mem_mb = task.memory.toMega()
-        def prefix = meta.id
+        prefix = meta.id
 
 
 	

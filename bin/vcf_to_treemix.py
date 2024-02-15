@@ -34,13 +34,19 @@ class VcfToTreemix:
             if (str(rec)).startswith("##contig"):
                 pattern = re.compile(r"ID\=([^,]*),length=([0-9]+)")
                 match = re.findall(pattern, str(rec))
-                chrom = match[0][0]
-                if not self.contig:
-                    if chrom != "":
-                        self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
-                elif chrom == self.contig:
-                        self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
-                else:pass
+                if len(match) > 0:
+                    chrom = match[0][0]
+                    if not self.contig:
+                        if chrom != "":
+                            self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
+                    elif chrom == self.contig:
+                            self.chrom_cord_dict[chrom] = [[1, int(match[0][1])]]
+                    else:pass
+                else:
+                    pattern = re.compile(r"ID\=([^,]*)>")
+                    match = re.findall(pattern, str(rec))
+                    chrom = match[0]
+                    self.chrom_cord_dict[chrom] = [[1,1000000000]]
 
 
     def readVcfRecords(self):

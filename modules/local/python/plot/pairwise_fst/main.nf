@@ -1,6 +1,6 @@
 process PYTHON_PLOT_PAIRWISE_FST{
 
-    tag { "plot_pairwise_fst_${new_prefix}" }
+    tag { "${prefix}" }
     label "process_single"
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

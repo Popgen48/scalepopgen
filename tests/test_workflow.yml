@@ -84,7 +84,7 @@
     - path: results/summary_stats/python/plot/average_het/populationwise_heterozygosity_report.txt
 
 - name: filtering and pca
-  command: nextflow run main.nf -profile test_filters_summary_pca,mamba --outdir results
+  command: nextflow run scalepopgen_v1/ -profile test_filters_summary_pca,mamba --outdir results
   tags:
     - test_filters_summary_pca
   files:
@@ -187,3 +187,85 @@
       md5sum: 1f289165d75b809905f64e53d675e2d3
     - path: results/admixture/python/plot/admixture/cv_error/cvplot_mqc.html
     - path: results/admixture/python/plot/admixture/q_mat/scalepopgen_qmats_mqc.html
+
+- name: test_plink_filter_summary_stats
+  command: nextflow run ./scalepopgen_v1/ -profile test_plink_filter_summary,mamba --outdir results -resume
+  tags:
+    - test_p_filter_summary
+  files:
+    - path: ./results/gawk/make_cluster_file/scalepopgen.cluster
+      md5sum: 00c75d5234175ea64dabfa6bb336e80d
+    - path: ./results/gawk/make_cluster_file/versions.yml
+      md5sum: 831e2dea0fec439f22ab4215734177c0
+    - path: ./results/gawk/split_fam_file/Egypt_id.txt
+      md5sum: 4f869f4cd0800460d1a495e59d93e7c1
+    - path: ./results/gawk/split_fam_file/Spain_id.txt
+      md5sum: bc8925bd295ddf2fd05ec00978b9e7b0
+    - path: ./results/gawk/split_fam_file/Sudan_id.txt
+      md5sum: ec411860a6147a137a4e10ed39c196a1
+    - path: ./results/gawk/split_fam_file/Swiss_id.txt
+      md5sum: 7e05125bf3ff4833d95d29cc5176c854
+    - path: ./results/gawk/split_fam_file/Turkey_id.txt
+      md5sum: 0a7076a5385ed9612cf1138fd3553389
+    - path: ./results/gawk/split_fam_file/versions.yml
+      md5sum: 5ec5ba8298602f344b47dbcbb31c2979
+    - path: ./results/multiqc/multiqc_data/multiqc_citations.txt
+      md5sum: 4c806e63a283ec1b7e78cdae3a923d4f
+    - path: ./results/multiqc/multiqc_data/multiqc_data.json
+    - path: ./results/multiqc/multiqc_data/multiqc.log
+    - path: ./results/multiqc/multiqc_data/multiqc_sources.txt
+      md5sum: d2a044df39ce3c6abe5cdc2d67473490
+    - path: ./results/multiqc/multiqc_report.html
+      md5sum: 3558c294c81c81f0e530802714d3f8ae
+    - path: ./results/pop_sc_color.map
+      md5sum: 2a7c668cbfdecce7b99e3088bc754a36
+    - path: ./results/sample_filtering/plink2/filter_samples/goat_rem_indi.bed
+      md5sum: a9dbaaa94834e60d034f29d547107932
+    - path: ./results/sample_filtering/plink2/filter_samples/goat_rem_indi.bim
+      md5sum: 8e3b9dcf222930fa4e73ad920903a2f2
+    - path: ./results/sample_filtering/plink2/filter_samples/goat_rem_indi.fam
+      md5sum: ade2352417990bf6532b6aa0829c0cc8
+    - path: ./results/sample_filtering/plink2/filter_samples/goat_rem_indi.king.cutoff.in.id
+      md5sum: 381fd30bb6cf7237c9e8d38ebca824bd
+    - path: ./results/sample_filtering/plink2/filter_samples/goat_rem_indi.king.cutoff.out.id
+      md5sum: 99fbfa3e9d78378565234dc9e46d1529
+    - path: ./results/sample_filtering/plink2/filter_samples/goat_rem_indi.log
+    - path: ./results/sample_filtering/plink2/filter_samples/goat_rem_indi.mindrem.id
+      md5sum: f18f42028b68e2de90c46c96650e042e
+    - path: ./results/sample_filtering/plink2/filter_samples/versions.yml
+      md5sum: 62286d568bbc2f3cb29112c6ccde1330
+    - path: ./results/snp_filtering/plink2/filter_snps/goat_rem_indi_filt_sites.bed
+      md5sum: 2e14d41e5cc5ba3c50c8f546529c959f
+    - path: ./results/snp_filtering/plink2/filter_snps/goat_rem_indi_filt_sites.bim
+      md5sum: fb37fdee0bf72c7a10880517b70bdc91
+    - path: ./results/snp_filtering/plink2/filter_snps/goat_rem_indi_filt_sites.fam
+      md5sum: ade2352417990bf6532b6aa0829c0cc8
+    - path: ./results/snp_filtering/plink2/filter_snps/goat_rem_indi_filt_sites.log
+      md5sum: a4ef4be3a04bdb4c5d7c2e099bf63e69
+    - path: ./results/snp_filtering/plink2/filter_snps/versions.yml
+      md5sum: 35aa01d22edc49e30c6fcae8fd1522b5
+    - path: ./results/summary_stats/plink2/sample_counts/goat_rem_indi_filt_sites_sample_summary.scount
+      md5sum: cd2200675053eb2ef938e9eba3a9136f
+    - path: ./results/summary_stats/plink2/sample_counts/versions.yml
+      md5sum: 9271e665839fe8355b3f63cff34d37a9
+    - path: ./results/summary_stats/plink/calc_maf_hardy/Egypt_id.hwe
+      md5sum: 02d452b18cbf9e6aa3721e8007394bc7
+    - path: ./results/summary_stats/plink/calc_maf_hardy/goat_rem_indi_filt_sites.frq.strat
+      md5sum: b4024145de87dd2a08d89704efd5da94
+    - path: ./results/summary_stats/plink/calc_maf_hardy/Spain_id.hwe
+      md5sum: 3d6806e6531dd73e82bc5526f2fb8f32
+    - path: ./results/summary_stats/plink/calc_maf_hardy/Sudan_id.hwe
+      md5sum: f1feef77070b17ba22ea64356875c6f1
+    - path: ./results/summary_stats/plink/calc_maf_hardy/Swiss_id.hwe
+      md5sum: 5d66bb8bee269a005e712077a1937a7a
+    - path: ./results/summary_stats/plink/calc_maf_hardy/Turkey_id.hwe
+      md5sum: 89739c207f0b28e0f7e10db163bc5c6d
+    - path: ./results/summary_stats/python/plot/average_het/populationwise_heterozygosity_report.txt
+    - path: ./results/summary_stats/python/plot/average_het/scalepopgen_exp_het_mqc.html
+    - path: ./results/summary_stats/python/plot/average_het/scalepopgen_obs_het_mqc.html
+    - path: ./results/summary_stats/python/plot/average_maf/populationwise_maf_report.txt
+      md5sum: a9dc06e82cb9fd9caa52cea2f89119fa
+    - path: ./results/summary_stats/python/plot/average_maf/scalepopgen_maf_summary_mqc.html
+    - path: ./results/summary_stats/python/plot/sample_stats/scalepopgen_samplewise_snp_counts_mqc.html
+    - path: ./results/versions.yml
+      md5sum: 0e945272d2372c7d66d6c1e673a8be99

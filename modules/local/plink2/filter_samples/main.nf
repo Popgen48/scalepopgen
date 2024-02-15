@@ -19,6 +19,7 @@ process PLINK2_FILTER_SAMPLES{
         path("*miss"), emit: missing_indi_report optional true
         path("*.log" ), emit: log_file
         path("*king*"), emit: king_out optional true
+        path("*.mindrem.id"), emit: rem_indi optional true
         tuple val(n_meta), path("${new_prefix}_rem_indi.{bed,bim,fam}"), emit: bed
         path "versions.yml", emit: versions
 

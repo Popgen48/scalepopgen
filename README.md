@@ -113,9 +113,12 @@ Custom config files, including those provided by the Nextflow option `-c`, can b
 see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 :::
 
+## Additional Remarks
+The detailed documentation of the tools are getting updated [here](https://github.com/Popgen48/scalepopgen-readme)
+
 ## Credits
 
-**scalepopgen** was originally written by @BioInf2305 with small contributions from @NPogo.
+**scalepopgen** was mainly written by @BioInf2305 with contributions from @NPogo.
 
 Many thanks to `nf-core` community for their assistance and help in the development of this pipeline.
 
@@ -125,8 +128,6 @@ Many thanks to `nf-core` community for their assistance and help in the developm
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-## Additional Remarks
-Within the next couple of days, the codes will be updated to arrange the structures of output folders and the tool will have its **first release** on 12.02.2024.
 
 ## Citations
 

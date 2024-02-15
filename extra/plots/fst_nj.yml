@@ -1,7 +1,7 @@
 ---
  width: 1400
  height: 1000
- layout: 'c'
+ layout: 'r'
  tip_label_align: True
  tip_label_font_size: "12px"
  node_sizes: 8

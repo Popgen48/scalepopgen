@@ -22,7 +22,7 @@ process PLINK_CALC_1_MIN_IBS_DIST{
 
     script:
         def args = task.ext.args ?: ''
-        def prefix = meta.id
+        prefix = meta.id
         def mem_mb = task.memory.toMega()
         outprefix = prefix+"_1_min_ibs"
 	

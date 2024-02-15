@@ -75,7 +75,7 @@ class PlotSigSelResults:
             fill_alpha=self.fil_alpha,
             source=source_t,
         )
-        if self.ensembl_link != "none":
+        if self.ensembl_link:
             toolt = """
                 <div>
                     <a href=@link{safe}}>@link{safe}</a>
@@ -194,7 +194,7 @@ class PlotSigSelResults:
                         else:
                             if (
                                 p_val > float(self.tajimasd_cutoff)
-                                and self.ensembl_link != "none"
+                                and self.ensembl_link
                             ):
                                 tmp_list.append(
                                     self.ensembl_link
@@ -214,7 +214,7 @@ class PlotSigSelResults:
         pd2 = pd.DataFrame(
             df_list_t,
             columns=["chrom", "cord", "cum_cord", "p_val", "col", "link"]
-            if self.ensembl_link != "none"
+            if self.ensembl_link
             else ["chrom", "cord", "cum_cord", "p_val", "col"],
         )
         return pd1, pd2
