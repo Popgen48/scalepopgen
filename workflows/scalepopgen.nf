@@ -152,7 +152,7 @@ workflow SCALEPOPGEN {
         else{
             n1_meta_bed = INPUT_CHECK.out.variant
         }
-        if(params.treemix || params.ihs || params.xp_ehh || params.sweepfinder2 || params.tajimas_d || params.fst_one_vs_all || params.pi_val || params.pairwise_local_fst){
+        if(params.treemix || params.ihs || params.xpehh || params.sweepfinder2 || params.tajimas_d || params.fst_one_vs_all || params.pi_val || params.pairwise_local_fst){
             //
             // MODULE: PLINK2_CONVERT_BED_TO_VCF
             //
@@ -350,7 +350,7 @@ workflow SCALEPOPGEN {
         )
     }
 
-    if( params.sweepfinder2 || params.ihs || params.xp_ehh ){
+    if( params.sweepfinder2 || params.ihs || params.xpehh ){
         if( is_vcf ){
             n2_meta_vcf_idx_map = n1_meta_vcf_idx_map
         }
