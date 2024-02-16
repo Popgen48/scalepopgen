@@ -40,5 +40,5 @@ jobs:
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run popgen48/scalepopgen_v1 -profile test,docker --outdir ./results
-          nextflow run popgen48/scalepopgen_v1 -profile test_selscan,docker --outdir ./results
+          nextflow run main.nf -profile test,docker --outdir ./results
+          nextflow run main.nf -profile test_selscan,docker --outdir ./results
