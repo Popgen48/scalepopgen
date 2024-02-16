@@ -469,7 +469,7 @@
                 "max_chrom": {
                     "type": "number",
                     "description": "Maximum chromosomes to be considered for the analyses. Note that the workflow only consider the autosomes.",
-                    "default": 29
+                    "default": 29.0
                 },
                 "chrom_length_map": {
                     "type": "string",

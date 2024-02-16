@@ -114,6 +114,8 @@ workflow RUN_SELSCAN{
 
         // make pairwise tuple of splitted (based on pop id) phased vcf files 
 
+        if(params.ihs){
+
         ihs_input = SPLIT_VCF_BY_POP.out.vcf.combine(n1_chrom_recombmap, by:0).map{change_meta_in_channel(it)}
 
         
@@ -146,20 +148,26 @@ workflow RUN_SELSCAN{
         ch_xpehh_grouped = SPLIT_VCF_BY_POP.out.vcf.groupTuple().map{it->prepare_pairwise_vcf(it)}
         ch_xpehh = ch_xpehh_grouped.flatten().collate(3).combine(n1_chrom_recombmap, by:0).map{change_meta_in_channel_xpehh(it)}
 
-        //
-        //MODULE: SELSCAN_XPEHH
-        //
-        SELSCAN_XPEHH(
-            ch_xpehh,
-            Channel.value("xpehh")
-        )
 
-        //
-        //MODULE: SELSCAN_NORM_XPEHH
-        //
+        }
 
-        SELSCAN_NORM_XPEHH(
-            SELSCAN_XPEHH.out.groupTuple(),
-            Channel.value("xpehh")
-        )
+        if(params.xpehh){
+
+            //
+            //MODULE: SELSCAN_XPEHH
+            //
+            SELSCAN_XPEHH(
+                ch_xpehh,
+                Channel.value("xpehh")
+            )
+
+            //
+            //MODULE: SELSCAN_NORM_XPEHH
+            //
+
+            SELSCAN_NORM_XPEHH(
+                SELSCAN_XPEHH.out.groupTuple(),
+                Channel.value("xpehh")
+            )
+        }
 }

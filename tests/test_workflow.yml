@@ -265,3 +265,504 @@
     - path: ./results/summary_stats/python/plot/sample_stats/scalepopgen_samplewise_snp_counts_mqc.html
     - path: ./results/versions.yml
       md5sum: 0e945272d2372c7d66d6c1e673a8be99
+
+- name: test_selscan
+  command: nextflow run ./scalepopgen_v1/ -profile test_selscan,mamba --outdir results -resume
+  tags:
+    - test_selscan
+  files:
+    - path: ./results/pop_sc_color.map
+      md5sum: 22a4d4c7f28694f404f95905d94a7588
+    - path: ./results/selection/genomewide_results/ihs/AlpineIbex/AlpineIbex_ihs.cutoff
+      md5sum: 9d36cd4b25313e2f16c944dd715a310f
+    - path: ./results/selection/genomewide_results/ihs/AlpineIbex/AlpineIbex_ihs.out
+      md5sum: 65367ac4c0407b517bbdfef0df73eb7c
+    - path: ./results/selection/genomewide_results/ihs/Appenzell/Appenzell_ihs.cutoff
+      md5sum: d58155558321b4e793759e2764d42537
+    - path: ./results/selection/genomewide_results/ihs/Appenzell/Appenzell_ihs.out
+      md5sum: 4cc2e9d1e4775e551d29f818aa846a00
+    - path: ./results/selection/genomewide_results/ihs/Bezoar/Bezoar_ihs.cutoff
+      md5sum: 8aae96193b331f6c161419ca2cec2ede
+    - path: ./results/selection/genomewide_results/ihs/Bezoar/Bezoar_ihs.out
+      md5sum: 816b577f2330c44baafbdc50faa40d07
+    - path: ./results/selection/genomewide_results/ihs/Booted/Booted_ihs.cutoff
+      md5sum: e06d58c52f80171cda2bfe06a42e3fc7
+    - path: ./results/selection/genomewide_results/ihs/Booted/Booted_ihs.out
+      md5sum: fef63ddb65a1a5912bb3bac79ff69e43
+    - path: ./results/selection/genomewide_results/ihs/ChamoisColored/ChamoisColored_ihs.cutoff
+      md5sum: c0d86202ddbd42beef8bb7ef12957c70
+    - path: ./results/selection/genomewide_results/ihs/ChamoisColored/ChamoisColored_ihs.out
+      md5sum: bccc846093ce3ec2a3aee8377a6cccd3
+    - path: ./results/selection/genomewide_results/ihs/Grigia/Grigia_ihs.cutoff
+      md5sum: ded99db7710fa7d8e7253aa0ab44c0e9
+    - path: ./results/selection/genomewide_results/ihs/Grigia/Grigia_ihs.out
+      md5sum: 0db3305c7e03271ce9899cab283c365a
+    - path: ./results/selection/genomewide_results/ihs/Peacock/Peacock_ihs.cutoff
+      md5sum: 5534d2750dac0535a14ccbd1263ba4c3
+    - path: ./results/selection/genomewide_results/ihs/Peacock/Peacock_ihs.out
+      md5sum: 52e0b556472a0514af4e7dd99b22f26b
+    - path: ./results/selection/genomewide_results/ihs/Saanen/Saanen_ihs.cutoff
+      md5sum: 447a442aee1cb24244ae765834a95fc6
+    - path: ./results/selection/genomewide_results/ihs/Saanen/Saanen_ihs.out
+      md5sum: 61f2622db988cefd937d1f4706e54ce5
+    - path: ./results/selection/genomewide_results/ihs/Toggenburg/Toggenburg_ihs.cutoff
+      md5sum: 479d7b3fda06b2a63d7f0658ca23ff0f
+    - path: ./results/selection/genomewide_results/ihs/Toggenburg/Toggenburg_ihs.out
+      md5sum: c0a76d0c8a2aacf4aaf24be8c6f20868
+    - path: ./results/selection/selscan/ihs/normalized/AlpineIbex/NC_030835.1_AlpineIbex.ihs.out.100bins.norm
+      md5sum: 4dfe95378e371542d459bd6d1ab9f308
+    - path: ./results/selection/selscan/ihs/normalized/AlpineIbex/NC_030836.1_AlpineIbex.ihs.out.100bins.norm
+      md5sum: 2a28536edb776fc368e42039930255aa
+    - path: ./results/selection/selscan/ihs/normalized/Appenzell/NC_030835.1_Appenzell.ihs.out.100bins.norm
+      md5sum: e95a8fdb452748f3162087d45a310487
+    - path: ./results/selection/selscan/ihs/normalized/Appenzell/NC_030836.1_Appenzell.ihs.out.100bins.norm
+      md5sum: 19b0ac6bf568071d63815a8854e4f3ca
+    - path: ./results/selection/selscan/ihs/normalized/Bezoar/NC_030835.1_Bezoar.ihs.out.100bins.norm
+      md5sum: 865c2c94794c1959598352a13daf6e1f
+    - path: ./results/selection/selscan/ihs/normalized/Bezoar/NC_030836.1_Bezoar.ihs.out.100bins.norm
+      md5sum: 3cf0f979525ed4ff7419cfef2b98ec40
+    - path: ./results/selection/selscan/ihs/normalized/Booted/NC_030835.1_Booted.ihs.out.100bins.norm
+      md5sum: 17235bfdeeeb965d46cadb51aa99369e
+    - path: ./results/selection/selscan/ihs/normalized/Booted/NC_030836.1_Booted.ihs.out.100bins.norm
+      md5sum: d9c330c5bad8d97feb55052d2ad2fef4
+    - path: ./results/selection/selscan/ihs/normalized/ChamoisColored/NC_030835.1_ChamoisColored.ihs.out.100bins.norm
+      md5sum: 43ac954d4b7adfdf860d6a3b1496edaf
+    - path: ./results/selection/selscan/ihs/normalized/ChamoisColored/NC_030836.1_ChamoisColored.ihs.out.100bins.norm
+      md5sum: f15cf55b78c7b1c8d184548cac4668e7
+    - path: ./results/selection/selscan/ihs/normalized/Grigia/NC_030835.1_Grigia.ihs.out.100bins.norm
+      md5sum: 41ecca4b0d35faaad89ff554dc0256b7
+    - path: ./results/selection/selscan/ihs/normalized/Grigia/NC_030836.1_Grigia.ihs.out.100bins.norm
+      md5sum: efc95535b71e7f3824a1362af3bc8cf2
+    - path: ./results/selection/selscan/ihs/normalized/Peacock/NC_030835.1_Peacock.ihs.out.100bins.norm
+      md5sum: d315180a393203cccbcce782cf3c0d00
+    - path: ./results/selection/selscan/ihs/normalized/Peacock/NC_030836.1_Peacock.ihs.out.100bins.norm
+      md5sum: c7912ac33177591f6014d770606ae0bd
+    - path: ./results/selection/selscan/ihs/normalized/Saanen/NC_030835.1_Saanen.ihs.out.100bins.norm
+      md5sum: 44fbf53eb7c4757cb2bed3a2fa8ae13d
+    - path: ./results/selection/selscan/ihs/normalized/Saanen/NC_030836.1_Saanen.ihs.out.100bins.norm
+      md5sum: 5bc3838bc0ef810a759c74c4dec2084f
+    - path: ./results/selection/selscan/ihs/normalized/Toggenburg/NC_030835.1_Toggenburg.ihs.out.100bins.norm
+      md5sum: d49f6928328d1df4605fb7abae58a351
+    - path: ./results/selection/selscan/ihs/normalized/Toggenburg/NC_030836.1_Toggenburg.ihs.out.100bins.norm
+      md5sum: 0871582c0c083e917c29cbe144c17786
+    - path: ./results/selection/selscan/ihs/unstandardized/AlpineIbex/NC_030835.1_AlpineIbex.ihs.out
+      md5sum: b7c6bb0445a92e6a4521d0be0789317c
+    - path: ./results/selection/selscan/ihs/unstandardized/AlpineIbex/NC_030836.1_AlpineIbex.ihs.out
+      md5sum: db74ba9d20b5e0aec1406484c6776864
+    - path: ./results/selection/selscan/ihs/unstandardized/Appenzell/NC_030835.1_Appenzell.ihs.out
+      md5sum: eb1829dff36a39686f9965afbbcda12e
+    - path: ./results/selection/selscan/ihs/unstandardized/Appenzell/NC_030836.1_Appenzell.ihs.out
+      md5sum: 233315821fdefb9b87b53cdca095f3be
+    - path: ./results/selection/selscan/ihs/unstandardized/Bezoar/NC_030835.1_Bezoar.ihs.out
+      md5sum: 9a7b61f26af0897b54997f724ce18071
+    - path: ./results/selection/selscan/ihs/unstandardized/Bezoar/NC_030836.1_Bezoar.ihs.out
+      md5sum: 181ba0099f00cd421176df986a5ca231
+    - path: ./results/selection/selscan/ihs/unstandardized/Booted/NC_030835.1_Booted.ihs.out
+      md5sum: f801d2fddd3dc72f4aca97495dfda58e
+    - path: ./results/selection/selscan/ihs/unstandardized/Booted/NC_030836.1_Booted.ihs.out
+      md5sum: 940a442edda7fedd8bc7473444e82d87
+    - path: ./results/selection/selscan/ihs/unstandardized/ChamoisColored/NC_030835.1_ChamoisColored.ihs.out
+      md5sum: 374bc85753fd7043b5fc4e49d195886e
+    - path: ./results/selection/selscan/ihs/unstandardized/ChamoisColored/NC_030836.1_ChamoisColored.ihs.out
+      md5sum: 9dd32d640a4b618c4629b1e6447bcee7
+    - path: ./results/selection/selscan/ihs/unstandardized/Grigia/NC_030835.1_Grigia.ihs.out
+      md5sum: 8cbe37cfe87732375c927d504efb61d3
+    - path: ./results/selection/selscan/ihs/unstandardized/Grigia/NC_030836.1_Grigia.ihs.out
+      md5sum: df1ee2db60c7c2a0466d9ce88fa79102
+    - path: ./results/selection/selscan/ihs/unstandardized/Peacock/NC_030835.1_Peacock.ihs.out
+      md5sum: 2e2e18e04b35d40c86c0b8fdb0f24393
+    - path: ./results/selection/selscan/ihs/unstandardized/Peacock/NC_030836.1_Peacock.ihs.out
+      md5sum: 4f4ae900fadfae96d073bf84980b0ad7
+    - path: ./results/selection/selscan/ihs/unstandardized/Saanen/NC_030835.1_Saanen.ihs.out
+      md5sum: cd989bf30c55e38ef98787775ea62152
+    - path: ./results/selection/selscan/ihs/unstandardized/Saanen/NC_030836.1_Saanen.ihs.out
+      md5sum: 427a713f725c102740dc27133c9db8b9
+    - path: ./results/selection/selscan/ihs/unstandardized/Toggenburg/NC_030835.1_Toggenburg.ihs.out
+      md5sum: 45d07d5241a28c9525a8f44291b3b39f
+    - path: ./results/selection/selscan/ihs/unstandardized/Toggenburg/NC_030836.1_Toggenburg.ihs.out
+      md5sum: 75fe5dc7186fdd2a09e9dca21dc52026
+    - path: ./results/selection/selscan/input_files/NC_030835.1_phased.vcf.map
+      md5sum: d72ed3ed9f00d62f252977e432210e99
+    - path: ./results/selection/selscan/input_files/NC_030836.1_phased.vcf.map
+      md5sum: 9d40c914d8538444bae61e8c59fedef0
+    - path: ./results/selection/selscan/input_files/versions.yml
+      md5sum: a96cea1f082379cab563e3edb3102c70
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_AlpineIbex.vcf.gz
+      md5sum: a8743e73d3046c7f7effa195deaecef3
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_Appenzell.vcf.gz
+      md5sum: d2b3a7d830e2addebc51f87743b757f3
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_Bezoar.vcf.gz
+      md5sum: 8e4c8a00dc74d415bf1b16135bd0c616
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_Booted.vcf.gz
+      md5sum: 8a1e98e1c946ee6f3b71390668551ec4
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_ChamoisColored.vcf.gz
+      md5sum: f486b045daa8fbe050630d4866a33975
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_filt_samples.log
+      md5sum: c6aedd64cc84d8d7ca1c4332cf8360d3
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_Grigia.vcf.gz
+      md5sum: abbdebe3efd9c6287e1137240362d084
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_Peacock.vcf.gz
+      md5sum: b4e9853f4dc498935bd59e6b0b603c30
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_Saanen.vcf.gz
+      md5sum: 51dbac0a0d8888f3a1e2f75e9282e261
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030835.1_Toggenburg.vcf.gz
+      md5sum: 885c4b498c39c9d3d85008767f24970a
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_AlpineIbex.vcf.gz
+      md5sum: 2c017a3d830e06c6acd1eaa17b8c479d
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_Appenzell.vcf.gz
+      md5sum: f33707bd3be910d3c39662f260e7f37a
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_Bezoar.vcf.gz
+      md5sum: a2e5d7bfd7b36071a33057d3c9562015
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_Booted.vcf.gz
+      md5sum: 0272ce65fda045917f38ea680f751aef
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_ChamoisColored.vcf.gz
+      md5sum: 320eb682348d86871406d2b3f0d41308
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_filt_samples.log
+      md5sum: 639542e0ccdc89ad4188b79cb70b61bc
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_Grigia.vcf.gz
+      md5sum: 33273f762a5e65348d928a0c3fbda33c
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_Peacock.vcf.gz
+      md5sum: 66f9b0e8bbcdab4ab0c2e04fceb2cae8
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_Saanen.vcf.gz
+      md5sum: a1c32bed007139efe46e91ff9a9d490e
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/NC_030836.1_Toggenburg.vcf.gz
+      md5sum: bd75b8c7e8c8b896108e7ef1df2e0b18
+    - path: ./results/selection/selscan/prepare_input/vcftools/keep/versions.yml
+      md5sum: 8e5bfd50a733acaf3456e6d8aca72e1f
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Appenzell/NC_030835.1_AlpineIbex_NC_030835.1_Appenzell.xpehh.out.norm
+      md5sum: ab9d542678d84a6e03493b668fd4524c
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Appenzell/NC_030836.1_AlpineIbex_NC_030836.1_Appenzell.xpehh.out.norm
+      md5sum: dc460709586725b9373626abab8f5a57
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Bezoar/NC_030835.1_AlpineIbex_NC_030835.1_Bezoar.xpehh.out.norm
+      md5sum: 199c713a8d96ca9751629da8a046f04b
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Bezoar/NC_030836.1_AlpineIbex_NC_030836.1_Bezoar.xpehh.out.norm
+      md5sum: c02b89634b8dc20e59e523b8d47dfdac
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Booted/NC_030835.1_AlpineIbex_NC_030835.1_Booted.xpehh.out.norm
+      md5sum: 59af5e327aedff5319d145c57bb584fa
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Booted/NC_030836.1_AlpineIbex_NC_030836.1_Booted.xpehh.out.norm
+      md5sum: f1cf85c551eaf2f979ceca5c25fe933f
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_ChamoisColored/NC_030835.1_AlpineIbex_NC_030835.1_ChamoisColored.xpehh.out.norm
+      md5sum: fd503f247d34e403d2e6188026722753
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_ChamoisColored/NC_030836.1_AlpineIbex_NC_030836.1_ChamoisColored.xpehh.out.norm
+      md5sum: 5d035918d55fb32c33b7e8f99ea48ec1
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Grigia/NC_030835.1_AlpineIbex_NC_030835.1_Grigia.xpehh.out.norm
+      md5sum: c45541ad6f156cb603ad4b37cd0bd032
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Grigia/NC_030836.1_AlpineIbex_NC_030836.1_Grigia.xpehh.out.norm
+      md5sum: 273a2161e0caf0e5e46fd1791892801b
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Peacock/NC_030835.1_AlpineIbex_NC_030835.1_Peacock.xpehh.out.norm
+      md5sum: d514851ea57825ae45084b7014b02379
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Peacock/NC_030836.1_AlpineIbex_NC_030836.1_Peacock.xpehh.out.norm
+      md5sum: ebe255ec1e2b7670d2005d029dc3e0a5
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Saanen/NC_030835.1_AlpineIbex_NC_030835.1_Saanen.xpehh.out.norm
+      md5sum: 283ff685a0d80de8ce9e38439b322b76
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Saanen/NC_030836.1_AlpineIbex_NC_030836.1_Saanen.xpehh.out.norm
+      md5sum: 382b1af16755010f809285234a25b44a
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Toggenburg/NC_030835.1_AlpineIbex_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: 08a4f5147a3a6558fd30397923f989c8
+    - path: ./results/selection/selscan/xpehh/normalized/AlpineIbex_Toggenburg/NC_030836.1_AlpineIbex_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 5a9a610198bebf26e43f2fad6af120b6
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Bezoar/NC_030835.1_Appenzell_NC_030835.1_Bezoar.xpehh.out.norm
+      md5sum: 54a486ab2a15dc2f10c7760eb35d5eea
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Bezoar/NC_030836.1_Appenzell_NC_030836.1_Bezoar.xpehh.out.norm
+      md5sum: c74e1f5ccb5d35ef477ad09ff2a28bae
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Booted/NC_030835.1_Appenzell_NC_030835.1_Booted.xpehh.out.norm
+      md5sum: 6650c4734c1509be345dcda0564fefec
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Booted/NC_030836.1_Appenzell_NC_030836.1_Booted.xpehh.out.norm
+      md5sum: 946ecbd47500572529dd80f92e3c0c47
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_ChamoisColored/NC_030835.1_Appenzell_NC_030835.1_ChamoisColored.xpehh.out.norm
+      md5sum: 1431d1378656e7f54a04b1bf76060e44
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_ChamoisColored/NC_030836.1_Appenzell_NC_030836.1_ChamoisColored.xpehh.out.norm
+      md5sum: 588f61eba56663d6d1b544ae58824e1f
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Grigia/NC_030835.1_Appenzell_NC_030835.1_Grigia.xpehh.out.norm
+      md5sum: 4d80a5015836cc4b870e737fa68d91af
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Grigia/NC_030836.1_Appenzell_NC_030836.1_Grigia.xpehh.out.norm
+      md5sum: e9db3019450aad1baa3bf4bd7ea1a0cc
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Peacock/NC_030835.1_Appenzell_NC_030835.1_Peacock.xpehh.out.norm
+      md5sum: 5b73503ee8217d62c30b08cb18b1a250
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Peacock/NC_030836.1_Appenzell_NC_030836.1_Peacock.xpehh.out.norm
+      md5sum: b2c8ea086af3e27f7ad9f229312ee561
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Saanen/NC_030835.1_Appenzell_NC_030835.1_Saanen.xpehh.out.norm
+      md5sum: 4e5426eedbf8e9b6079e737cd70c8979
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Saanen/NC_030836.1_Appenzell_NC_030836.1_Saanen.xpehh.out.norm
+      md5sum: 4e27853b7ff2722c7f37fef85f74ff88
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Toggenburg/NC_030835.1_Appenzell_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: 0031c7783b55fa6250cba7625052fd41
+    - path: ./results/selection/selscan/xpehh/normalized/Appenzell_Toggenburg/NC_030836.1_Appenzell_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 2641fc9c876423fc7c8356f4c6643e5a
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Booted/NC_030835.1_Bezoar_NC_030835.1_Booted.xpehh.out.norm
+      md5sum: d715d526688ff58dbe47759af2b83ebc
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Booted/NC_030836.1_Bezoar_NC_030836.1_Booted.xpehh.out.norm
+      md5sum: 49dd6fa279eb485b3a5d34ac351bb508
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_ChamoisColored/NC_030835.1_Bezoar_NC_030835.1_ChamoisColored.xpehh.out.norm
+      md5sum: e64f95145a9a787a0add3f514527968b
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_ChamoisColored/NC_030836.1_Bezoar_NC_030836.1_ChamoisColored.xpehh.out.norm
+      md5sum: f9828291effc99942486257f4945fba6
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Grigia/NC_030835.1_Bezoar_NC_030835.1_Grigia.xpehh.out.norm
+      md5sum: 9f17feccec269084c8b49ef1336052be
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Grigia/NC_030836.1_Bezoar_NC_030836.1_Grigia.xpehh.out.norm
+      md5sum: 22fe9d6f6b90a0ca342ef63eeb96dcae
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Peacock/NC_030835.1_Bezoar_NC_030835.1_Peacock.xpehh.out.norm
+      md5sum: 052fc84ca23b738e3e7a24bc28010a98
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Peacock/NC_030836.1_Bezoar_NC_030836.1_Peacock.xpehh.out.norm
+      md5sum: 7230a5bcd7ed4441de42145c7a2efbf9
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Saanen/NC_030835.1_Bezoar_NC_030835.1_Saanen.xpehh.out.norm
+      md5sum: c8e883e0189fcc13136c552050b0fbae
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Saanen/NC_030836.1_Bezoar_NC_030836.1_Saanen.xpehh.out.norm
+      md5sum: 1c510753f355c339bdd7047a56f65bb4
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Toggenburg/NC_030835.1_Bezoar_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: dca4fdf34819dddd334fd95688a7c607
+    - path: ./results/selection/selscan/xpehh/normalized/Bezoar_Toggenburg/NC_030836.1_Bezoar_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 9a4f563e66184589c679f49ed3da0bd4
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_ChamoisColored/NC_030835.1_Booted_NC_030835.1_ChamoisColored.xpehh.out.norm
+      md5sum: a0ade77dc64dbc57f4907e85f2c54222
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_ChamoisColored/NC_030836.1_Booted_NC_030836.1_ChamoisColored.xpehh.out.norm
+      md5sum: d4ede392532013afa03e64c815278d6a
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Grigia/NC_030835.1_Booted_NC_030835.1_Grigia.xpehh.out.norm
+      md5sum: 433d94d9909b59042d3322039cbd4040
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Grigia/NC_030836.1_Booted_NC_030836.1_Grigia.xpehh.out.norm
+      md5sum: 06dfdb1bfed1fa451d0987dd45f8a1cb
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Peacock/NC_030835.1_Booted_NC_030835.1_Peacock.xpehh.out.norm
+      md5sum: fbf9a20cc23468aa5c25a68eae0961e3
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Peacock/NC_030836.1_Booted_NC_030836.1_Peacock.xpehh.out.norm
+      md5sum: 2e8df499d72f4a7591e25f952aaa59ea
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Saanen/NC_030835.1_Booted_NC_030835.1_Saanen.xpehh.out.norm
+      md5sum: 53f33e186ca9f6fe66209e9fdc328c39
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Saanen/NC_030836.1_Booted_NC_030836.1_Saanen.xpehh.out.norm
+      md5sum: 09432b69a12922851cf879f043b3c12c
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Toggenburg/NC_030835.1_Booted_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: 2bf1fdb53dc50674e1f27d1534757c6c
+    - path: ./results/selection/selscan/xpehh/normalized/Booted_Toggenburg/NC_030836.1_Booted_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 8546bcc31cc1f3b3eaa0aa6b458cba00
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Grigia/NC_030835.1_ChamoisColored_NC_030835.1_Grigia.xpehh.out.norm
+      md5sum: e263108e4fb31044e97438c95e6c05a1
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Grigia/NC_030836.1_ChamoisColored_NC_030836.1_Grigia.xpehh.out.norm
+      md5sum: b90acc7214066e4cb77e45681f02c79f
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Peacock/NC_030835.1_ChamoisColored_NC_030835.1_Peacock.xpehh.out.norm
+      md5sum: a9fcd40b07178c98f7288a072eb1fef4
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Peacock/NC_030836.1_ChamoisColored_NC_030836.1_Peacock.xpehh.out.norm
+      md5sum: 2c74cd7707d45d278ba669b7fa6c6d80
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Saanen/NC_030835.1_ChamoisColored_NC_030835.1_Saanen.xpehh.out.norm
+      md5sum: 7c2005801b76d7c9c08557b96bb589c8
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Saanen/NC_030836.1_ChamoisColored_NC_030836.1_Saanen.xpehh.out.norm
+      md5sum: 009be005d3bb90476b3fc8274c7d25c6
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Toggenburg/NC_030835.1_ChamoisColored_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: 5ba907334a26aa014f4f9d911e7eda91
+    - path: ./results/selection/selscan/xpehh/normalized/ChamoisColored_Toggenburg/NC_030836.1_ChamoisColored_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 7dcc9111b3845f7395c410460f07b9d6
+    - path: ./results/selection/selscan/xpehh/normalized/Grigia_Peacock/NC_030835.1_Grigia_NC_030835.1_Peacock.xpehh.out.norm
+      md5sum: 2672b6f1086ea72857b12b5643e318ba
+    - path: ./results/selection/selscan/xpehh/normalized/Grigia_Peacock/NC_030836.1_Grigia_NC_030836.1_Peacock.xpehh.out.norm
+      md5sum: ae299ea22cb294eadaf51bd027d12466
+    - path: ./results/selection/selscan/xpehh/normalized/Grigia_Saanen/NC_030835.1_Grigia_NC_030835.1_Saanen.xpehh.out.norm
+      md5sum: db3a6790ace7852c8fe444041c152efc
+    - path: ./results/selection/selscan/xpehh/normalized/Grigia_Saanen/NC_030836.1_Grigia_NC_030836.1_Saanen.xpehh.out.norm
+      md5sum: c6f2f8faea8d23540915af272571565b
+    - path: ./results/selection/selscan/xpehh/normalized/Grigia_Toggenburg/NC_030835.1_Grigia_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: 4cb767821d49284de20bf58be908f09e
+    - path: ./results/selection/selscan/xpehh/normalized/Grigia_Toggenburg/NC_030836.1_Grigia_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 4477641cc6120ac0a886d1b4e478e7ff
+    - path: ./results/selection/selscan/xpehh/normalized/Peacock_Saanen/NC_030835.1_Peacock_NC_030835.1_Saanen.xpehh.out.norm
+      md5sum: 4c3b03da546426d89d14e72f33af0930
+    - path: ./results/selection/selscan/xpehh/normalized/Peacock_Saanen/NC_030836.1_Peacock_NC_030836.1_Saanen.xpehh.out.norm
+      md5sum: e3307d1752260dcbd45f0b8dcace8191
+    - path: ./results/selection/selscan/xpehh/normalized/Peacock_Toggenburg/NC_030835.1_Peacock_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: 1499c24aab18cbd6ecb9526001d9aa95
+    - path: ./results/selection/selscan/xpehh/normalized/Peacock_Toggenburg/NC_030836.1_Peacock_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 89dc2a10a09fd223ae0959ec530bc2c3
+    - path: ./results/selection/selscan/xpehh/normalized/Saanen_Toggenburg/NC_030835.1_Saanen_NC_030835.1_Toggenburg.xpehh.out.norm
+      md5sum: a686ecfc447cdf03b27e6ece0ced3af1
+    - path: ./results/selection/selscan/xpehh/normalized/Saanen_Toggenburg/NC_030836.1_Saanen_NC_030836.1_Toggenburg.xpehh.out.norm
+      md5sum: 4cdb668e44473f25fb6be98957dee804
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Appenzell/NC_030835.1_AlpineIbex_NC_030835.1_Appenzell.xpehh.out
+      md5sum: ba3380d1864159abbd449aa45ea6c969
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Appenzell/NC_030836.1_AlpineIbex_NC_030836.1_Appenzell.xpehh.out
+      md5sum: 9f2c885a7ea8f662f79953e0a1359e22
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Bezoar/NC_030835.1_AlpineIbex_NC_030835.1_Bezoar.xpehh.out
+      md5sum: da5d3cb5458c8f9dc50c9b8ce9cde93e
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Bezoar/NC_030836.1_AlpineIbex_NC_030836.1_Bezoar.xpehh.out
+      md5sum: 6f17012eb790abe13e81a37f002f6ada
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Booted/NC_030835.1_AlpineIbex_NC_030835.1_Booted.xpehh.out
+      md5sum: e33248f67e463450d8ef0595c641003f
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Booted/NC_030836.1_AlpineIbex_NC_030836.1_Booted.xpehh.out
+      md5sum: 43b5af5eeff8ae72879b74defe7da838
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_ChamoisColored/NC_030835.1_AlpineIbex_NC_030835.1_ChamoisColored.xpehh.out
+      md5sum: 78330966a1c25611bc69590cd7cf0ef0
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_ChamoisColored/NC_030836.1_AlpineIbex_NC_030836.1_ChamoisColored.xpehh.out
+      md5sum: 00ebe19e3fc0536db93807f38e4678f4
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Grigia/NC_030835.1_AlpineIbex_NC_030835.1_Grigia.xpehh.out
+      md5sum: a3a75911afa684f701201f4905b548f7
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Grigia/NC_030836.1_AlpineIbex_NC_030836.1_Grigia.xpehh.out
+      md5sum: 37235efc5247a37fa082bd58401c3c9d
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Peacock/NC_030835.1_AlpineIbex_NC_030835.1_Peacock.xpehh.out
+      md5sum: ecbde7c0c1f6564b56dfc3ca2e646df0
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Peacock/NC_030836.1_AlpineIbex_NC_030836.1_Peacock.xpehh.out
+      md5sum: af44de143bd3b9672f5ea7eb760e0277
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Saanen/NC_030835.1_AlpineIbex_NC_030835.1_Saanen.xpehh.out
+      md5sum: 8c0abc9e460328810cb1951bc764b889
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Saanen/NC_030836.1_AlpineIbex_NC_030836.1_Saanen.xpehh.out
+      md5sum: f8cc898f3fc9417ab7d494e316b5fe76
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Toggenburg/NC_030835.1_AlpineIbex_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: 66d768a2020b01c582f602e970397f42
+    - path: ./results/selection/selscan/xpehh/unstandardized/AlpineIbex_Toggenburg/NC_030836.1_AlpineIbex_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: 3c11786dd74b547e65acd6d754b7b571
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Bezoar/NC_030835.1_Appenzell_NC_030835.1_Bezoar.xpehh.out
+      md5sum: be3bf681961df2d12e7ea2bb4246d443
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Bezoar/NC_030836.1_Appenzell_NC_030836.1_Bezoar.xpehh.out
+      md5sum: a744ea3a87e3f82d1748104b3e633dcd
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Booted/NC_030835.1_Appenzell_NC_030835.1_Booted.xpehh.out
+      md5sum: 37643347736cbfba0394f8d8a1bd7b04
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Booted/NC_030836.1_Appenzell_NC_030836.1_Booted.xpehh.out
+      md5sum: 0dfad07c9cc86a84f4b8c9aa6f4591d5
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_ChamoisColored/NC_030835.1_Appenzell_NC_030835.1_ChamoisColored.xpehh.out
+      md5sum: 222231a1ac9b6fc7fdb60d77b176ac68
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_ChamoisColored/NC_030836.1_Appenzell_NC_030836.1_ChamoisColored.xpehh.out
+      md5sum: 0506e039a91d10988685062615ce867c
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Grigia/NC_030835.1_Appenzell_NC_030835.1_Grigia.xpehh.out
+      md5sum: 4fef1799022bf1602d5de85495de1c73
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Grigia/NC_030836.1_Appenzell_NC_030836.1_Grigia.xpehh.out
+      md5sum: e3309a5ba0e7261e521f4330e0e1d464
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Peacock/NC_030835.1_Appenzell_NC_030835.1_Peacock.xpehh.out
+      md5sum: 8b77c99b99dfc94f4e6afb2e7088b0ca
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Peacock/NC_030836.1_Appenzell_NC_030836.1_Peacock.xpehh.out
+      md5sum: a80c1a9fbc4d7451c9aee797234e2fd5
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Saanen/NC_030835.1_Appenzell_NC_030835.1_Saanen.xpehh.out
+      md5sum: ac99864a2660076e57633232caccd673
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Saanen/NC_030836.1_Appenzell_NC_030836.1_Saanen.xpehh.out
+      md5sum: 6f673727718b275c4e5d1aa2e6dedb79
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Toggenburg/NC_030835.1_Appenzell_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: 59313feceb888742a659cde21378ac28
+    - path: ./results/selection/selscan/xpehh/unstandardized/Appenzell_Toggenburg/NC_030836.1_Appenzell_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: 3e7cc00ba940b79e4b101b0dae3f57c2
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Booted/NC_030835.1_Bezoar_NC_030835.1_Booted.xpehh.out
+      md5sum: 5b12dba52f2cda5c0b4911ea46e4ef67
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Booted/NC_030836.1_Bezoar_NC_030836.1_Booted.xpehh.out
+      md5sum: 323b60c9abbf201c3aabb22428fb6cfb
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_ChamoisColored/NC_030835.1_Bezoar_NC_030835.1_ChamoisColored.xpehh.out
+      md5sum: 652e46f2b9640968de2162bcaf6d9c38
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_ChamoisColored/NC_030836.1_Bezoar_NC_030836.1_ChamoisColored.xpehh.out
+      md5sum: 2ee4f5ad930cb13a6d451f2af721cae6
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Grigia/NC_030835.1_Bezoar_NC_030835.1_Grigia.xpehh.out
+      md5sum: 37af5d0355836021eb62767e2005353a
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Grigia/NC_030836.1_Bezoar_NC_030836.1_Grigia.xpehh.out
+      md5sum: 093c919906248e2b98c2ad8607150a6f
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Peacock/NC_030835.1_Bezoar_NC_030835.1_Peacock.xpehh.out
+      md5sum: 8de623957a57729f6513eb4ff4433840
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Peacock/NC_030836.1_Bezoar_NC_030836.1_Peacock.xpehh.out
+      md5sum: f3fb178336ebb9a011883ad6ac0858c0
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Saanen/NC_030835.1_Bezoar_NC_030835.1_Saanen.xpehh.out
+      md5sum: 472eda1f28b7c47a57db0f99791f779d
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Saanen/NC_030836.1_Bezoar_NC_030836.1_Saanen.xpehh.out
+      md5sum: f99f967e41bb418162274c9fd02482ba
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Toggenburg/NC_030835.1_Bezoar_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: dff0335b60f3bc4f22771907532cc19b
+    - path: ./results/selection/selscan/xpehh/unstandardized/Bezoar_Toggenburg/NC_030836.1_Bezoar_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: c9b9f2c785f7d18827840846ebb1c083
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_ChamoisColored/NC_030835.1_Booted_NC_030835.1_ChamoisColored.xpehh.out
+      md5sum: 6fd32f106c3b719e36c3a992a2dc5466
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_ChamoisColored/NC_030836.1_Booted_NC_030836.1_ChamoisColored.xpehh.out
+      md5sum: 232631e4ae3aab4b4734565980075ab6
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Grigia/NC_030835.1_Booted_NC_030835.1_Grigia.xpehh.out
+      md5sum: 3979e6babaea4bb4b12a88eef7b1c6b4
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Grigia/NC_030836.1_Booted_NC_030836.1_Grigia.xpehh.out
+      md5sum: 72a12b2c4efbdc4df9bdc7d79e76731c
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Peacock/NC_030835.1_Booted_NC_030835.1_Peacock.xpehh.out
+      md5sum: 2210001a3e1d2afb1fc500518cfb0d29
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Peacock/NC_030836.1_Booted_NC_030836.1_Peacock.xpehh.out
+      md5sum: 6ff94f957174fddeb4e65f0fff9ceb5c
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Saanen/NC_030835.1_Booted_NC_030835.1_Saanen.xpehh.out
+      md5sum: 97c6c9400db96a86019fd1889c2b3908
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Saanen/NC_030836.1_Booted_NC_030836.1_Saanen.xpehh.out
+      md5sum: fae97a60bb3d9886334a089fd1e1a1d9
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Toggenburg/NC_030835.1_Booted_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: b5f42c913144bc3e9dbdc9ff4f67be08
+    - path: ./results/selection/selscan/xpehh/unstandardized/Booted_Toggenburg/NC_030836.1_Booted_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: 99b8b41e24e388f19b2025d27d8e44bc
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Grigia/NC_030835.1_ChamoisColored_NC_030835.1_Grigia.xpehh.out
+      md5sum: 549497ddf6f975bc17d1f14f643d999f
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Grigia/NC_030836.1_ChamoisColored_NC_030836.1_Grigia.xpehh.out
+      md5sum: 808892a97c6b8a0a493d1c6aace7a160
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Peacock/NC_030835.1_ChamoisColored_NC_030835.1_Peacock.xpehh.out
+      md5sum: 56cf3f2c0b6f51bf6d39d386196c4ea9
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Peacock/NC_030836.1_ChamoisColored_NC_030836.1_Peacock.xpehh.out
+      md5sum: 4d668614d99382da60a63b4d80e00bc2
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Saanen/NC_030835.1_ChamoisColored_NC_030835.1_Saanen.xpehh.out
+      md5sum: 79d04afc92df0327a46e8c7425cb71a9
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Saanen/NC_030836.1_ChamoisColored_NC_030836.1_Saanen.xpehh.out
+      md5sum: 051717a970224ce92fc172ccf60661b8
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Toggenburg/NC_030835.1_ChamoisColored_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: e9f210e860d503dfe572492ab92ae15c
+    - path: ./results/selection/selscan/xpehh/unstandardized/ChamoisColored_Toggenburg/NC_030836.1_ChamoisColored_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: 877af49f84f86e3e3d969aae0c61fea9
+    - path: ./results/selection/selscan/xpehh/unstandardized/Grigia_Peacock/NC_030835.1_Grigia_NC_030835.1_Peacock.xpehh.out
+      md5sum: 07fb1762fe6aecf3f5860e1bcdd1dbaa
+    - path: ./results/selection/selscan/xpehh/unstandardized/Grigia_Peacock/NC_030836.1_Grigia_NC_030836.1_Peacock.xpehh.out
+      md5sum: 28898221e03af15cf86d09b3d4ee83bd
+    - path: ./results/selection/selscan/xpehh/unstandardized/Grigia_Saanen/NC_030835.1_Grigia_NC_030835.1_Saanen.xpehh.out
+      md5sum: a11e0ff4e8bc0ad57c01aa6d7d75badf
+    - path: ./results/selection/selscan/xpehh/unstandardized/Grigia_Saanen/NC_030836.1_Grigia_NC_030836.1_Saanen.xpehh.out
+      md5sum: 2a28171b1474ebc22767de4043ace5b2
+    - path: ./results/selection/selscan/xpehh/unstandardized/Grigia_Toggenburg/NC_030835.1_Grigia_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: 1f69d1e510f18850653f75d7b1573348
+    - path: ./results/selection/selscan/xpehh/unstandardized/Grigia_Toggenburg/NC_030836.1_Grigia_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: 2fa2403402a3e445587705e313b0265d
+    - path: ./results/selection/selscan/xpehh/unstandardized/Peacock_Saanen/NC_030835.1_Peacock_NC_030835.1_Saanen.xpehh.out
+      md5sum: 7adc59b117c50d2083c1564b819a7f51
+    - path: ./results/selection/selscan/xpehh/unstandardized/Peacock_Saanen/NC_030836.1_Peacock_NC_030836.1_Saanen.xpehh.out
+      md5sum: be829203b7228453a4d1daafbb6de590
+    - path: ./results/selection/selscan/xpehh/unstandardized/Peacock_Toggenburg/NC_030835.1_Peacock_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: 0436db1528d995f8f5e6f1e68a39aa99
+    - path: ./results/selection/selscan/xpehh/unstandardized/Peacock_Toggenburg/NC_030836.1_Peacock_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: bc147af65899643ee2d59e32c6c96736
+    - path: ./results/selection/selscan/xpehh/unstandardized/Saanen_Toggenburg/NC_030835.1_Saanen_NC_030835.1_Toggenburg.xpehh.out
+      md5sum: cff51961b2d9a2882fff70c2f5fac8e8
+    - path: ./results/selection/selscan/xpehh/unstandardized/Saanen_Toggenburg/NC_030836.1_Saanen_NC_030836.1_Toggenburg.xpehh.out
+      md5sum: 8a63b8f761d0a74cf5aa4699db7d6172
+    - path: ./results/selection/shapeit5/NC_030835.1_phased.vcf.gz
+      md5sum: e425458fc2591e59af63ab95fde1020a
+    - path: ./results/selection/shapeit5/NC_030836.1_phased.vcf.gz
+      md5sum: 2e0fced563fd842fdd9e4ff0c14ddceb
+    - path: ./results/selection/shapeit5/versions.yml
+      md5sum: 34ffd9118b24452649f8902947ac0be0
+    - path: ./results/selection/vcftools/input_pop/selscan/AlpineIbex.txt
+      md5sum: a7b2a23a06a5b499d4e49c9aa5834aa9
+    - path: ./results/selection/vcftools/input_pop/selscan/Appenzell.txt
+      md5sum: bd27df3b8a5cdd85f45055229d09f5a8
+    - path: ./results/selection/vcftools/input_pop/selscan/Bezoar.txt
+      md5sum: c16f11b97b58426da520f3e9f27c8c73
+    - path: ./results/selection/vcftools/input_pop/selscan/Booted.txt
+      md5sum: aedf2de2db7f31effb6f0aac62abe16c
+    - path: ./results/selection/vcftools/input_pop/selscan/ChamoisColored.txt
+      md5sum: fc6583442f6fb98a3f23dcbefa599105
+    - path: ./results/selection/vcftools/input_pop/selscan/Grigia.txt
+      md5sum: b11b46acc377373e017151d1a3624771
+    - path: ./results/selection/vcftools/input_pop/selscan/Peacock.txt
+      md5sum: 4435c70ab0ddcc0fa66fed19727f8b35
+    - path: ./results/selection/vcftools/input_pop/selscan/Saanen.txt
+      md5sum: ca1f4a0dcd6c350a3c5f8534a90c18fb
+    - path: ./results/selection/vcftools/input_pop/selscan/scalepopgen_included_samples.csv
+      md5sum: b144217d0b3d88cec0512bc0780bbc1a
+    - path: ./results/selection/vcftools/input_pop/selscan/Toggenburg.txt
+      md5sum: 2cfa2e9a0779131ac3336a0f17b2741b
+    - path: ./results/snp_filtering/vcftools/NC_030835.1_filter_sites.log
+      md5sum: 6ad63ddd7d7c3cee48d7146d97a63cd1
+    - path: ./results/snp_filtering/vcftools/NC_030835.1_filt_sites.vcf.gz
+      md5sum: b8d8ff39cd6abdb88c56402fe33fcd4a
+    - path: ./results/snp_filtering/vcftools/NC_030836.1_filter_sites.log
+      md5sum: 0baedd1fab859a16d4678749de11d665
+    - path: ./results/snp_filtering/vcftools/NC_030836.1_filt_sites.vcf.gz
+      md5sum: 158fd1577d2fe606bc2a6f5bd84ffac6
+    - path: ./results/snp_filtering/vcftools/versions.yml
+      md5sum: 4fc54a0b055a865b5cccb99178bffb01
+    - path: ./results/tabix/NC_030835.1_filt_sites.vcf.gz.tbi
+      md5sum: f9acd4fab3e65c5b7212d92affa581cc
+    - path: ./results/tabix/NC_030835.1_phased.vcf.gz.tbi
+      md5sum: 9f66e61bec296f112aafaea6cf1abb81
+    - path: ./results/tabix/NC_030836.1_filt_sites.vcf.gz.tbi
+      md5sum: 7e1938edfa9ac3ad346c714d256f874d
+    - path: ./results/tabix/NC_030836.1_phased.vcf.gz.tbi
+      md5sum: 468262503a9bf45479db6211c03e8804
+    - path: ./results/tabix/versions.yml
+      md5sum: 9f30533742ea5254dcbeaa59e02dc68e
+    - path: ./results/versions.yml
+      md5sum: 0e945272d2372c7d66d6c1e673a8be99
+

@@ -6,6 +6,7 @@ process SHAPEIT5_PHASECOMMON {
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/shapeit5:1.0.0--h0c8ee15_0':
         'quay.io/biocontainers/shapeit5:1.0.0--h0c8ee15_0'}"
+    publishDir("${params.outdir}/selection/shapeit5/", mode:"copy")
 
     input:
         tuple val(meta) , path(input), path(input_index), path(pedigree), val(region)
@@ -22,7 +23,7 @@ process SHAPEIT5_PHASECOMMON {
 
     script:
     def args   = task.ext.args   ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"+"_phased"
     def suffix = task.ext.suffix ?: "vcf.gz"
 
     if ("$input" == "${prefix}.${suffix}") error "Input and output names are the same, set prefix in module configuration to disambiguate!"
