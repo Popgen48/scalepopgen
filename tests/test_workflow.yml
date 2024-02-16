@@ -1,5 +1,5 @@
 - name: Run workflow to filter samples
-  command: nextflow run main.nf -profile test_sample_filters,mamba --outdir results
+  command: nextflow run scalepopgen_v1/ -profile test_sample_filters,mamba --outdir results
   tags:
     - sample_filters
   files:
@@ -15,7 +15,7 @@
       md5sum: 70d01c1c7d52bd2e5d3727f8536a3244
 
 - name: Run workflow to filter snps
-  command: nextflow run main.nf -profile test_snp_filters,mamba --outdir results
+  command: nextflow run scalepopgen_v1/ -profile test_snp_filters,mamba --outdir results
   tags:
     - snp_filters
   files:
@@ -29,7 +29,7 @@
       md5sum: 08f5ae4334b0210fe42a14af1b04c073
 
 - name: Entire filtering workflow
-  command: nextflow run main.nf -profile test_sample_snp_filters,mamba --outdir results
+  command: nextflow run scalepopgen_v1/ -profile test_sample_snp_filters,mamba --outdir results
   tags:
     - sample_snp_filters
   files:
@@ -45,7 +45,7 @@
       md5sum: ef1e0896931aa0031f7e5bc16512e326
 
 - name: filtering and summary stats
-  command: nextflow run main.nf -profile test_filters_summary_stats,mamba --outdir results
+  command: nextflow run scalepopgen_v1/ -profile test_filters_summary_stats,mamba --outdir results
   tags:
     - filter_stats
   files:
@@ -86,47 +86,43 @@
 - name: filtering and pca
   command: nextflow run scalepopgen_v1/ -profile test_filters_summary_pca,mamba --outdir results
   tags:
-    - test_filters_summary_pca
+    - test_pca
+    - filter_stats
   files:
-    - path: results/plink2/remove_custom_indi_genetic_structure/scalepopgen_rem_indi.bed
-      md5sum: 97d1567782500859080e7ba4b7f68d27
-    - path: results/plink2/remove_custom_indi_genetic_structure/scalepopgen_rem_indi.bim
-      md5sum: 353b8b260e414884a812403359fb0d8a
-    - path: results/plink2/remove_custom_indi_genetic_structure/scalepopgen_rem_indi.fam
-      md5sum: d9f491f30824a8298ca82a4d7efae3ea
-    - path: results/plink2/remove_custom_indi_genetic_structure/scalepopgen_rem_indi_ld_filtered.bed
-      md5sum: cbce975dbc7c713efa9d18918f0fc3cc
-    - path: results/plink2/remove_custom_indi_genetic_structure/scalepopgen_rem_indi_ld_filtered.bim
-      md5sum: 1419e667ac64fbfea3bb1b8f21148625
-    - path: results/plink2/remove_custom_indi_genetic_structure/scalepopgen_rem_indi_ld_filtered.fam
-      md5sum: d9f491f30824a8298ca82a4d7efae3ea
-    - path: results/plink/make_bed/scalepopgen_rem_indi_ld_filtered_update_chrom_id.bed
-      md5sum: 5df960c69cf9404ee88a539021c9604c
-    - path: results/plink/make_bed/scalepopgen_rem_indi_ld_filtered_update_chrom_id.bim
-      md5sum: 90b121614b3d5ed53d8c6bc207328245
-    - path: results/plink2/make_bed/scalepopgen_rem_indi_ld_filtered_update_chrom_id.fam
-      md5sum: 8176ac7ed0fe0a650aa73de8102b56b5
-    - path: results/pca/plink2/export_ped/scalepopgen_rem_indi_ld_filtered_update_chrom_id.map
-      md5sum: 5a91cad4a32ea97fe25c4b8901386f56
-    - path: results/pca/plink2/export_ped/scalepopgen_rem_indi_ld_filtered_update_chrom_id.ped
-      md5sum: 59a1d0b86ab35af1169fdef2e6327ba1
-    - path: results/pca/python/create/eigenstrat_par/scalepopgen_rem_indi_ld_filtered_update_chrom_id.ped_to_eigenstraat.par
-      md5sum: d2eac557b04f1ec854f407fa912644b8
-    - path: results/pca/gawk/modify_pheno_col_ped/scalepopgen_rem_indi_ld_filtered_update_chrom_id.1.ped
-      md5sum: 37dd53c07056b4c69b913fc162085e63
-    - path: results/pca/eigensoft/convertf/scalepopgen_rem_indi_ld_filtered_update_chrom_id.eigenstratgeno
+    - path: ./results/pca/eigensoft/convertf/scalepopgen_rem_indi_ld_filtered_update_chrom_id.eigenstratgeno
       md5sum: d02e409aa8bf48a2e62c214f6ebbb3f9
-    - path: results/pca/eigensoft/convertf/scalepopgen_rem_indi_ld_filtered_update_chrom_id.ind
+    - path: ./results/pca/eigensoft/convertf/scalepopgen_rem_indi_ld_filtered_update_chrom_id.ind
       md5sum: cc6ce61a01bf470350d79b84b412175e
-    - path: results/pca/eigensoft/convertf/scalepopgen_rem_indi_ld_filtered_update_chrom_id.snp
+    - path: ./results/pca/eigensoft/convertf/scalepopgen_rem_indi_ld_filtered_update_chrom_id.snp
       md5sum: 934249b774ac3c98f1ca991bc43af639
-    - path: results/pca/python/create/smartpca_par/scalepopgen_rem_indi_ld_filtered_update_chrom_id.smartpca.par
-      md5sum: b80032184cfd2c8ea2ab37c08e1ad96f
-    - path: results/pca/eigensoft/smartpca/scalepopgen_rem_indi_ld_filtered_update_chrom_id.eval
+    - path: ./results/pca/eigensoft/convertf/versions.yml
+      md5sum: 28ed4b76630d2a69582e9559abef582d
+    - path: ./results/pca/eigensoft/smartpca/scalepopgen_rem_indi_ld_filtered_update_chrom_id.eval
       md5sum: 955d0d44dcdddb9224192564f81f6349
-    - path: results/pca/eigensoft/smartpca/scalepopgen_rem_indi_ld_filtered_update_chrom_id.evec
+    - path: ./results/pca/eigensoft/smartpca/scalepopgen_rem_indi_ld_filtered_update_chrom_id.evec
       md5sum: c6b9f0959e3abdf50c7064dc0742de2a
-    - path: results/pca/python/plot/pca/scalepopgen_rem_indi_ld_filtered_update_chrom_id_mqc.html
+    - path: ./results/pca/eigensoft/smartpca/scalepopgen_rem_indi_ld_filtered_update_chrom_id.log
+    - path: ./results/pca/eigensoft/smartpca/versions.yml
+      md5sum: 2039a2c406b1030eed5e1edaff790370
+    - path: ./results/pca/gawk/modify_pheno_col_ped/scalepopgen_rem_indi_ld_filtered_update_chrom_id.1.ped
+      md5sum: 37dd53c07056b4c69b913fc162085e63
+    - path: ./results/pca/gawk/modify_pheno_col_ped/versions.yml
+      md5sum: 8c018dd3e0f0e078622326fe90c168bd
+    - path: ./results/pca/plink2/export_ped/scalepopgen_rem_indi_ld_filtered_update_chrom_id.map
+      md5sum: 5a91cad4a32ea97fe25c4b8901386f56
+    - path: ./results/pca/plink2/export_ped/scalepopgen_rem_indi_ld_filtered_update_chrom_id.ped
+      md5sum: 59a1d0b86ab35af1169fdef2e6327ba1
+    - path: ./results/pca/plink2/export_ped/versions.yml
+      md5sum: 55c02ec4004c54b1a955879e7a28f866
+    - path: ./results/pca/python/create/eigenstrat_par/scalepopgen_rem_indi_ld_filtered_update_chrom_id.ped_to_eigenstraat.par
+      md5sum: d2eac557b04f1ec854f407fa912644b8
+    - path: ./results/pca/python/create/smartpca_par/scalepopgen_rem_indi_ld_filtered_update_chrom_id.smartpca.par
+      md5sum: b80032184cfd2c8ea2ab37c08e1ad96f
+    - path: ./results/pca/python/plot/pca/plot_interactive_pca_scalepopgen_rem_indi_ld_filtered_update_chrom_id.log
+    - path: ./results/pca/python/plot/pca/pop_markershape_col.txt
+      md5sum: 486d6d38dc1ceda9611f190012480c5d
+    - path: ./results/pca/python/plot/pca/scalepopgen_rem_indi_ld_filtered_update_chrom_id_mqc.html
+
 
 - name: filtering and admixture
   command: nextflow run scalepopgen_v1/ -profile test_filter_admixture,mamba --outdir results
