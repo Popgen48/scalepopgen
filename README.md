@@ -22,7 +22,7 @@ If you are new to Nextflow and nf-core, please refer to [this page](https://nf-c
 After successful installation of Nextflow, Java and one of the container systems, download the scalepopgen:
 
 ```
-git clone https://github.com/Popgen48/scalepopgen_v1.git
+git clone https://github.com/Popgen48/scalepopgen.git
 ```
 
 #### INPUT FILES
@@ -69,22 +69,22 @@ Start the CLI with:
 ```
 python scalepopgen_cli.py
 ```
-![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/1e853c26-404d-43d5-b3fb-d7a1c9e879d4)
+![grafik](https://github.com/Popgen48/scalepopgen/assets/131758840/1e853c26-404d-43d5-b3fb-d7a1c9e879d4)
 
 Navigate through different sub-workflows and their options.
 
-![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/96936bd8-a3d6-46e9-814a-5119ef0eee4a)
-![grafik](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/d980e7bb-cddf-478a-9849-db40dd96c399)
+![grafik](https://github.com/Popgen48/scalepopgen/assets/131758840/96936bd8-a3d6-46e9-814a-5119ef0eee4a)
+![grafik](https://github.com/Popgen48/scalepopgen/assets/131758840/d980e7bb-cddf-478a-9849-db40dd96c399)
 
 
 Once you select and specify the parameters according to analyses you want to perform, simply save them to YAML file and copy the path within the `-params-file` option.
 
-![CLI5](https://github.com/Popgen48/scalepopgen_v1/assets/131758840/2ff87f49-7a8d-40f3-b392-51e4c1afa92e)
+![CLI5](https://github.com/Popgen48/scalepopgen/assets/131758840/2ff87f49-7a8d-40f3-b392-51e4c1afa92e)
 
 Now, you can run the scalepopgen:
 
 ```bash
-nextflow run scalepopgen_v1/ \
+nextflow run scalepopgen/ \
    -profile <docker/singularity/conda/mamba> \
    -params-file <path/to/parameters.yml> \
    -qs <maximum number of processes>
@@ -94,7 +94,7 @@ Note that the CLI also generates a separate folder with the prefix **citation_**
 After git clone, to test the functionality, run the following Command with a small dataset
 
 ```bash
-nextflow run scalepopgen_v1/ \
+nextflow run scalepopgen/ \
    -profile test,<docker/singularity/conda/mamba> \
    -qs 10
 ```
@@ -102,7 +102,7 @@ nextflow run scalepopgen_v1/ \
 To reproduce the results discussed in the paper, 
 
 ```bash
-nextflow run scalepopgen_v1/ \
+nextflow run scalepopgen/ \
    -profile test_full,<docker/singularity/conda/mamba> \
    -qs 10
 ```
